@@ -4,6 +4,30 @@ title: "Differences in cell composition"
 
 About this site
 
-```{r}
-1 + 1
+```{r cell-prop-diff-data}
+cell_prop_diff <- load_or_placeholder(
+  option_name = "results_vis.cell_prop_diff",
+  pattern = "cell.*prop.*(diff|difference).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Group = rep(c("Control", "FTLD"), each = 50),
+      CellType = rep(c("Astrocyte", "Neuron", "Microglia", "Oligodendrocyte", "Endothelial"), each = 20),
+      Proportion = rbeta(100, shape1 = 2, shape2 = 5)
+    )
+  }
+)
+```
+
+```{r cell-prop-diff-plot}
+render_source_note(cell_prop_diff, "cell proportion differences")
+plot_ly(
+  cell_prop_diff,
+  x = ~Group,
+  y = ~Proportion,
+  color = ~CellType,
+  type = "box"
+) %>%
+  layout(title = "Cell Proportion Differences by Group",
+         yaxis = list(title = "Estimated Proportion")) %>%
+  annotate_placeholder(cell_prop_diff)
 ```

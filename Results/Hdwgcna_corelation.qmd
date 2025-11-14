@@ -4,6 +4,42 @@ title: "Gene modules correlation with neuropathology markers"
 
 About this site
 
-```{r}
-1 + 1
+
+```{r correlation-modules-data}
+correlation_modules <- load_or_placeholder(
+  option_name = "results_vis.correlation_modules",
+  pattern = "module.*correlation.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    modules <- paste0("Module", seq_len(10))
+    expand_grid(Source = modules, Target = modules) %>%
+      mutate(Correlation = if_else(Source == Target, 1, runif(n(), min = -1, max = 1)))
+  }
+)
 ```
+
+```{r correlation-modules-plot}
+render_source_note(correlation_modules, "module correlations")
+correlation_wide <- correlation_modules %>%
+  tidyr::pivot_wider(names_from = Target, values_from = Correlation)
+correlation_matrix <- correlation_wide %>%
+  column_to_rownames("Source") %>%
+  as.matrix()
+correlation_hover <- correlation_modules %>%
+  mutate(label = glue::glue("{Source} vs {Target}<br>Correlation: {round(Correlation, 2)}")) %>%
+  tidyr::pivot_wider(names_from = Target, values_from = label) %>%
+  column_to_rownames("Source") %>%
+  as.matrix()
+plot_ly(
+  x = colnames(correlation_matrix),
+  y = rownames(correlation_matrix),
+  z = correlation_matrix,
+  type = "heatmap",
+  colors = "RdBu",
+  reversescale = TRUE,
+  text = correlation_hover,
+  hoverinfo = "text"
+) %>%
+  layout(title = "Module-Module Correlation Matrix") %>%
+  annotate_placeholder(correlation_modules)
+```
+

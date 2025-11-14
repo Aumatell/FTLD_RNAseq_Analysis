@@ -4,6 +4,42 @@ title: "Single cell difference expression analysis"
 
 About this site
 
-```{r}
-1 + 1
+
+```{r cell-type-dea-data}
+cell_type_dea <- load_or_placeholder(
+  option_name = "results_vis.cell_type_dea",
+  pattern = "cell.*type.*dea.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Cluster = rep(paste("Cluster", 1:8), each = 40),
+      Gene = paste0("Gene", seq_len(320)),
+      avg_log2FC = rnorm(320, sd = 0.8),
+      pct_in = runif(320, min = 0, max = 1),
+      pct_out = runif(320, min = 0, max = 1),
+      p_val_adj = p.adjust(runif(320, min = 1e-5, max = 0.5), method = "BH")
+    )
+  }
+)
+```
+
+```{r cell-type-dea-plot}
+render_source_note(cell_type_dea, "cell type DEA")
+plot_ly(
+  cell_type_dea,
+  x = ~avg_log2FC,
+  y = ~-log10(p_val_adj + 1e-12),
+  color = ~Cluster,
+  text = ~paste(
+    "Gene:", Gene,
+    "<br>pct_in:", sprintf("%.1f%%", pct_in * 100),
+    "<br>pct_out:", sprintf("%.1f%%", pct_out * 100)
+  ),
+  type = "scatter",
+  mode = "markers",
+  hovertemplate = "%{text}<extra></extra>"
+) %>%
+  layout(title = "Cell-Type Differential Expression",
+         xaxis = list(title = "Average log2 Fold Change"),
+         yaxis = list(title = "-log10(adj p-value)")) %>%
+  annotate_placeholder(cell_type_dea)
 ```

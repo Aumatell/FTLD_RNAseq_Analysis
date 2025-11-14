@@ -4,6 +4,42 @@ title: "Cell composition correlation with neuropathology"
 
 About this site
 
-```{r}
-1 + 1
+
+```{r cell-prop-corr-data}
+cell_prop_corr <- load_or_placeholder(
+  option_name = "results_vis.cell_prop_corr",
+  pattern = "cell.*prop.*(corr|correlation).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    cell_types <- c("Astrocyte", "Neuron", "Microglia", "Oligodendrocyte", "Endothelial")
+    metrics <- c("Age", "DiseaseDuration", "MMSE", "Module1", "Module2")
+    expand_grid(CellType = cell_types, Metric = metrics) %>%
+      mutate(Correlation = runif(n(), min = -1, max = 1))
+  }
+)
+```
+
+```{r cell-prop-corr-plot}
+render_source_note(cell_prop_corr, "cell proportion correlations")
+cell_prop_corr_wide <- cell_prop_corr %>%
+  tidyr::pivot_wider(names_from = Metric, values_from = Correlation)
+cell_prop_corr_matrix <- cell_prop_corr_wide %>%
+  column_to_rownames("CellType") %>%
+  as.matrix()
+cell_prop_corr_hover <- cell_prop_corr %>%
+  mutate(label = glue::glue("{CellType} vs {Metric}<br>Correlation: {round(Correlation, 2)}")) %>%
+  tidyr::pivot_wider(names_from = Metric, values_from = label) %>%
+  column_to_rownames("CellType") %>%
+  as.matrix()
+plot_ly(
+  x = colnames(cell_prop_corr_matrix),
+  y = rownames(cell_prop_corr_matrix),
+  z = cell_prop_corr_matrix,
+  type = "heatmap",
+  colors = "RdBu",
+  reversescale = TRUE,
+  text = cell_prop_corr_hover,
+  hoverinfo = "text"
+) %>%
+  layout(title = "Correlation of Cell Proportions with Metadata") %>%
+  annotate_placeholder(cell_prop_corr)
 ```

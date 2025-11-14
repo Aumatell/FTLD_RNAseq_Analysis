@@ -4,6 +4,33 @@ title: "Gene modules differences"
 
 About this site
 
-```{r}
-1 + 1
+
+```{r module-diff-data}
+module_diff <- load_or_placeholder(
+  option_name = "results_vis.module_diff",
+  pattern = "module.*(difference|activity).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Module = paste0("Module", seq_len(12)),
+      Group = rep(c("Control", "FTLD"), each = 12),
+      Score = rnorm(24, mean = rep(c(0, 1), each = 12), sd = 0.5)
+    )
+  }
+)
+```
+
+```{r module-diff-plot}
+render_source_note(module_diff, "module differences")
+plot_ly(
+  module_diff,
+  x = ~Module,
+  y = ~Score,
+  color = ~Group,
+  type = "bar"
+) %>%
+  layout(barmode = "group",
+         title = "Module Activity Differences",
+         xaxis = list(title = "Module"),
+         yaxis = list(title = "Score")) %>%
+  annotate_placeholder(module_diff)
 ```

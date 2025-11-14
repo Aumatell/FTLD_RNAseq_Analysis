@@ -2,8 +2,510 @@
 title: "Bulk differencial expression analysis"
 ---
 
-About this site
+Bulk RNA seq differential expression analysis served as a fist step on the exploration of transcriptomic chances across the whole tissue.
+
 
 ```{r}
-1 + 1
+# EDGER on Bulk RNASEQ LRT
+
+library(edgeR)
+library(dplyr)
+library(GO.db)
+library(xlsx)
+
+################################################################################
+# Paths and parameters
+BULK_COUNTS_PATH <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/DATA/TDP.csv"  # Path to bulk RNA-seq count matrix CSV
+CASE_LEGEND <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+OUTPUT_DIRECTORY <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/BULK_DEA/FTLD/TDP_LRT"
+REFERENCE_GROUP <- "Healthy"
+CONDITIONS <- "TDP"  # Same condition(s) you want to test
+
+################################################################################
+
+# Load sample metadata
+case_legend <- read.xlsx(CASE_LEGEND, sheetIndex = 1)
+case_legend$sample.ID <- paste0("X", case_legend$sample.ID)
+case_legend$group_ID <- factor(case_legend$group.ID)
+case_legend$group.ID <- NULL
+
+# Load bulk count data
+bulk_data <- read.csv(BULK_COUNTS_PATH, row.names = 1)
+# Make sure rownames (sample IDs) match those in case_legend
+bulk_data <- t(bulk_data)
+
+# Keep only samples in both case_legend and bulk_data
+common_samples <- intersect(case_legend$sample.ID, rownames(bulk_data))
+case_legend <- case_legend[match(common_samples, case_legend$sample.ID), ]
+bulk_data <- bulk_data[common_samples, ]
+
+# Create output directory
+if (!file.exists(OUTPUT_DIRECTORY)) {
+  dir.create(OUTPUT_DIRECTORY, recursive = TRUE)
+}
+
+# Process each condition (here just one condition "TDP")
+for (condition in CONDITIONS) {
+  
+  condition_folder <- file.path(OUTPUT_DIRECTORY, condition)
+  if (!file.exists(condition_folder)) {
+    dir.create(condition_folder, recursive = TRUE)
+  }
+  
+  tryCatch({
+    # Subset metadata for groups of interest
+    comparison_data <- case_legend[case_legend$group_ID %in% c(REFERENCE_GROUP, condition), ]
+    comparison_data$group_ID <- relevel(factor(comparison_data$group_ID, levels = c(REFERENCE_GROUP, condition)), ref = condition)
+    comparison_data <- comparison_data[order(comparison_data$group_ID), ]
+    
+    # Select bulk samples present in metadata
+    common_ids <- intersect(comparison_data$sample.ID, rownames(bulk_data))
+    bulk_subset <- bulk_data[common_ids, ]
+    bulk_ordered <- bulk_subset[match(comparison_data$sample.ID, rownames(bulk_subset)), ]
+    
+    # Replace missing values with small value (if any)
+    bulk_ordered[is.na(bulk_ordered)] <- 1e-8
+    
+    group <- factor(comparison_data$group_ID)
+    y <- DGEList(counts = t(bulk_ordered), group = group)  # transpose counts
+    
+    # Filter low expression genes
+    keep <- filterByExpr(y, group = group)
+    y <- y[keep, , keep.lib.sizes=FALSE]
+    
+    # Normalize
+    y <- calcNormFactors(y)
+    
+    # Plot average log CPM
+    AveLogCPM <- aveLogCPM(y)
+    y <- normLibSizes(y)
+    
+    # MD plot
+    plot_filename <- file.path(condition_folder, "MD_plot.png")
+    png(file = plot_filename)
+    plotMD(y, column = 1)
+    abline(h = 0, col = "red", lty = 2, lwd = 2)
+    dev.off()
+    
+    # Design matrix
+    design <- model.matrix(~ 0 + group)
+    colnames(design) <- levels(group)
+    
+    # Estimate dispersion
+    y <- estimateDisp(y, design)
+    
+    # Fit model
+    fit <- glmFit(y, design)
+    
+    # Contrast
+    contrast <- makeContrasts(contrasts = paste0(make.names(condition), " - ", make.names(REFERENCE_GROUP)), levels = design)
+    res <- glmLRT(fit, contrast = contrast, coef = 2)
+    
+    # Decide DE
+    is.de <- decideTests(res, adjust.method = "fdr", p.value = 0.05, lfc = 0)
+    
+    # Add adjusted p-values and results
+    results_table <- res$table
+    results_table$adj_pval <- p.adjust(results_table$PValue, method = "fdr")
+    results_table <- cbind(results_table, data.frame(is.de))
+    
+    # Save results
+    write.csv(results_table, file = file.path(condition_folder, "results_adj_bulk.csv"))
+    
+    # Histogram plot of AveLogCPM
+    plot_filename <- file.path(condition_folder, "histogram_plot.png")
+    png(file = plot_filename)
+    hist(AveLogCPM)
+    dev.off()
+    
+    # BCV plot
+    plot_filename <- file.path(condition_folder, "BCV_plot.png")
+    png(file = plot_filename)
+    plotBCV(y)
+    dev.off()
+    
+    # MD plot with DE status (volcano-like)
+    plot_filename <- file.path(condition_folder, "MD_res_plot.png")
+    png(file = plot_filename)
+    plotMD(res, status = is.de)
+    dev.off()
+    
+    # Heatmap top DE genes
+    logCPM <- cpm(y, prior.count = 2, log = TRUE)
+    tr <- glmTreat(fit, contrast = contrast, lfc = log2(1.5))
+    o <- order(tr$table$PValue)
+    top_genes <- head(o, 30)
+    logCPM_top <- logCPM[top_genes, ]
+    
+    plot_filename <- file.path(condition_folder, "Heatmap.png")
+    png(file = plot_filename)
+    coolmap(logCPM_top, margins = c(7, 7), lhei = c(1, 6), lwid = c(1, 3))
+    dev.off()
+    
+  }, error = function(e) {
+    print(paste("Error processing condition:", condition))
+    print(e)
+  })
+}
+
+```
+
+```{r}
+################################################################################
+# NEW LRTFIT
+
+# EDGER on Bulk RNASEQ
+library(edgeR)
+library(dplyr)
+library(GO.db)
+library(xlsx)
+
+BULK_COUNTS_PATH <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/DATA/merged_gene_count_FCX.csv"
+CASE_LEGEND <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/METADATA/Sample_info.txt"
+OUTPUT_DIRECTORY <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/BULK_DEA/NEW_LRT_SVAcorrect/"
+SURROGATE_VARIABLES <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/METADATA/SVA_correcte.csv"
+REFERENCE_GROUP <- "Healthy"
+CONDITIONS <- "TDP"
+
+# Load metadata
+case_legend <- read.delim(CASE_LEGEND, row.names = 1, sep = "\t")
+case_legend$sample.ID <- gsub("-", "\\.", rownames(case_legend))
+case_legend <- case_legend[case_legend$GROUP != "FTLD-TDP-C", ]
+case_legend$GROUP[case_legend$GROUP == "Control"] <- "Healthy"
+case_legend$GROUP[case_legend$GROUP != "Healthy"] <- "TDP"
+case_legend$group_ID <- factor(case_legend$GROUP)
+
+
+# Load surrogate variables 
+surrogate_variables <- read.csv(SURROGATE_VARIABLES, row.names = 1, sep = "\t")
+case_legend$rn <- rownames(case_legend)
+surrogate_variables$rn <- rownames(surrogate_variables)
+
+case_legend <- merge(case_legend, surrogate_variables, by.x = "rn", by.y = "rn")
+case_legend$rn <- NULL
+surrogate_variables$rn <- NULL
+
+# Load bulk 
+bulk_raw <- read.csv(BULK_COUNTS_PATH, row.names = 1)
+bulk_raw <-t(bulk_raw)
+colnames(bulk_raw) <- bulk_raw["GeneName", ]
+bulk_data <- bulk_raw[!(rownames(bulk_raw) %in% c("Chromosome", "Start", "End", "Length", "GeneName", "GeneBiotype")), ]
+rownames(bulk_data) <- gsub("-", ".", rownames(bulk_data))
+
+common_samples <- intersect(case_legend$sample.ID, rownames(bulk_data))
+case_legend <- case_legend[match(common_samples, case_legend$sample.ID), ]
+bulk_data <- bulk_data[common_samples, ]
+rownames(bulk_data) <- common_samples
+colnames_bulk <- colnames(bulk_data)
+rownames_bulk <- rownames(bulk_data)
+bulk_data <- as.data.frame(apply(bulk_data, 2, function(x) as.numeric(trimws(x))))
+
+colnames(bulk_data) <-colnames_bulk
+rownames(bulk_data) <- rownames_bulk
+
+if (!file.exists(OUTPUT_DIRECTORY)) {
+  dir.create(OUTPUT_DIRECTORY, recursive = TRUE)
+}
+
+for (condition in CONDITIONS) {
+  condition_folder <- file.path(OUTPUT_DIRECTORY, condition)
+  if (!file.exists(condition_folder)) {
+    dir.create(condition_folder, recursive = TRUE)
+  }
+
+  tryCatch({
+    comparison_data <- case_legend[case_legend$group_ID %in% c(REFERENCE_GROUP, condition), ]
+    comparison_data$group_ID <- relevel(factor(comparison_data$group_ID, levels = c(REFERENCE_GROUP, condition)), ref = condition)
+    comparison_data <- comparison_data[order(comparison_data$group_ID), ]
+
+    common_ids <- intersect(comparison_data$sample.ID, rownames(bulk_data))
+    bulk_subset <- bulk_data[common_ids, ]
+    bulk_ordered <- bulk_subset[match(comparison_data$sample.ID, rownames(bulk_subset)), ]
+    bulk_ordered[is.na(bulk_ordered)] <- 1e-8
+
+    group <- factor(comparison_data$group_ID)
+    y <- DGEList(counts = t(bulk_ordered), group = group)
+
+    keep <- filterByExpr(y, group = group)
+    y <- y[keep, , keep.lib.sizes = FALSE]
+    y <- calcNormFactors(y)
+    AveLogCPM <- aveLogCPM(y)
+    y <- normLibSizes(y)
+
+    png(file.path(condition_folder, "MD_plot.png"))
+    plotMD(y, column = 1)
+    abline(h = 0, col = "red", lty = 2, lwd = 2)
+    dev.off()
+
+    design <- model.matrix(~ 0 + group + comparison_data$SV1, data = comparison_data)
+    colnames(design) <- c(levels(group),"SV1")
+    y <- estimateDisp(y, design)
+    fit <- glmFit(y, design)
+    contrast <- makeContrasts(contrasts = paste0(make.names(condition), " - ", make.names(REFERENCE_GROUP)), levels = design)
+    res <- glmLRT(fit, contrast = contrast, coef = 2)
+    is.de <- decideTests(res, adjust.method = "fdr", p.value = 0.05, lfc = 0)
+
+    results_table <- res$table
+    results_table$adj_pval <- p.adjust(results_table$PValue, method = "fdr")
+    results_table <- cbind(results_table, data.frame(is.de))
+    write.csv(results_table, file = file.path(condition_folder, "results_adj_bulk.csv"))
+
+    png(file.path(condition_folder, "histogram_plot.png"))
+    hist(AveLogCPM)
+    dev.off()
+
+    png(file.path(condition_folder, "BCV_plot.png"))
+    plotBCV(y)
+    dev.off()
+
+    png(file.path(condition_folder, "MD_res_plot.png"))
+    plotMD(res, status = is.de)
+    dev.off()
+
+  }, error = function(e) {
+    print(paste("Error processing condition:", condition))
+    print(e)
+  })
+}
+
+
+```
+
+```{r}
+################################################################################
+# FTLD C9
+
+# EDGER on Bulk RNASEQ
+library(edgeR)
+library(dplyr)
+library(GO.db)
+library(xlsx)
+
+BULK_COUNTS_PATH <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/DATA/C9orf72.csv"
+CASE_LEGEND <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+OUTPUT_DIRECTORY <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/BULK_DEA/FTLD_C9_sv"
+SURROGATE_VARIABLES <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/SURROGATED_VARIABLES/SV1_C9_HC_QUIM.csv"
+REFERENCE_GROUP <- "Healthy"
+CONDITIONS <- "C9orf72"
+
+# Load metadata
+case_legend <- read.xlsx(CASE_LEGEND, row.names = 1, sheetIndex = 1)
+case_legend$group_ID <- factor(case_legend$group.ID)
+
+# Load surrogate variables 
+surrogate_variables <- read.csv(SURROGATE_VARIABLES, row.names = 1, sep = ",")
+case_legend$rn <- rownames(case_legend)
+rownames(surrogate_variables) <- gsub("long", "", rownames(surrogate_variables))
+surrogate_variables$rn <- rownames(surrogate_variables)
+
+case_legend <- merge(case_legend, surrogate_variables, by.x = "rn", by.y = "rn")
+case_legend$sample.ID <- case_legend$rn 
+surrogate_variables$rn <- NULL
+
+# Load bulk 
+bulk_raw <- read.csv(BULK_COUNTS_PATH, row.names = 1)
+bulk_raw <-t(bulk_raw)
+rownames(bulk_raw) <- gsub("X", "", rownames(bulk_raw))
+colnames(bulk_raw) <- bulk_raw["GeneName", ]
+bulk_data <- bulk_raw[!(rownames(bulk_raw) %in% c("Chromosome", "Start", "End", "Length", "GeneName", "GeneBiotype")), ]
+rownames(bulk_data) <- gsub("-", ".", rownames(bulk_data))
+
+common_samples <- intersect(case_legend$sample.ID, rownames(bulk_data))
+case_legend <- case_legend[match(common_samples, case_legend$sample.ID), ]
+bulk_data <- bulk_data[common_samples, ]
+rownames(bulk_data) <- common_samples
+colnames_bulk <- colnames(bulk_data)
+rownames_bulk <- rownames(bulk_data)
+bulk_data <- as.data.frame(apply(bulk_data, 2, function(x) as.numeric(trimws(x))))
+
+colnames(bulk_data) <-colnames_bulk
+rownames(bulk_data) <- rownames_bulk
+
+if (!file.exists(OUTPUT_DIRECTORY)) {
+  dir.create(OUTPUT_DIRECTORY, recursive = TRUE)
+}
+
+for (condition in CONDITIONS) {
+  condition_folder <- file.path(OUTPUT_DIRECTORY, condition)
+  if (!file.exists(condition_folder)) {
+    dir.create(condition_folder, recursive = TRUE)
+  }
+  
+  tryCatch({
+    comparison_data <- case_legend[case_legend$group_ID %in% c(REFERENCE_GROUP, condition), ]
+    comparison_data$group_ID <- relevel(factor(comparison_data$group_ID, levels = c(REFERENCE_GROUP, condition)), ref = condition)
+    comparison_data <- comparison_data[order(comparison_data$group_ID), ]
+    
+    common_ids <- intersect(comparison_data$sample.ID, rownames(bulk_data))
+    bulk_subset <- bulk_data[common_ids, ]
+    bulk_ordered <- bulk_subset[match(comparison_data$sample.ID, rownames(bulk_subset)), ]
+    bulk_ordered[is.na(bulk_ordered)] <- 1e-8
+    
+    group <- factor(comparison_data$group_ID)
+    y <- DGEList(counts = t(bulk_ordered), group = group)
+    
+    keep <- filterByExpr(y, group = group)
+    y <- y[keep, , keep.lib.sizes = FALSE]
+    y <- calcNormFactors(y)
+    AveLogCPM <- aveLogCPM(y)
+    y <- normLibSizes(y)
+    
+    png(file.path(condition_folder, "MD_plot.png"))
+    plotMD(y, column = 1)
+    abline(h = 0, col = "red", lty = 2, lwd = 2)
+    dev.off()
+    
+    design <- model.matrix(~ 0 + group + comparison_data$SV1, data = comparison_data)
+    colnames(design) <- c(levels(group),"SV1")
+    y <- estimateDisp(y, design)
+    fit <- glmFit(y, design)
+    contrast <- makeContrasts(contrasts = paste0(make.names(condition), " - ", make.names(REFERENCE_GROUP)), levels = design)
+    res <- glmLRT(fit, contrast = contrast, coef = 2)
+    is.de <- decideTests(res, adjust.method = "fdr", p.value = 0.05, lfc = 0)
+    
+    results_table <- res$table
+    results_table$adj_pval <- p.adjust(results_table$PValue, method = "fdr")
+    results_table <- cbind(results_table, data.frame(is.de))
+    write.csv(results_table, file = file.path(condition_folder, "results_adj_bulk.csv"))
+    
+    png(file.path(condition_folder, "histogram_plot.png"))
+    hist(AveLogCPM)
+    dev.off()
+    
+    png(file.path(condition_folder, "BCV_plot.png"))
+    plotBCV(y)
+    dev.off()
+    
+    png(file.path(condition_folder, "MD_res_plot.png"))
+    plotMD(res, status = is.de)
+    dev.off()
+    
+  }, error = function(e) {
+    print(paste("Error processing condition:", condition))
+    print(e)
+  })
+}
+
+```
+
+```{r}
+
+################################################################################
+# Rimmod
+
+# EDGER on Bulk RNASEQ
+library(edgeR)
+library(dplyr)
+library(GO.db)
+library(xlsx)
+
+BULK_COUNTS_PATH <- "/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/RiMod/rnaseq_salmon_results/counts.csv"
+CASE_LEGEND <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RIMOD_BULK/DATA/rimod_ftd_dataset_table_v3.txt"
+OUTPUT_DIRECTORY <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/BULK_DEA/Rimmod_LRT_SV_2/"
+SURROGATE_VARIABLES <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RIMOD_BULK/METADATA/SVA.csv"
+REFERENCE_GROUP <- "Healthy"
+CONDITIONS <- "C9orf72"
+
+# Load metadata
+case_legend <- read.delim(CASE_LEGEND, row.names = 1, sep = "\t")
+case_legend$sample.ID <- rownames(case_legend)
+case_legend <- case_legend[case_legend$DiseaseCode != "FTD-GRN", ]
+case_legend <- case_legend[case_legend$DiseaseCode != "FTD-MAPT", ]
+case_legend$DiseaseCode[case_legend$DiseaseCode == "control"] <- "Healthy"
+case_legend$DiseaseCode[case_legend$DiseaseCode != "Healthy"] <- "C9orf72"
+case_legend$group_ID <- factor(case_legend$DiseaseCode)
+
+
+# Load surrogate variables 
+surrogate_variables <- read.csv(SURROGATE_VARIABLES, row.names = 1, sep = "\t")
+case_legend$rn <- rownames(case_legend)
+surrogate_variables$rn <- rownames(surrogate_variables)
+
+case_legend <- merge(case_legend, surrogate_variables, by.x = "rn", by.y = "rn")
+case_legend$rn <- NULL
+surrogate_variables$rn <- NULL
+
+# Load bulk 
+
+bulk_raw <- read.csv(BULK_COUNTS_PATH, row.names = 1, sep = ",")
+bulk_raw <-t(bulk_raw)
+#colnames(bulk_raw) <- bulk_raw["GeneName", ]
+bulk_data <- bulk_raw[!(rownames(bulk_raw) %in% c("Chromosome", "Start", "End", "Length", "GeneName", "GeneBiotype")), ]
+
+
+common_samples <- intersect(case_legend$sample.ID, rownames(bulk_data))
+case_legend <- case_legend[match(common_samples, case_legend$sample.ID), ]
+bulk_data <- bulk_data[common_samples, ]
+rownames(bulk_data) <- common_samples
+colnames_bulk <- colnames(bulk_data)
+rownames_bulk <- rownames(bulk_data)
+bulk_data <- as.data.frame(apply(bulk_data, 2, function(x) as.numeric(trimws(x))))
+
+colnames(bulk_data) <-colnames_bulk
+rownames(bulk_data) <- rownames_bulk
+
+if (!file.exists(OUTPUT_DIRECTORY)) {
+  dir.create(OUTPUT_DIRECTORY, recursive = TRUE)
+}
+
+for (condition in CONDITIONS) {
+  condition_folder <- file.path(OUTPUT_DIRECTORY, condition)
+  if (!file.exists(condition_folder)) {
+    dir.create(condition_folder, recursive = TRUE)
+  }
+  
+  tryCatch({
+    comparison_data <- case_legend[case_legend$group_ID %in% c(REFERENCE_GROUP, condition), ]
+    comparison_data$group_ID <- relevel(factor(comparison_data$group_ID, levels = c(REFERENCE_GROUP, condition)), ref = condition)
+    comparison_data <- comparison_data[order(comparison_data$group_ID), ]
+    
+    common_ids <- intersect(comparison_data$sample.ID, rownames(bulk_data))
+    bulk_subset <- bulk_data[common_ids, ]
+    bulk_ordered <- bulk_subset[match(comparison_data$sample.ID, rownames(bulk_subset)), ]
+    bulk_ordered[is.na(bulk_ordered)] <- 1e-8
+    
+    group <- factor(comparison_data$group_ID)
+    y <- DGEList(counts = t(bulk_ordered), group = group)
+    
+    keep <- filterByExpr(y, group = group)
+    y <- y[keep, , keep.lib.sizes = FALSE]
+    y <- calcNormFactors(y)
+    AveLogCPM <- aveLogCPM(y)
+    y <- normLibSizes(y)
+    
+    png(file.path(condition_folder, "MD_plot.png"))
+    plotMD(y, column = 1)
+    abline(h = 0, col = "red", lty = 2, lwd = 2)
+    dev.off()
+    
+    design <- model.matrix(~ 0 + group + comparison_data$SV1, data = comparison_data)
+    colnames(design) <- c(levels(group),"SV1")
+    y <- estimateDisp(y, design)
+    fit <- glmFit(y, design)
+    contrast <- makeContrasts(contrasts = paste0(make.names(condition), " - ", make.names(REFERENCE_GROUP)), levels = design)
+    res <- glmLRT(fit, contrast = contrast, coef = 2)
+    is.de <- decideTests(res, adjust.method = "fdr", p.value = 0.05, lfc = 0)
+    
+    results_table <- res$table
+    results_table$adj_pval <- p.adjust(results_table$PValue, method = "fdr")
+    results_table <- cbind(results_table, data.frame(is.de))
+    write.csv(results_table, file = file.path(condition_folder, "results_adj_bulk.csv"))
+    
+    png(file.path(condition_folder, "histogram_plot.png"))
+    hist(AveLogCPM)
+    dev.off()
+    
+    png(file.path(condition_folder, "BCV_plot.png"))
+    plotBCV(y)
+    dev.off()
+    
+    png(file.path(condition_folder, "MD_res_plot.png"))
+    plotMD(res, status = is.de)
+    dev.off()
+    
+  }, error = function(e) {
+    print(paste("Error processing condition:", condition))
+    print(e)
+  })
+}
 ```
