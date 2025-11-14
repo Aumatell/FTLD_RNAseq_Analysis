@@ -1,0 +1,142 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "FTLD_RNAseq_Analysis",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Validation/Sc_validation.html",
+    "href": "Validation/Sc_validation.html",
+    "title": "Validation: Single cell analysis",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Validation/Bulk_validation.html",
+    "href": "Validation/Bulk_validation.html",
+    "title": "Validation: Bulk differencial expression analysis",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Results/Sc_dea_results.html",
+    "href": "Results/Sc_dea_results.html",
+    "title": "Single cell difference expression analysis",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Results/Hdwgcna_corelation.html",
+    "href": "Results/Hdwgcna_corelation.html",
+    "title": "Gene modules correlation with neuropathology markers",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Results/Cell_composition.html",
+    "href": "Results/Cell_composition.html",
+    "title": "Differences in cell composition",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Methods/Sc_dea.html",
+    "href": "Methods/Sc_dea.html",
+    "title": "Single cell differencial expression analysis",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Methods/Bulk_dea.html",
+    "href": "Methods/Bulk_dea.html",
+    "title": "Bulk differencial expression analysis",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Introduction/Introduction.html",
+    "href": "Introduction/Introduction.html",
+    "title": "Introduction",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Introduction/Background.html",
+    "href": "Introduction/Background.html",
+    "title": "Background",
+    "section": "",
+    "text": "FTLD\nC9\nSporadic TDP\nNeuropathologycal markers\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Discussion/Discussion.html",
+    "href": "Discussion/Discussion.html",
+    "title": "Discussion",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Introduction/Cohort.html",
+    "href": "Introduction/Cohort.html",
+    "title": "Cohort",
+    "section": "",
+    "text": "Sant Pau\nC9\nTDP\nValidation datasets:\nRimmod - C9\nPottier -TDP\nSingle cell Reference\nPineda"
+  },
+  {
+    "objectID": "Methods/Bayesprism.html",
+    "href": "Methods/Bayesprism.html",
+    "title": "Bayesprism",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Methods/Hdwgcna.html",
+    "href": "Methods/Hdwgcna.html",
+    "title": "Gene modules",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Results/Bulk_dea_results.html",
+    "href": "Results/Bulk_dea_results.html",
+    "title": "Bulk differencial expression analysis",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Results/Cell_correlation.html",
+    "href": "Results/Cell_correlation.html",
+    "title": "Cell composition correlation with neuropathology",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Results/Hdwgcna_differences.html",
+    "href": "Results/Hdwgcna_differences.html",
+    "title": "Gene modules differences",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Results/Sc_gene_correlation.html",
+    "href": "Results/Sc_gene_correlation.html",
+    "title": "Single cell gene correlation with neuropathology markers",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Validation/Hdwgcna_validation.html",
+    "href": "Validation/Hdwgcna_validation.html",
+    "title": "Validation: Gene modules analysis",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  }
+]

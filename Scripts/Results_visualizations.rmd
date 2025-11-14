@@ -1,0 +1,563 @@
+---
+title: "FTLD Interactive Results"
+author: "Joaquim Aumatell"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r libraries}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(plotly)
+library(purrr)
+library(stringr)
+library(glue)
+library(tibble)
+library(htmltools)
+```
+
+```{r helpers}
+set.seed(123)
+
+allowed_extensions <- c("csv", "tsv", "txt", "rds", "rda", "rdata", "xlsx", "xls")
+
+resolve_result_path <- function(option_name, pattern = NULL) {
+  opt_path <- getOption(option_name)
+  if (!is.null(opt_path) && file.exists(opt_path)) {
+    return(normalizePath(opt_path))
+  }
+  env_name <- toupper(gsub("\\.", "_", option_name))
+  env_path <- Sys.getenv(env_name, unset = "")
+  if (nzchar(env_path) && file.exists(env_path)) {
+    return(normalizePath(env_path))
+  }
+  if (!is.null(pattern)) {
+    matches <- list.files(path = Sys.getenv("RESULTS_VIS_ROOT", unset = "."),
+                          pattern = pattern,
+                          full.names = TRUE,
+                          recursive = TRUE,
+                          ignore.case = TRUE)
+    matches <- matches[tolower(tools::file_ext(matches)) %in% allowed_extensions]
+    if (length(matches) > 0) {
+      return(normalizePath(matches[1]))
+    }
+  }
+  NULL
+}
+
+read_result_file <- function(path) {
+  if (is.null(path)) {
+    return(NULL)
+  }
+  ext <- tolower(tools::file_ext(path))
+  tryCatch({
+    if (ext == "csv") {
+      readr::read_csv(path, show_col_types = FALSE)
+    } else if (ext %in% c("tsv", "txt")) {
+      readr::read_tsv(path, show_col_types = FALSE)
+    } else if (ext == "rds") {
+      readRDS(path)
+    } else if (ext %in% c("rda", "rdata")) {
+      env <- new.env(parent = emptyenv())
+      objs <- load(path, envir = env)
+      if (length(objs) == 0) {
+        NULL
+      } else {
+        env[[objs[1]]]
+      }
+    } else if (ext %in% c("xlsx", "xls")) {
+      if (!requireNamespace("readxl", quietly = TRUE)) {
+        warning("Package 'readxl' is required to import Excel files. Returning NULL so that placeholder data are used instead.")
+        return(NULL)
+      }
+      readxl::read_excel(path)
+    } else {
+      stop("Unsupported file extension: ", ext)
+    }
+  }, error = function(e) {
+    warning("Failed to read data from ", path, ": ", conditionMessage(e))
+    NULL
+  })
+}
+
+load_or_placeholder <- function(option_name, pattern, generator) {
+  path <- resolve_result_path(option_name, pattern)
+  data <- read_result_file(path)
+  if (!is.null(data)) {
+    attr(data, "placeholder") <- FALSE
+    attr(data, "source") <- path
+    return(data)
+  }
+  example <- generator()
+  attr(example, "placeholder") <- TRUE
+  attr(example, "source") <- "placeholder"
+  example
+}
+
+render_source_note <- function(data, description) {
+  placeholder <- isTRUE(attr(data, "placeholder"))
+  source_path <- attr(data, "source")
+  if (placeholder) {
+    htmltools::div(class = "placeholder-note",
+                   htmltools::tags$em(glue::glue("No external {description} file detected; displaying placeholder data.")))
+  } else {
+    htmltools::div(class = "source-note",
+                   htmltools::tags$strong("Source: "),
+                   htmltools::tags$code(source_path))
+  }
+}
+
+annotate_placeholder <- function(plot_obj, data) {
+  if (!isTRUE(attr(data, "placeholder"))) {
+    return(plot_obj)
+  }
+  plot_obj %>% layout(annotations = list(
+    text = "Placeholder example — update the data source to view real results",
+    x = 0.5,
+    y = 1.05,
+    xref = "paper",
+    yref = "paper",
+    showarrow = FALSE,
+    font = list(color = "#cc0000", size = 12)
+  ))
+}
+```
+
+The next sections follow the same numbering as the comprehensive workflow document.
+
+## 0. SVA
+
+Estimate surrogate variables (SVs) for each cohort and visualise their distribution. The expected input is a table with at least `SV1`, `SV2`, and cohort annotations.
+
+```{r sva-data}
+sva_results <- load_or_placeholder(
+  option_name = "results_vis.sva",
+  pattern = "sva.*(scores|results).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Sample = paste0("Sample", seq_len(20)),
+      Cohort = rep(c("C9", "Pottier", "Rimmod", "TDP", "Tau"), each = 4),
+      SV1 = rnorm(20),
+      SV2 = rnorm(20)
+    )
+  }
+)
+```
+
+```{r sva-plot}
+render_source_note(sva_results, "SVA")
+plot_ly(
+  sva_results,
+  x = ~SV1,
+  y = ~SV2,
+  color = ~Cohort,
+  text = ~Sample,
+  type = "scatter",
+  mode = "markers"
+) %>%
+  layout(title = "Surrogate Variable Structure",
+         xaxis = list(title = "SV1"),
+         yaxis = list(title = "SV2")) %>%
+  annotate_placeholder(sva_results)
+```
+
+## 1. Bulk DEA
+
+Interactive volcano plot summarising differential expression results from bulk RNA-seq analyses.
+
+```{r bulk-dea-data}
+bulk_dea <- load_or_placeholder(
+  option_name = "results_vis.bulk_dea",
+  pattern = "bulk.*dea.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Gene = paste0("Gene", seq_len(300)),
+      logFC = rnorm(300, sd = 1.2),
+      pvalue = runif(300, min = 1e-6, max = 0.5),
+      Comparison = sample(c("C9 vs Control", "TDP vs Control", "Tau vs Control"), 300, replace = TRUE)
+    ) %>%
+      mutate(adj.P.Val = p.adjust(pvalue, method = "BH"),
+             negLogP = -log10(pvalue))
+  }
+)
+```
+
+```{r bulk-dea-plot}
+render_source_note(bulk_dea, "bulk DEA")
+plot_ly(
+  bulk_dea,
+  x = ~logFC,
+  y = ~negLogP,
+  color = ~Comparison,
+  text = ~paste("Gene:", Gene, "<br>adj.P.Val:", signif(adj.P.Val, 3)),
+  type = "scatter",
+  mode = "markers",
+  hovertemplate = "%{text}<extra></extra>"
+) %>%
+  layout(title = "Bulk Differential Expression Volcano",
+         xaxis = list(title = "log2 Fold Change"),
+         yaxis = list(title = "-log10(p-value)")) %>%
+  annotate_placeholder(bulk_dea)
+```
+
+## 2. BayesPrism
+
+View cell-type composition estimates from the BayesPrism deconvolution output.
+
+```{r bayesprism-data}
+bayesprism <- load_or_placeholder(
+  option_name = "results_vis.bayesprism",
+  pattern = "bayesprism.*(composition|proportion).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Sample = rep(paste0("Sample", seq_len(12)), each = 5),
+      CellType = rep(c("Astrocyte", "Neuron", "Microglia", "Oligodendrocyte", "Endothelial"), times = 12),
+      Proportion = runif(60)
+    ) %>%
+      group_by(Sample) %>%
+      mutate(Proportion = Proportion / sum(Proportion)) %>%
+      ungroup()
+  }
+)
+```
+
+```{r bayesprism-plot}
+render_source_note(bayesprism, "BayesPrism")
+plot_ly(
+  bayesprism,
+  x = ~Sample,
+  y = ~Proportion,
+  color = ~CellType,
+  type = "bar"
+) %>%
+  layout(barmode = "stack",
+         title = "Cell-Type Proportions per Sample",
+         xaxis = list(title = "Sample"),
+         yaxis = list(title = "Proportion", range = c(0, 1))) %>%
+  annotate_placeholder(bayesprism)
+```
+
+## 3. Cell Proportion Differences
+
+Compare estimated cell-type proportions between diagnostic groups.
+
+```{r cell-prop-diff-data}
+cell_prop_diff <- load_or_placeholder(
+  option_name = "results_vis.cell_prop_diff",
+  pattern = "cell.*prop.*(diff|difference).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Group = rep(c("Control", "FTLD"), each = 50),
+      CellType = rep(c("Astrocyte", "Neuron", "Microglia", "Oligodendrocyte", "Endothelial"), each = 20),
+      Proportion = rbeta(100, shape1 = 2, shape2 = 5)
+    )
+  }
+)
+```
+
+```{r cell-prop-diff-plot}
+render_source_note(cell_prop_diff, "cell proportion differences")
+plot_ly(
+  cell_prop_diff,
+  x = ~Group,
+  y = ~Proportion,
+  color = ~CellType,
+  type = "box"
+) %>%
+  layout(title = "Cell Proportion Differences by Group",
+         yaxis = list(title = "Estimated Proportion")) %>%
+  annotate_placeholder(cell_prop_diff)
+```
+
+## 4. Cell Proportion Correlations
+
+Heatmap of correlations between cell-type proportions and relevant phenotypes or modules.
+
+```{r cell-prop-corr-data}
+cell_prop_corr <- load_or_placeholder(
+  option_name = "results_vis.cell_prop_corr",
+  pattern = "cell.*prop.*(corr|correlation).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    cell_types <- c("Astrocyte", "Neuron", "Microglia", "Oligodendrocyte", "Endothelial")
+    metrics <- c("Age", "DiseaseDuration", "MMSE", "Module1", "Module2")
+    expand_grid(CellType = cell_types, Metric = metrics) %>%
+      mutate(Correlation = runif(n(), min = -1, max = 1))
+  }
+)
+```
+
+```{r cell-prop-corr-plot}
+render_source_note(cell_prop_corr, "cell proportion correlations")
+cell_prop_corr_wide <- cell_prop_corr %>%
+  tidyr::pivot_wider(names_from = Metric, values_from = Correlation)
+cell_prop_corr_matrix <- cell_prop_corr_wide %>%
+  column_to_rownames("CellType") %>%
+  as.matrix()
+cell_prop_corr_hover <- cell_prop_corr %>%
+  mutate(label = glue::glue("{CellType} vs {Metric}<br>Correlation: {round(Correlation, 2)}")) %>%
+  tidyr::pivot_wider(names_from = Metric, values_from = label) %>%
+  column_to_rownames("CellType") %>%
+  as.matrix()
+plot_ly(
+  x = colnames(cell_prop_corr_matrix),
+  y = rownames(cell_prop_corr_matrix),
+  z = cell_prop_corr_matrix,
+  type = "heatmap",
+  colors = "RdBu",
+  reversescale = TRUE,
+  text = cell_prop_corr_hover,
+  hoverinfo = "text"
+) %>%
+  layout(title = "Correlation of Cell Proportions with Metadata") %>%
+  annotate_placeholder(cell_prop_corr)
+```
+
+## 5. Cell Type DEA
+
+Interactive summary of differential expression performed on single-cell clusters or pseudobulk aggregates.
+
+```{r cell-type-dea-data}
+cell_type_dea <- load_or_placeholder(
+  option_name = "results_vis.cell_type_dea",
+  pattern = "cell.*type.*dea.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Cluster = rep(paste("Cluster", 1:8), each = 40),
+      Gene = paste0("Gene", seq_len(320)),
+      avg_log2FC = rnorm(320, sd = 0.8),
+      pct_in = runif(320, min = 0, max = 1),
+      pct_out = runif(320, min = 0, max = 1),
+      p_val_adj = p.adjust(runif(320, min = 1e-5, max = 0.5), method = "BH")
+    )
+  }
+)
+```
+
+```{r cell-type-dea-plot}
+render_source_note(cell_type_dea, "cell type DEA")
+plot_ly(
+  cell_type_dea,
+  x = ~avg_log2FC,
+  y = ~-log10(p_val_adj + 1e-12),
+  color = ~Cluster,
+  text = ~paste(
+    "Gene:", Gene,
+    "<br>pct_in:", sprintf("%.1f%%", pct_in * 100),
+    "<br>pct_out:", sprintf("%.1f%%", pct_out * 100)
+  ),
+  type = "scatter",
+  mode = "markers",
+  hovertemplate = "%{text}<extra></extra>"
+) %>%
+  layout(title = "Cell-Type Differential Expression",
+         xaxis = list(title = "Average log2 Fold Change"),
+         yaxis = list(title = "-log10(adj p-value)")) %>%
+  annotate_placeholder(cell_type_dea)
+```
+
+## 6. Genes of Interest Correlation
+
+Inspect correlations among curated gene sets or between genes and phenotypic scores.
+
+```{r goi-corr-data}
+goi_corr <- load_or_placeholder(
+  option_name = "results_vis.goi_corr",
+  pattern = "genes.*(interest|goi).*corr.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    genes <- paste0("Gene", LETTERS[1:10])
+    metrics <- paste0("Metric", 1:10)
+    expand_grid(Gene = genes, Metric = metrics) %>%
+      mutate(Correlation = runif(n(), min = -1, max = 1))
+  }
+)
+```
+
+```{r goi-corr-plot}
+render_source_note(goi_corr, "genes of interest correlation")
+goi_wide <- goi_corr %>%
+  tidyr::pivot_wider(names_from = Metric, values_from = Correlation)
+goi_matrix <- goi_wide %>%
+  column_to_rownames("Gene") %>%
+  as.matrix()
+goi_hover <- goi_corr %>%
+  mutate(label = glue::glue("{Gene} vs {Metric}<br>Correlation: {round(Correlation, 2)}")) %>%
+  tidyr::pivot_wider(names_from = Metric, values_from = label) %>%
+  column_to_rownames("Gene") %>%
+  as.matrix()
+plot_ly(
+  x = colnames(goi_matrix),
+  y = rownames(goi_matrix),
+  z = goi_matrix,
+  type = "heatmap",
+  colors = "RdBu",
+  reversescale = TRUE,
+  text = goi_hover,
+  hoverinfo = "text"
+) %>%
+  layout(title = "Genes of Interest Correlation Matrix") %>%
+  annotate_placeholder(goi_corr)
+```
+
+## 7. HDWGCNA
+
+Visualise module eigengene relationships from the HDWGCNA analysis.
+
+```{r hdwgcna-data}
+hdwgcna <- load_or_placeholder(
+  option_name = "results_vis.hdwgcna",
+  pattern = "hdwgcna.*(module|eigengene|trait).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    modules <- paste0("Module", seq_len(8))
+    traits <- c("Diagnosis", "Age", "Sex", "Region", "PMI")
+    expand_grid(Module = modules, Trait = traits) %>%
+      mutate(Correlation = runif(n(), min = -1, max = 1),
+             Pvalue = runif(n(), min = 1e-4, max = 0.2))
+  }
+)
+```
+
+```{r hdwgcna-plot}
+render_source_note(hdwgcna, "HDWGCNA")
+hdwgcna_wide <- hdwgcna %>%
+  tidyr::pivot_wider(names_from = Trait, values_from = Correlation)
+hdwgcna_matrix <- hdwgcna_wide %>%
+  column_to_rownames("Module") %>%
+  as.matrix()
+hdwgcna_hover <- hdwgcna %>%
+  mutate(label = glue::glue("{Module} vs {Trait}<br>Correlation: {round(Correlation, 2)}<br>p-value: {signif(Pvalue, 2)}")) %>%
+  tidyr::pivot_wider(names_from = Trait, values_from = label) %>%
+  column_to_rownames("Module") %>%
+  as.matrix()
+plot_ly(
+  x = colnames(hdwgcna_matrix),
+  y = rownames(hdwgcna_matrix),
+  z = hdwgcna_matrix,
+  type = "heatmap",
+  colors = "RdBu",
+  reversescale = TRUE,
+  text = hdwgcna_hover,
+  hoverinfo = "text"
+) %>%
+  layout(title = "HDWGCNA Module-Trait Relationships") %>%
+  annotate_placeholder(hdwgcna)
+```
+
+## 8. Differences in Modules
+
+Summaries of module activity differences between diagnostic groups.
+
+```{r module-diff-data}
+module_diff <- load_or_placeholder(
+  option_name = "results_vis.module_diff",
+  pattern = "module.*(difference|activity).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Module = paste0("Module", seq_len(12)),
+      Group = rep(c("Control", "FTLD"), each = 12),
+      Score = rnorm(24, mean = rep(c(0, 1), each = 12), sd = 0.5)
+    )
+  }
+)
+```
+
+```{r module-diff-plot}
+render_source_note(module_diff, "module differences")
+plot_ly(
+  module_diff,
+  x = ~Module,
+  y = ~Score,
+  color = ~Group,
+  type = "bar"
+) %>%
+  layout(barmode = "group",
+         title = "Module Activity Differences",
+         xaxis = list(title = "Module"),
+         yaxis = list(title = "Score")) %>%
+  annotate_placeholder(module_diff)
+```
+
+## 9. Correlation Modules
+
+Interactive network-style heatmap of module-module correlations.
+
+```{r correlation-modules-data}
+correlation_modules <- load_or_placeholder(
+  option_name = "results_vis.correlation_modules",
+  pattern = "module.*correlation.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    modules <- paste0("Module", seq_len(10))
+    expand_grid(Source = modules, Target = modules) %>%
+      mutate(Correlation = if_else(Source == Target, 1, runif(n(), min = -1, max = 1)))
+  }
+)
+```
+
+```{r correlation-modules-plot}
+render_source_note(correlation_modules, "module correlations")
+correlation_wide <- correlation_modules %>%
+  tidyr::pivot_wider(names_from = Target, values_from = Correlation)
+correlation_matrix <- correlation_wide %>%
+  column_to_rownames("Source") %>%
+  as.matrix()
+correlation_hover <- correlation_modules %>%
+  mutate(label = glue::glue("{Source} vs {Target}<br>Correlation: {round(Correlation, 2)}")) %>%
+  tidyr::pivot_wider(names_from = Target, values_from = label) %>%
+  column_to_rownames("Source") %>%
+  as.matrix()
+plot_ly(
+  x = colnames(correlation_matrix),
+  y = rownames(correlation_matrix),
+  z = correlation_matrix,
+  type = "heatmap",
+  colors = "RdBu",
+  reversescale = TRUE,
+  text = correlation_hover,
+  hoverinfo = "text"
+) %>%
+  layout(title = "Module-Module Correlation Matrix") %>%
+  annotate_placeholder(correlation_modules)
+```
+
+## 10. Validation
+
+Assess concordance metrics or overlap statistics between datasets in an interactive format.
+
+```{r validation-data}
+validation_results <- load_or_placeholder(
+  option_name = "results_vis.validation",
+  pattern = "validation.*(summary|metrics|overlap).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
+  generator = function() {
+    tibble::tibble(
+      Comparison = rep(c("C9 vs External", "TDP vs External", "Tau vs External"), each = 15),
+      Metric = rep(c("Jaccard", "Overlap", "AUROC"), times = 15),
+      Value = runif(45, min = 0.2, max = 0.95)
+    )
+  }
+)
+```
+
+```{r validation-plot}
+render_source_note(validation_results, "validation")
+plot_ly(
+  validation_results,
+  x = ~Metric,
+  y = ~Value,
+  color = ~Comparison,
+  type = "box"
+) %>%
+  layout(title = "Validation Metrics Across Comparisons",
+         yaxis = list(title = "Metric Value")) %>%
+  annotate_placeholder(validation_results)
+```
+
+## Session Information
+
+```{r session-info}
+sessionInfo()
+```
+

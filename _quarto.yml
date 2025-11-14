@@ -1,21 +1,70 @@
 project:
   type: website
-
+  render:
+    - "*.qmd"
+    - "!Scripts/Complete-analysis.Rmd"
+    - "!Scripts/Results_visualizations.Rmd"
+    
 website:
-  title: "FTLD_RNAseq_Analysis"
+  title: "FTLD Analysis Documentation"
   navbar:
     left:
-      - href: index.qmd
+      - file: index.qmd
         text: Home
-      - about.qmd
+
+      - text: Introduction
+        menu:
+          - file: Introduction/Introduction.qmd
+            text: Introduction
+          - file: Introduction/Background.qmd
+            text: Background
+          - file: Introduction/Cohort.qmd
+            text: Cohort
+
+      - text: Methods
+        menu:
+          - file: Methods/Bulk_dea.qmd
+            text: Bulk DEA
+          - file: Methods/Bayesprism.qmd
+            text: Bayesian Deconvolution
+          - file: Methods/Sc_dea.qmd
+            text: Single-Cell DEA
+          - file: Methods/Hdwgcna.qmd
+            text: Co-expression Networks
+
+      - text: Results
+        menu:
+          - file: Results/Bulk_dea_results.qmd
+            text: Bulk Differential Expression
+          - file: Results/Cell_composition.qmd
+            text: Cell Composition Differences
+          - file: Results/Cell_correlation.qmd
+            text: Cell Composition × Neuropathology
+          - file: Results/Sc_dea_results.qmd
+            text: Single-Cell Differential Expression
+          - file: Results/Sc_gene_correlation.qmd
+            text: Single-Cell Gene Correlation
+          - file: Results/Hdwgcna_differences.qmd
+            text: hdWGCNA Differences
+          - file: Results/Hdwgcna_correlation.qmd
+            text: hdWGCNA Correlation
+
+      - text: Validation
+        menu:
+          - file: Validation/Bulk_validation.qmd
+            text: Bulk Analysis Validation
+          - file: Validation/Sc_validation.qmd
+            text: Single-Cell Validation
+          - file: Validation/Hdwgcna_validation.qmd
+            text: hdWGCNA Validation
+
+      - text: Discussion
+        menu:
+          - file: Discussion/discussion.qmd
+            text: Discussion
 
 format:
   html:
-    theme:
-      - cosmo
-      - brand
-    css: styles.css
+    theme: cosmo
     toc: true
-
-editor: visual
-
+    toc-depth: 3

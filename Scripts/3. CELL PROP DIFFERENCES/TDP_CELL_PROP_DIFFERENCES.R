@@ -1,0 +1,131 @@
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+#################################T.TESTS########################################
+# FILE PATHS
+frequency_file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/FTLD/TDP/theta.state_original.csv"
+metadata_file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+output_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/CELL_PROP/FTLD/TDP/"
+################################################################################
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.xlsx(metadata_file)
+
+freq_cell_types <- read.csv(frequency_file)
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("long", "", x))
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("X", "", x))
+
+merged_data <- merge(data, freq_cell_types, by.x = "sample.ID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+################################################################################
+# Generate needed objects
+
+m_conditions <- unique(merged_data$group.ID)
+m_conditions_nh <- m_conditions[m_conditions != "Healthy"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$group.ID %in% c("Healthy", m_cond), 
+                             c("group.ID", column)]
+  
+  # Ensure group.ID is treated as a factor
+  subset_data$group.ID <- factor(subset_data$group.ID, levels = c("Healthy", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$group.ID == "Healthy"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$group.ID == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$group.ID)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+
+library(ggplot2)
+library(dplyr)
+
+# Seleccionem només els tipus cel·lulars que t’interessen
+cell_types_to_plot <- c("GFAP.pos", "PVALB_PTHLH", "LAMP5_PMEPA1", "PVALB_CEMIP")
+
+plot_data <- merged_data %>%
+  select(sample.ID, group.ID, all_of(cell_types_to_plot)) %>%
+  tidyr::pivot_longer(cols = all_of(cell_types_to_plot),
+                      names_to = "CellType",
+                      values_to = "Proportion")
+
+# Creem el boxplot amb facet_wrap
+p <- ggplot(plot_data, aes(x = group.ID, y = Proportion, fill = group.ID)) +
+  geom_boxplot(alpha = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.7, size = 2) +
+  facet_wrap(~CellType, scales = "free_y", ncol = 2) +   # 2 columnes, 4 plots
+  theme_minimal(base_size = 14) +
+  scale_fill_brewer(palette = "Set2") +
+  ylab("Cell proportion") +
+  xlab("") +
+  theme(legend.position = "none",
+        strip.text = element_text(size = 14, face = "bold"))
+
+# Mostrar
+print(p)
+
+# Opcional: guardar com a PDF/PNG
+ggsave(file.path(output_path, "Boxplots_selected_celltypes.pdf"), p,
+       width = 10, height = 8)

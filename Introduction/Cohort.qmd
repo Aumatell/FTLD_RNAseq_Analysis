@@ -1,0 +1,22 @@
+---
+title: "Cohort"
+---
+
+Sant Pau
+
+C9
+
+TDP
+
+Validation datasets:
+
+Rimmod - C9
+
+Pottier -TDP
+
+Single cell Reference
+
+Pineda
+
+```{}
+```
