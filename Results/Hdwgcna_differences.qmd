@@ -2,10 +2,37 @@
 title: "Gene modules differences"
 ---
 
-About this site
+## C9
 
+### Sant Pau
 
-```{r module-diff-data}
+```{r}
+
+```
+
+### Rimmod
+
+```{r}
+
+```
+
+## TDP
+
+### Sant Pau
+
+### 
+
+```{r}
+
+```
+
+### Pottier
+
+```{r}
+
+```
+
+```{r module-diff-data, eval=FALSE}
 module_diff <- load_or_placeholder(
   option_name = "results_vis.module_diff",
   pattern = "module.*(difference|activity).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
@@ -19,7 +46,7 @@ module_diff <- load_or_placeholder(
 )
 ```
 
-```{r module-diff-plot}
+```{r module-diff-plot, eval=FALSE}
 render_source_note(module_diff, "module differences")
 plot_ly(
   module_diff,

@@ -2,8 +2,11 @@
 title: "Discussion"
 ---
 
-About this site
+## Discussion 1
 
-```{r}
-1 + 1
-```
+## Discussion 2
+
+## Discussion 3
+
+## Discussion 4
+

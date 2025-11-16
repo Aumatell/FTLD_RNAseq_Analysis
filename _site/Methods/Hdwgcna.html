@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Gene modules – FTLD Analysis Documentation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">FTLD Analysis Documentation</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-introduction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Introduction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-introduction">    
+        <li>
+    <a class="dropdown-item" href="../Introduction/Introduction.html">
+ <span class="dropdown-text">Introduction</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Introduction/Background.html">
+ <span class="dropdown-text">Background</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Introduction/Cohort.html">
+ <span class="dropdown-text">Cohort</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-methods" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Methods</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-methods">    
+        <li>
+    <a class="dropdown-item" href="../Methods/Bulk_dea.html">
+ <span class="dropdown-text">Bulk DEA</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Methods/Bayesprism.html">
+ <span class="dropdown-text">Bayesian Deconvolution</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Methods/Sc_dea.html">
+ <span class="dropdown-text">Single-Cell DEA</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Methods/Hdwgcna.html">
+ <span class="dropdown-text">Co-expression Networks</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-results" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Results</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-results">    
+        <li>
+    <a class="dropdown-item" href="../Results/Bulk_dea_results.html">
+ <span class="dropdown-text">Bulk Differential Expression</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Results/Cell_composition.html">
+ <span class="dropdown-text">Cell Composition Differences</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Results/Cell_correlation.html">
+ <span class="dropdown-text">Cell Composition × Neuropathology</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Results/Sc_dea_results.html">
+ <span class="dropdown-text">Single-Cell Differential Expression</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Results/Sc_gene_correlation.html">
+ <span class="dropdown-text">Single-Cell Gene Correlation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Results/Hdwgcna_differences.html">
+ <span class="dropdown-text">hdWGCNA Differences</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Results/Hdwgcna_correlation.qmd">
+ <span class="dropdown-text">hdWGCNA Correlation</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-validation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Validation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-validation">    
+        <li>
+    <a class="dropdown-item" href="../Validation/Bulk_validation.html">
+ <span class="dropdown-text">Bulk Analysis Validation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Validation/Sc_validation.html">
+ <span class="dropdown-text">Single-Cell Validation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Validation/Hdwgcna_validation.html">
+ <span class="dropdown-text">hdWGCNA Validation</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-discussion" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Discussion</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-discussion">    
+        <li>
+    <a class="dropdown-item" href="../Discussion/Discussion.html">
+ <span class="dropdown-text">Discussion</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-references" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">References</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-references">    
+        <li>
+    <a class="dropdown-item" href="../References/References.html">
+ <span class="dropdown-text">References</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#high-dimensional-weighted-gene-co-expression-network-analysis-hdwgcna-rationale-construction-and-analytical-goals" id="toc-high-dimensional-weighted-gene-co-expression-network-analysis-hdwgcna-rationale-construction-and-analytical-goals" class="nav-link active" data-scroll-target="#high-dimensional-weighted-gene-co-expression-network-analysis-hdwgcna-rationale-construction-and-analytical-goals"><strong>High-Dimensional Weighted Gene Co-Expression Network Analysis (hdWGCNA): Rationale, Construction, and Analytical Goals</strong></a>
+  <ul class="collapse">
+  <li><a href="#rationale" id="toc-rationale" class="nav-link" data-scroll-target="#rationale"><strong>Rationale</strong></a></li>
+  <li><a href="#analytical-strategy" id="toc-analytical-strategy" class="nav-link" data-scroll-target="#analytical-strategy"><strong>Analytical Strategy</strong></a>
+  <ul class="collapse">
+  <li><a href="#input-data-cell-state-pseudobulk-matrices" id="toc-input-data-cell-state-pseudobulk-matrices" class="nav-link" data-scroll-target="#input-data-cell-state-pseudobulk-matrices"><strong>1. Input Data: Cell-State Pseudobulk Matrices</strong></a></li>
+  <li><a href="#network-construction-and-soft-thresholding" id="toc-network-construction-and-soft-thresholding" class="nav-link" data-scroll-target="#network-construction-and-soft-thresholding"><strong>2. Network Construction and Soft-Thresholding</strong></a></li>
+  <li><a href="#topological-overlap-matrix-tom-and-module-detection" id="toc-topological-overlap-matrix-tom-and-module-detection" class="nav-link" data-scroll-target="#topological-overlap-matrix-tom-and-module-detection"><strong>3. Topological Overlap Matrix (TOM) and Module Detection</strong></a></li>
+  <li><a href="#module-eigengenes-and-association-with-disease" id="toc-module-eigengenes-and-association-with-disease" class="nav-link" data-scroll-target="#module-eigengenes-and-association-with-disease"><strong>4. Module Eigengenes and Association With Disease</strong></a></li>
+  <li><a href="#hub-gene-identification" id="toc-hub-gene-identification" class="nav-link" data-scroll-target="#hub-gene-identification"><strong>5. Hub Gene Identification</strong></a></li>
+  <li><a href="#functional-enrichment-analysis" id="toc-functional-enrichment-analysis" class="nav-link" data-scroll-target="#functional-enrichment-analysis"><strong>6. Functional Enrichment Analysis</strong></a></li>
+  <li><a href="#cross-cohort-module-validation" id="toc-cross-cohort-module-validation" class="nav-link" data-scroll-target="#cross-cohort-module-validation"><strong>7. Cross-Cohort Module Validation</strong></a></li>
+  </ul></li>
+  <li><a href="#analytical-goals-of-the-hdwgcna-component" id="toc-analytical-goals-of-the-hdwgcna-component" class="nav-link" data-scroll-target="#analytical-goals-of-the-hdwgcna-component"><strong>Analytical Goals of the hdWGCNA Component</strong></a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Gene modules</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="high-dimensional-weighted-gene-co-expression-network-analysis-hdwgcna-rationale-construction-and-analytical-goals" class="level1">
+<h1><strong>High-Dimensional Weighted Gene Co-Expression Network Analysis (hdWGCNA): Rationale, Construction, and Analytical Goals</strong></h1>
+<section id="rationale" class="level2">
+<h2 class="anchored" data-anchor-id="rationale"><strong>Rationale</strong></h2>
+<p>While differential expression identifies gene-level changes associated with FTLD, it does not capture the higher-order organization of transcriptional programs or the coordinated dysregulation of functional gene networks. Neurodegenerative diseases—including FTLD-C9 and FTLD-TDP—are characterized by complex regulatory alterations affecting synaptic systems, glial and immune reactivity, metabolic rewiring, and RNA-processing machinery. These processes are best understood at the <strong>module</strong> (network) level rather than through isolated transcripts.</p>
+<p>To resolve network-level biology at <strong>cell-state resolution</strong>, we applied <strong>hdWGCNA</strong>, a scalable adaptation of weighted gene co-expression network analysis (WGCNA) optimized for single-cell and pseudobulk data. By applying hdWGCNA to BayesPrism-derived expression matrices, we reconstructed <strong>cell-state–specific co-expression networks</strong>, enabling detection of modules associated with disease status, neuropathological markers, and lineage-specific vulnerability.</p>
+</section>
+<section id="analytical-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="analytical-strategy"><strong>Analytical Strategy</strong></h2>
+<section id="input-data-cell-state-pseudobulk-matrices" class="level3">
+<h3 class="anchored" data-anchor-id="input-data-cell-state-pseudobulk-matrices"><strong>1. Input Data: Cell-State Pseudobulk Matrices</strong></h3>
+<p>For each cohort (Sant Pau FTLD-C9, Sant Pau FTLD-TDP, Menden et al., Pottier et al.), hdWGCNA was performed <strong>independently for every cell state</strong> inferred by BayesPrism.</p>
+<p>The input matrices consisted of:</p>
+<ul>
+<li><p>log2-transformed counts per million (logCPM),</p></li>
+<li><p>gene expression estimates for each sample within each cell state,</p></li>
+<li><p>only genes expressed in at least <strong>5% of samples</strong> in that state (to reduce network noise and ensure connectivity).</p></li>
+</ul>
+<p>Each cell state was stored as a <strong>pseudobulk Seurat object</strong>, enabling hdWGCNA’s native functions for network construction and visualization.</p>
+</section>
+<section id="network-construction-and-soft-thresholding" class="level3">
+<h3 class="anchored" data-anchor-id="network-construction-and-soft-thresholding"><strong>2. Network Construction and Soft-Thresholding</strong></h3>
+<p>Following standard WGCNA principles, hdWGCNA constructs networks that approximate scale-free topology. For each cell state:</p>
+<ol type="1">
+<li><strong>Soft-thresholding power (β)</strong> was selected using the scale-free topology criterion (pickSoftThreshold), ensuring:</li>
+</ol>
+<pre><code>-   high scale-free fit index,
+
+-   sufficient mean connectivity,
+
+-   biologically interpretable network structure.</code></pre>
+<ol start="2" type="1">
+<li>An <strong>unsigned network</strong> was used for all analyses, allowing detection of both positively and negatively co-expressed gene relationships.</li>
+</ol>
+</section>
+<section id="topological-overlap-matrix-tom-and-module-detection" class="level3">
+<h3 class="anchored" data-anchor-id="topological-overlap-matrix-tom-and-module-detection"><strong>3. Topological Overlap Matrix (TOM) and Module Detection</strong></h3>
+<p>For each cell state:</p>
+<ul>
+<li><p>A <strong>topological overlap matrix</strong> quantified shared connectivity between genes.</p></li>
+<li><p>Hierarchical clustering of TOM dissimilarity produced dendrograms representing gene trees.</p></li>
+<li><p>Modules were identified using <strong>dynamic tree cutting</strong> with a merge height threshold of <strong>0.15</strong>, enabling detection of:</p>
+<ul>
+<li><p>fine-grained modules in highly heterogeneous states,</p></li>
+<li><p>large modules in transcriptionally stable lineages.</p></li>
+</ul></li>
+</ul>
+<p>Each module received a unique color annotation.</p>
+</section>
+<section id="module-eigengenes-and-association-with-disease" class="level3">
+<h3 class="anchored" data-anchor-id="module-eigengenes-and-association-with-disease"><strong>4. Module Eigengenes and Association With Disease</strong></h3>
+<p>A <strong>module eigengene (ME)</strong>—the first principal component summarizing module expression—was computed for each module.</p>
+<p>For each cell state and each module:</p>
+<ul>
+<li>MEs were compared between <strong>FTLD-C9</strong> or <strong>FTLD-TDP</strong> and controls to identify <strong>disease-associated modules</strong> using linear models.</li>
+</ul>
+<pre><code>MEs were correlated (Spearman) with:
+
+-   **neuropathological markers** (ACSL3, lncRNAs, RNA foci sense/antisense, polyGA, polyGP, polyGR, pTDP-43, STMN2)
+
+-   **diagnostic group**
+
+-   **cell-state proportions**.</code></pre>
+<p>This yielded <strong>marker-associated modules</strong>, capturing functional programs linked to pathological burden.</p>
+<p>Modules were ranked by:</p>
+<ul>
+<li><p>correlation magnitude,</p></li>
+<li><p>p-value,</p></li>
+<li><p>biological coherence,</p></li>
+<li><p>number of hub genes.</p></li>
+</ul>
+</section>
+<section id="hub-gene-identification" class="level3">
+<h3 class="anchored" data-anchor-id="hub-gene-identification"><strong>5. Hub Gene Identification</strong></h3>
+<p>Hub genes for each module were identified using:</p>
+<ul>
+<li><p><strong>kME (module membership)</strong>,</p></li>
+<li><p>correlation of each gene with the corresponding eigengene.</p></li>
+</ul>
+<p>Genes with <strong>kME ≥ 0.90</strong> were classified as high-confidence hub genes.<br>
+These anchors define the regulatory core of each transcriptional module.</p>
+</section>
+<section id="functional-enrichment-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="functional-enrichment-analysis"><strong>6. Functional Enrichment Analysis</strong></h3>
+<p>For each significantly disease-associated module:</p>
+<ul>
+<li>Gene Ontology enrichment was performed using <strong>Metascape</strong>, restricted to:</li>
+</ul>
+<pre><code>-   Biological Process
+
+-   Molecular Function
+
+-    Cellular Component</code></pre>
+<p>Background sets were defined as:</p>
+<ul>
+<li>All genes expressed in that cell state (from Pineda et al.&nbsp;reference).</li>
+</ul>
+<p>This ensured biologically appropriate enrichment interpretations.</p>
+<p>Enrichment pinpointed:</p>
+<ul>
+<li><p>synaptic processes,</p></li>
+<li><p>immune and inflammatory pathways,</p></li>
+<li><p>RNA metabolism,</p></li>
+<li><p>apoptotic signaling,</p></li>
+<li><p>vascular remodeling,</p></li>
+<li><p>glial activation states.</p></li>
+</ul>
+</section>
+<section id="cross-cohort-module-validation" class="level3">
+<h3 class="anchored" data-anchor-id="cross-cohort-module-validation"><strong>7. Cross-Cohort Module Validation</strong></h3>
+<p>For module validation:</p>
+<ul>
+<li><p>Gene lists from modules identified in Sant Pau cohorts were compared with those obtained from <strong>Menden et al.</strong> (for FTLD-C9) or <strong>Pottier et al.</strong> (for FTLD-TDP).</p>
+<p>Overlap statistics were computed using:</p>
+<ul>
+<li><p><strong>GeneOverlap tests</strong>,</p></li>
+<li><p><strong>Jaccard indices</strong>,</p></li>
+<li><p>directionality of eigengene changes.</p></li>
+</ul></li>
+</ul>
+<p>A module was considered <strong>validated</strong> if:</p>
+<ul>
+<li><p>it showed significant gene overlap (p &lt; 0.05), and</p></li>
+<li><p>the eigengene change direction matched between cohorts.</p></li>
+</ul>
+</section>
+</section>
+<section id="analytical-goals-of-the-hdwgcna-component" class="level2">
+<h2 class="anchored" data-anchor-id="analytical-goals-of-the-hdwgcna-component"><strong>Analytical Goals of the hdWGCNA Component</strong></h2>
+<p>The hdWGCNA pipeline was designed to:</p>
+<ol type="1">
+<li><p><strong>Identify cell-state–specific transcriptional modules</strong> that distinguish FTLD-C9, FTLD-TDP, and healthy cortex.</p></li>
+<li><p><strong>Reveal convergent and divergent network-level changes</strong> between genetic and sporadic FTLD subtypes.</p></li>
+<li><p><strong>Map disease-associated pathways</strong> (synaptic signaling, immune activation, metabolic programs) to their cellular origins.</p></li>
+<li><p><strong>Integrate pathology burden</strong> (e.g., pTDP-43, STMN2 loss, DPR accumulation, RNA foci density) with module activities.</p></li>
+<li><p><strong>Detect hub genes</strong> representing potential mechanistic drivers or biomarkers.</p></li>
+<li><p><strong>Validate transcriptional networks</strong> across independent external datasets.</p></li>
+<li><p>Provide a <strong>systems-level framework</strong> for interpreting FTLD pathophysiology beyond individual DEGs.</p></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># single-cell analysis package</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plotting and data science packages</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cowplot)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># co-expression network analysis packages:</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WGCNA)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hdWGCNA)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># paralel processing</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fs)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future.apply)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Configurar sessio</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(multisession, <span class="at">workers =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_cowplot</span>())</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">enableWGCNAThreads</span>(<span class="at">nThreads =</span> <span class="dv">8</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Directori d'entrada i sortida</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>input_dir <span class="ot">&lt;-</span> <span class="st">"/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/25_09/FC/Rimod_C9/CELL STATE/"</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>output_dir <span class="ot">&lt;-</span> <span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/Rimod/CS/"</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir_exists</span>(output_dir)) <span class="fu">dir_create</span>(output_dir)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>csv_files <span class="ot">&lt;-</span> <span class="fu">dir_ls</span>(input_dir, <span class="at">glob =</span> <span class="st">"*.csv"</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>WGCNA_pseudobulk <span class="ot">&lt;-</span> <span class="cf">function</span>(file) {</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Obtenir el nom base de l'arxiu sense extensió</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    sample_name <span class="ot">&lt;-</span> <span class="fu">path_ext_remove</span>(<span class="fu">path_file</span>(file))</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    sample_output_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(output_dir, sample_name)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir_exists</span>(sample_output_dir)) <span class="fu">dir_create</span>(sample_output_dir)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"Processing sample: "</span>, sample_name)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Carregar dades en format CSV</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    sc_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(file, <span class="at">row.names =</span> <span class="dv">1</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convertir a objecte Seurat</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> <span class="fu">CreateSeuratObject</span>(<span class="at">counts =</span> <span class="fu">t</span>(sc_data))</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> SeuratObject<span class="sc">::</span><span class="fu">UpdateSeuratObject</span>(seurat_obj)</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    seurat_obj<span class="sc">@</span>meta.data<span class="sc">$</span>Sample <span class="ot">&lt;-</span> <span class="fu">rownames</span>(sc_data)</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    seurat_obj<span class="sc">@</span>meta.data<span class="sc">$</span>cell_type <span class="ot">&lt;-</span> sample_name</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> <span class="fu">SetupForWGCNA</span>(</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>      seurat_obj,</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">gene_select =</span> <span class="st">"fraction"</span>,</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">fraction =</span> <span class="fl">0.05</span>,</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>      <span class="at">wgcna_name =</span> <span class="st">"pseudobulk"</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"Selected genes: "</span>, <span class="fu">length</span>(<span class="fu">GetWGCNAGenes</span>(seurat_obj)))</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># log2CPM normalization</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    cpm <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">apply</span>(sc_data, <span class="dv">1</span>, <span class="cf">function</span>(x) {</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>      y <span class="ot">&lt;-</span> x <span class="sc">/</span> <span class="fu">sum</span>(x) <span class="sc">*</span> <span class="fl">1e6</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>      <span class="fu">log2</span>(y <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>    }))</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> <span class="fu">SetDatExpr</span>(seurat_obj, <span class="at">mat =</span> cpm)</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>    seurat_obj<span class="sc">@</span>assays<span class="sc">$</span>RNA<span class="sc">$</span>data <span class="ot">&lt;-</span> <span class="fu">t</span>(cpm)</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Soft thresholding</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> <span class="fu">TestSoftPowers</span>(seurat_obj)</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save power plot</span></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">png</span>(<span class="fu">file.path</span>(sample_output_dir, <span class="st">"soft_power.png"</span>), <span class="at">width =</span> <span class="dv">1000</span>, <span class="at">height =</span> <span class="dv">800</span>)</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>    <span class="fu">PlotSoftPowers</span>(seurat_obj)</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct network</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> <span class="fu">ConstructNetwork</span>(</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>      seurat_obj,</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>      <span class="at">tom_name =</span> <span class="st">"pseudobulk"</span>,</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>      <span class="at">overwrite_tom =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>      <span class="at">mergeCutHeight =</span> <span class="fl">0.25</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Dendrogram</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">png</span>(<span class="fu">file.path</span>(sample_output_dir, <span class="st">"dendrogram.png"</span>), <span class="at">width =</span> <span class="dv">1000</span>, <span class="at">height =</span> <span class="dv">800</span>)</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>    <span class="fu">PlotDendrogram</span>(seurat_obj, <span class="at">main =</span> <span class="st">"pseudobulk dendrogram"</span>)</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Eigengenes and connectivity</span></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> <span class="fu">ModuleEigengenes</span>(seurat_obj, <span class="at">npcs =</span> <span class="dv">2</span>)</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> <span class="fu">ModuleConnectivity</span>(seurat_obj)</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>    <span class="co"># DotPlot of MEs</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>    MEs <span class="ot">&lt;-</span> <span class="fu">GetMEs</span>(seurat_obj)</span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>    mods <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">colnames</span>(MEs), <span class="st">"grey"</span>)</span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>    meta <span class="ot">&lt;-</span> seurat_obj<span class="sc">@</span>meta.data</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>    seurat_obj<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(meta, MEs)</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>    p_dot <span class="ot">&lt;-</span> <span class="fu">DotPlot</span>(seurat_obj, <span class="at">features =</span> mods, <span class="at">group.by =</span> <span class="st">"cell_type"</span>) <span class="sc">+</span></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>      <span class="fu">RotatedAxis</span>() <span class="sc">+</span></span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_color_gradient</span>(<span class="at">high =</span> <span class="st">"red"</span>, <span class="at">low =</span> <span class="st">"grey95"</span>) <span class="sc">+</span></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">""</span>)</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>    <span class="fu">png</span>(<span class="fu">file.path</span>(sample_output_dir, <span class="st">"dotplot_MEs.png"</span>), <span class="at">width =</span> <span class="dv">1000</span>, <span class="at">height =</span> <span class="dv">800</span>)</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(p_dot)</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reset metadata</span></span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>    seurat_obj<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> meta</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>    <span class="co"># UMAP</span></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>    seurat_obj <span class="ot">&lt;-</span> <span class="fu">RunModuleUMAP</span>(</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>      seurat_obj,</span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>      <span class="at">n_hubs =</span> <span class="dv">5</span>,</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>      <span class="at">n_neighbors =</span> <span class="dv">10</span>,</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>      <span class="at">min_dist =</span> <span class="fl">0.4</span>,</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>      <span class="at">spread =</span> <span class="dv">3</span>,</span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>      <span class="at">supervised =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>      <span class="at">target_weight =</span> <span class="fl">0.3</span></span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>    umap_df <span class="ot">&lt;-</span> <span class="fu">GetModuleUMAP</span>(seurat_obj)</span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>    centroid_df <span class="ot">&lt;-</span> umap_df <span class="sc">%&gt;%</span></span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">group_by</span>(module) <span class="sc">%&gt;%</span></span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">UMAP1 =</span> <span class="fu">mean</span>(UMAP1), <span class="at">UMAP2 =</span> <span class="fu">mean</span>(UMAP2))</span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>    p_umap <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(umap_df, <span class="fu">aes</span>(<span class="at">x =</span> UMAP1, <span class="at">y =</span> UMAP2)) <span class="sc">+</span></span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_point</span>(<span class="at">color =</span> umap_df<span class="sc">$</span>color, <span class="at">size =</span> umap_df<span class="sc">$</span>kME <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_label</span>(<span class="at">data =</span> centroid_df, <span class="at">label =</span> <span class="fu">as.character</span>(centroid_df<span class="sc">$</span>module),</span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>      <span class="fu">umap_theme</span>() <span class="sc">+</span></span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"black"</span>))</span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">png</span>(<span class="fu">file.path</span>(sample_output_dir, <span class="st">"umap_modules.png"</span>), <span class="at">width =</span> <span class="dv">1000</span>, <span class="at">height =</span> <span class="dv">800</span>)</span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(p_umap)</span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save the final Seurat object</span></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(seurat_obj, <span class="at">file =</span> <span class="fu">file.path</span>(sample_output_dir, <span class="fu">paste0</span>(sample_name, <span class="st">"_seurat.rds"</span>)))</span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"Finished processing: "</span>, sample_name)</span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"⚠️ Error in sample: "</span>, file)</span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">"Details: "</span>, e<span class="sc">$</span>message)</span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a><span class="co">#future_lapply(csv_files, WGCNA_pseudobulk, future.seed = TRUE)</span></span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (file <span class="cf">in</span> csv_files){</span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">WGCNA_pseudobulk</span>(file)</span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hdWGCNA)</span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop over directories</span></span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (CS <span class="cf">in</span> <span class="fu">list.dirs</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_0.25_bo/"</span>, <span class="at">full.names =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">FALSE</span>)) {</span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">try</span>({</span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load Seurat object</span></span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a>    A <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_0.25_bo/"</span>, CS, <span class="st">"/"</span>, CS, <span class="st">"_seurat.rds"</span>))</span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load and prepare metadata</span></span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a>    metadata <span class="ot">&lt;-</span> xlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"</span>, </span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a>                                <span class="at">row.names =</span> <span class="dv">1</span>, <span class="at">sheetIndex =</span> <span class="dv">1</span>)</span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a>    metadata_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(metadata)</span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a>    metadata_df<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">rownames</span>(metadata_df)</span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Harmonize and merge metadata</span></span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>    A<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^X"</span>, <span class="st">""</span>, A<span class="sc">@</span>meta.data<span class="sc">$</span>Sample)</span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>    meta_joined <span class="ot">&lt;-</span> A<span class="sc">@</span>meta.data <span class="sc">%&gt;%</span></span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Sample_clean =</span> <span class="fu">gsub</span>(<span class="st">"^X"</span>, <span class="st">""</span>, Sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(metadata_df, <span class="at">by =</span> <span class="st">"Sample_clean"</span>)</span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>    A<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> meta_joined</span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get Module Eigengenes</span></span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a>    MEs <span class="ot">&lt;-</span> hdWGCNA<span class="sc">::</span><span class="fu">GetMEs</span>(A)</span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Correlation of MEs with group.ID</span></span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>    cor_results <span class="ot">&lt;-</span> <span class="fu">apply</span>(MEs, <span class="dv">2</span>, <span class="cf">function</span>(module) {</span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cor.test</span>(module, <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(A<span class="sc">@</span>meta.data<span class="sc">$</span>group.ID)), </span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>               <span class="at">method =</span> <span class="st">"spearman"</span>, <span class="at">exact =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a>    cor_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a>      <span class="at">module =</span> <span class="fu">names</span>(cor_results),</span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a>      <span class="at">cor =</span> <span class="fu">sapply</span>(cor_results, <span class="cf">function</span>(x) x<span class="sc">$</span>estimate),</span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a>      <span class="at">p.value =</span> <span class="fu">sapply</span>(cor_results, <span class="cf">function</span>(x) x<span class="sc">$</span>p.value)</span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a>    cor_df_sorted <span class="ot">&lt;-</span> cor_df[<span class="fu">order</span>(cor_df<span class="sc">$</span>p.value), ]</span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create output directory if not exists</span></span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a>    outdir <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_0.25_bo/"</span>, CS, <span class="st">"/MODULES/"</span>)</span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dir.create</span>(outdir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Write gene lists for significant modules</span></span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a>    module_colors <span class="ot">&lt;-</span> A<span class="sc">@</span>misc<span class="sc">$</span>pseudobulk<span class="sc">$</span>wgcna_degrees</span>
+<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a>    sig_modules <span class="ot">&lt;-</span> cor_df_sorted<span class="sc">$</span>module[cor_df_sorted<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>]</span>
+<span id="cb4-209"><a href="#cb4-209" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-210"><a href="#cb4-210" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (mod <span class="cf">in</span> sig_modules) {</span>
+<span id="cb4-211"><a href="#cb4-211" aria-hidden="true" tabindex="-1"></a>      genes <span class="ot">&lt;-</span> module_colors<span class="sc">$</span>gene_name[module_colors<span class="sc">$</span>module <span class="sc">==</span> mod]</span>
+<span id="cb4-212"><a href="#cb4-212" aria-hidden="true" tabindex="-1"></a>      <span class="fu">write.csv</span>(genes, <span class="at">file =</span> <span class="fu">paste0</span>(outdir, mod, <span class="st">".csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-213"><a href="#cb4-213" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-214"><a href="#cb4-214" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write.csv</span>(cor_df_sorted, <span class="at">file =</span> <span class="fu">paste0</span>(outdir, <span class="st">"/cor_summary.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-215"><a href="#cb4-215" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Finished: "</span>, CS))</span>
+<span id="cb4-216"><a href="#cb4-216" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-217"><a href="#cb4-217" aria-hidden="true" tabindex="-1"></a>  }) <span class="co"># end try</span></span>
+<span id="cb4-218"><a href="#cb4-218" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hdWGCNA)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (CS <span class="cf">in</span> <span class="fu">list.dirs</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"</span>, <span class="at">full.names =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">FALSE</span>)) {</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">try</span>({</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load Seurat object</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    A <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"</span>, CS, <span class="st">"/"</span>, CS, <span class="st">"_seurat.rds"</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load metadata</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    metadata <span class="ot">&lt;-</span> xlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"</span>, </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>                                <span class="at">row.names =</span> <span class="dv">1</span>, <span class="at">sheetIndex =</span> <span class="dv">1</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    metadata_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(metadata)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    metadata_df<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">rownames</span>(metadata_df)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Harmonize sample names</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    A<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^X"</span>, <span class="st">""</span>, A<span class="sc">@</span>meta.data<span class="sc">$</span>Sample)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    meta_joined <span class="ot">&lt;-</span> A<span class="sc">@</span>meta.data <span class="sc">%&gt;%</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Sample_clean =</span> <span class="fu">gsub</span>(<span class="st">"^X"</span>, <span class="st">""</span>, Sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(metadata_df, <span class="at">by =</span> <span class="st">"Sample_clean"</span>)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    A<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> meta_joined</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get Module Eigengenes</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    MEs <span class="ot">&lt;-</span> hdWGCNA<span class="sc">::</span><span class="fu">GetMEs</span>(A)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure sample order matches between MEs and metadata</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    sample_order <span class="ot">&lt;-</span> <span class="fu">rownames</span>(MEs)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure consistent factor order: Healthy (control), TDP (case)</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    group_vector <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">@</span>meta.data[<span class="fu">match</span>(sample_order, A<span class="sc">@</span>meta.data<span class="sc">$</span>Sample), <span class="st">"group.ID"</span>],</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Healthy"</span>, <span class="st">"TDP"</span>)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply Wilcoxon test and calculate fold change</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    test_results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(MEs), <span class="cf">function</span>(i) {</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>      vec <span class="ot">&lt;-</span> MEs[, i]</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>      group1 <span class="ot">&lt;-</span> vec[group_vector <span class="sc">==</span> <span class="st">"Healthy"</span>]</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>      group2 <span class="ot">&lt;-</span> vec[group_vector <span class="sc">==</span> <span class="st">"TDP"</span>]</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>      fc <span class="ot">&lt;-</span> <span class="fu">mean</span>(group2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">mean</span>(group1, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="co"># TDP - Healthy</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>      test <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(group1, group2)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        <span class="at">module =</span> <span class="fu">colnames</span>(MEs)[i],</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>        <span class="at">fold_change =</span> fc,</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        <span class="at">p.value =</span> test<span class="sc">$</span>p.value</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    cor_df <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(test_results, as.data.frame))</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    cor_df_sorted <span class="ot">&lt;-</span> cor_df[<span class="fu">order</span>(cor_df<span class="sc">$</span>p.value), ]</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create output directory</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    outdir <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"</span>, CS, <span class="st">"/MODULES/"</span>)</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dir.create</span>(outdir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Write gene lists for significant modules</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>    module_colors <span class="ot">&lt;-</span> A<span class="sc">@</span>misc<span class="sc">$</span>pseudobulk<span class="sc">$</span>wgcna_degrees</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>    sig_modules <span class="ot">&lt;-</span> cor_df_sorted<span class="sc">$</span>module[<span class="sc">!</span><span class="fu">is.na</span>(cor_df_sorted<span class="sc">$</span>module)]</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (mod <span class="cf">in</span> sig_modules) {</span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>      genes <span class="ot">&lt;-</span> module_colors<span class="sc">$</span>gene_name[module_colors<span class="sc">$</span>module <span class="sc">==</span> mod]</span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>      <span class="fu">write.csv</span>(genes, <span class="at">file =</span> <span class="fu">paste0</span>(outdir,mod, <span class="st">".csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Write summary and hub genes</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>    Hubs <span class="ot">&lt;-</span> <span class="fu">GetHubGenes</span>(A, <span class="at">n_hubs =</span> <span class="dv">10</span>, <span class="at">mods =</span> <span class="cn">NULL</span>, <span class="at">wgcna_name =</span> <span class="cn">NULL</span>)</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write.csv</span>(cor_df_sorted, <span class="at">file =</span> <span class="fu">paste0</span>(outdir, <span class="st">"/cor_summary.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write.csv</span>(<span class="fu">as.data.frame</span>(Hubs), <span class="at">file =</span> <span class="fu">paste0</span>(outdir, <span class="st">"/hubs.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Finished: "</span>, CS))</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hdWGCNA)</span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop over directories</span></span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (CS <span class="cf">in</span> <span class="fu">list.dirs</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_bo/"</span>, <span class="at">full.names =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">FALSE</span>)) {</span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">try</span>({</span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load Seurat object</span></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>    A <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_bo/"</span>, CS, <span class="st">"/"</span>, CS, <span class="st">"_seurat.rds"</span>))</span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load metadata</span></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>    metadata <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/METADATA/Sample_info.txt"</span>, </span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>                           <span class="at">row.names =</span> <span class="dv">1</span>, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>)</span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>    metadata_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(metadata)</span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>    metadata_df<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"-"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,<span class="fu">rownames</span>(metadata_df))</span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames</span>(metadata_df) <span class="ot">&lt;-</span> metadata_df<span class="sc">$</span>Sample_clean </span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Filter out FTLD-TDP-C and recode group labels</span></span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>    metadata_df <span class="ot">&lt;-</span> metadata_df[metadata_df<span class="sc">$</span>GROUP <span class="sc">!=</span> <span class="st">"FTLD-TDP-C"</span>, ]</span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>    metadata_df<span class="sc">$</span>GROUP <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(metadata_df<span class="sc">$</span>GROUP <span class="sc">==</span> <span class="st">"Control"</span>, <span class="st">"Healthy"</span>, <span class="st">"TDP"</span>)</span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>    samples_to_keep <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">rownames</span>(A<span class="sc">@</span>meta.data), metadata_df<span class="sc">$</span>Sample_clean)</span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>    A <span class="ot">&lt;-</span> <span class="fu">subset</span>(A,<span class="at">cells=</span> samples_to_keep)</span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Harmonize and merge metadata</span></span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a>    A<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> metadata_df</span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get Module Eigengenes</span></span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>    MEs <span class="ot">&lt;-</span> hdWGCNA<span class="sc">::</span><span class="fu">GetMEs</span>(A)</span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>    samples_in_A <span class="ot">&lt;-</span> <span class="fu">rownames</span>(A<span class="sc">@</span>meta.data)</span>
+<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a>    MEs <span class="ot">&lt;-</span> MEs[<span class="fu">rownames</span>(MEs) <span class="sc">%in%</span> samples_in_A, ]</span>
+<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a>    sample_order <span class="ot">&lt;-</span> <span class="fu">rownames</span>(MEs)</span>
+<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure correct group assignment order</span></span>
+<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>    group_vector <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">@</span>meta.data[<span class="fu">match</span>(sample_order, <span class="fu">rownames</span>(A<span class="sc">@</span>meta.data)), <span class="st">"GROUP"</span>],</span>
+<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Healthy"</span>, <span class="st">"TDP"</span>)</span>
+<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply Wilcoxon test and compute fold change</span></span>
+<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a>    test_results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(MEs), <span class="cf">function</span>(i) {</span>
+<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a>      vec <span class="ot">&lt;-</span> MEs[, i]</span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a>      group1 <span class="ot">&lt;-</span> vec[group_vector <span class="sc">==</span> <span class="st">"Healthy"</span>]</span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a>      group2 <span class="ot">&lt;-</span> vec[group_vector <span class="sc">==</span> <span class="st">"TDP"</span>]</span>
+<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a>      fc <span class="ot">&lt;-</span> <span class="fu">mean</span>(group2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">mean</span>(group1, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)  <span class="co"># TDP - Healthy</span></span>
+<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>      test <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(group1, group2)</span>
+<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(</span>
+<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a>        <span class="at">module =</span> <span class="fu">colnames</span>(MEs)[i],</span>
+<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a>        <span class="at">fold_change =</span> fc,</span>
+<span id="cb5-126"><a href="#cb5-126" aria-hidden="true" tabindex="-1"></a>        <span class="at">p.value =</span> test<span class="sc">$</span>p.value</span>
+<span id="cb5-127"><a href="#cb5-127" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compile and sort results</span></span>
+<span id="cb5-131"><a href="#cb5-131" aria-hidden="true" tabindex="-1"></a>    cor_df <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(test_results, as.data.frame))</span>
+<span id="cb5-132"><a href="#cb5-132" aria-hidden="true" tabindex="-1"></a>    cor_df_sorted <span class="ot">&lt;-</span> cor_df[<span class="fu">order</span>(cor_df<span class="sc">$</span>p.value), ]</span>
+<span id="cb5-133"><a href="#cb5-133" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-134"><a href="#cb5-134" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create output directory</span></span>
+<span id="cb5-135"><a href="#cb5-135" aria-hidden="true" tabindex="-1"></a>    outdir <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_bo/"</span>, CS, <span class="st">"/MODULES/"</span>)</span>
+<span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dir.create</span>(outdir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-137"><a href="#cb5-137" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Write gene lists for significant modules</span></span>
+<span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a>    module_colors <span class="ot">&lt;-</span> A<span class="sc">@</span>misc<span class="sc">$</span>pseudobulk<span class="sc">$</span>wgcna_degrees</span>
+<span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a>    sig_modules <span class="ot">&lt;-</span> cor_df_sorted<span class="sc">$</span>module[<span class="sc">!</span><span class="fu">is.na</span>(cor_df_sorted<span class="sc">$</span>module)]</span>
+<span id="cb5-141"><a href="#cb5-141" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-142"><a href="#cb5-142" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (mod <span class="cf">in</span> sig_modules) {</span>
+<span id="cb5-143"><a href="#cb5-143" aria-hidden="true" tabindex="-1"></a>      genes <span class="ot">&lt;-</span> module_colors<span class="sc">$</span>gene_name[module_colors<span class="sc">$</span>module <span class="sc">==</span> mod]</span>
+<span id="cb5-144"><a href="#cb5-144" aria-hidden="true" tabindex="-1"></a>      <span class="fu">write.csv</span>(genes, <span class="at">file =</span> <span class="fu">paste0</span>(outdir, mod, <span class="st">".csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-145"><a href="#cb5-145" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-146"><a href="#cb5-146" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-147"><a href="#cb5-147" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Write summary and hub genes</span></span>
+<span id="cb5-148"><a href="#cb5-148" aria-hidden="true" tabindex="-1"></a>    Hubs <span class="ot">&lt;-</span> <span class="fu">GetHubGenes</span>(A, <span class="at">n_hubs =</span> <span class="dv">10</span>, <span class="at">mods =</span> <span class="cn">NULL</span>, <span class="at">wgcna_name =</span> <span class="cn">NULL</span>)</span>
+<span id="cb5-149"><a href="#cb5-149" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write.csv</span>(cor_df_sorted, <span class="at">file =</span> <span class="fu">paste0</span>(outdir, <span class="st">"/cor_summary.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-150"><a href="#cb5-150" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write.csv</span>(<span class="fu">as.data.frame</span>(Hubs), <span class="at">file =</span> <span class="fu">paste0</span>(outdir, <span class="st">"/hubs.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-151"><a href="#cb5-151" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-152"><a href="#cb5-152" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Finished: "</span>, CS))</span>
+<span id="cb5-153"><a href="#cb5-153" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb5-154"><a href="#cb5-154" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">############################## Correlation MEs VS Covariables ###############################</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hdWGCNA)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>CS <span class="ot">&lt;-</span> <span class="fu">list.dirs</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"</span>, <span class="at">full.names =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">FALSE</span>)[<span class="dv">1</span>]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (CS <span class="cf">in</span> <span class="fu">list.dirs</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"</span>, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">full.names =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">FALSE</span>)) {</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"</span>, CS, <span class="st">"/"</span>, CS, <span class="st">"_seurat.rds"</span>))) {</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tryCatch</span>({</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Processing CS: "</span>, CS)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#      sink(log_file, append = TRUE); cat(Sys.time(), " - Processing: ", CS, "\n"); sink()</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Load Seurat object</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      A <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"</span>, CS, <span class="st">"/"</span>, CS, <span class="st">"_seurat.rds"</span>))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Load metadata</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      metadata <span class="ot">&lt;-</span> xlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"</span>, </span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">row.names =</span> <span class="dv">1</span>, <span class="at">sheetIndex =</span> <span class="dv">1</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>      covariables <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/TRANSFORMED_COVARIABLES/ArcSin/TDP/ArcSin_FTD_TDP_neuropath_SOM"</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Merge metadata</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>      covariables<span class="sc">$</span>X <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"long"</span>, <span class="st">""</span>, covariables<span class="sc">$</span>X)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^X"</span>, <span class="st">""</span>, A<span class="sc">@</span>meta.data<span class="sc">$</span>Sample)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>      metadata_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(metadata)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>      metadata_df<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">rownames</span>(metadata_df)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>      meta_joined <span class="ot">&lt;-</span> A<span class="sc">@</span>meta.data <span class="sc">%&gt;%</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">Sample_clean =</span> <span class="fu">gsub</span>(<span class="st">"^X"</span>, <span class="st">""</span>, Sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">left_join</span>(metadata_df, <span class="at">by =</span> <span class="st">"Sample_clean"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">left_join</span>(covariables, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Sample_clean"</span> <span class="ot">=</span> <span class="st">"X"</span>))</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rownames</span>(meta_joined) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(A)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> meta_joined</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Align rownames</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(<span class="fu">rownames</span>(A<span class="sc">@</span>meta.data) <span class="sc">==</span> <span class="fu">colnames</span>(A))) {</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rownames</span>(A<span class="sc">@</span>meta.data) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(A)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Ensure WGCNA results are present</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="st">"pseudobulk"</span> <span class="sc">%in%</span> <span class="fu">names</span>(A<span class="sc">@</span>misc)) <span class="fu">stop</span>(<span class="st">"WGCNA results not found in @misc$pseudobulk for "</span>, CS)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Remove outlier</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>      outlier <span class="ot">&lt;-</span> <span class="st">"7BLACK"</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (outlier <span class="sc">%in%</span> <span class="fu">colnames</span>(A)) {</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>        A <span class="ot">&lt;-</span> <span class="fu">subset</span>(A, <span class="at">cells =</span> <span class="fu">setdiff</span>(<span class="fu">colnames</span>(A), outlier))</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rownames</span>(A<span class="sc">@</span>meta.data) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(A)</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Ensure numeric trait</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">@</span>meta.data<span class="sc">$</span>TDP43b <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(A<span class="sc">@</span>meta.data<span class="sc">$</span>TDP43b))</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">all</span>(<span class="fu">is.na</span>(A<span class="sc">@</span>meta.data<span class="sc">$</span>TDP43b))) <span class="fu">stop</span>(<span class="st">"TDP43b column is all NA for "</span>, CS)</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Calculate module eigengenes inside Seurat object</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>      MEs <span class="ot">&lt;-</span> hdWGCNA<span class="sc">::</span><span class="fu">GetMEs</span>(A, <span class="at">wgcna_name =</span> <span class="st">"pseudobulk"</span>)</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">@</span>misc<span class="sc">$</span>pseudobulk<span class="sc">$</span>MEs <span class="ot">&lt;-</span> MEs</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Check MEs exist</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">is.null</span>(A<span class="sc">@</span>misc<span class="sc">$</span>pseudobulk<span class="sc">$</span>MEs)) <span class="fu">stop</span>(<span class="st">"No MEs found in object for "</span>, CS)</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Run Module-Trait correlation</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>      cor_results <span class="ot">&lt;-</span> hdWGCNA<span class="sc">::</span><span class="fu">ModuleTraitCorrelation</span>(</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>        <span class="at">seurat_obj =</span> A,</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>        <span class="at">traits =</span> <span class="st">"TDP43b"</span>,</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>        <span class="at">wgcna_name =</span> <span class="st">"pseudobulk"</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Extract correlation dataframe safely</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>      cor_df <span class="ot">&lt;-</span> <span class="fu">GetModuleTraitCorrelation</span>(cor_results)</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Sort correlations</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Extract correlations for 'all_cells'</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>      cor_vec <span class="ot">&lt;-</span> cor_df<span class="sc">$</span>cor<span class="sc">$</span>all_cells</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>      pval_vec <span class="ot">&lt;-</span> cor_df<span class="sc">$</span>pval<span class="sc">$</span>all_cells</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>      fdr_vec <span class="ot">&lt;-</span> cor_df<span class="sc">$</span>fdr<span class="sc">$</span>all_cells</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Convert to data frame</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>      cor_df_clean <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>        <span class="at">module =</span> <span class="fu">names</span>(cor_vec),</span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>        <span class="at">cor =</span> <span class="fu">as.numeric</span>(cor_vec),</span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>        <span class="at">p.value =</span> <span class="fu">as.numeric</span>(pval_vec),</span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>        <span class="at">fdr =</span> <span class="fu">as.numeric</span>(fdr_vec)</span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Sort by absolute correlation and then p-value</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>      <span class="fu">library</span>(dplyr)</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>      cor_df_sorted <span class="ot">&lt;-</span> cor_df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>        <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="fu">abs</span>(cor)), p.value)</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Save results</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>      outdir <span class="ot">&lt;-</span> <span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/EGG_VS_COV/FTLD/TDP/CS_asin_moduletraitcorrelation_tdp43b_tdp/"</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(outdir)) <span class="fu">dir.create</span>(outdir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>      <span class="fu">write.csv</span>(cor_df_sorted, <span class="at">file =</span> <span class="fu">paste0</span>(outdir, CS, <span class="st">".csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)      </span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Cleanup</span></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rm</span>(A, metadata, covariables, </span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>         cor_vec, pval_vec, fdr_vec,</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>         cor_df_sorted, cor_results, cor_df, cor_df_clean); <span class="fu">gc</span>()</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Finished processing CS: "</span>, CS)</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="co">#      sink(log_file, append = TRUE); cat(Sys.time(), " - Finished: ", CS, "\n"); sink()</span></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="co">#      sink(log_file, append = TRUE)</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">Sys.time</span>(), <span class="st">"ERROR in "</span>, CS, <span class="st">": "</span>, <span class="fu">conditionMessage</span>(e), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="co">#      sink()</span></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Error in CS: "</span>, CS, <span class="st">" → "</span>, <span class="fu">conditionMessage</span>(e))</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="do">############################## Correlation MEs VS Covariables ###############################</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="co"># C9 </span></span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="co"># Must change the covariable name for each case.</span></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hdWGCNA)</span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>CS <span class="ot">&lt;-</span> <span class="fu">list.dirs</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/"</span>, <span class="at">full.names =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">FALSE</span>)[<span class="dv">1</span>]</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (CS <span class="cf">in</span> <span class="fu">list.dirs</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/"</span>, </span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>                     <span class="at">full.names =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">FALSE</span>)) {</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/"</span>, CS, <span class="st">"/"</span>, CS, <span class="st">"_seurat.rds"</span>))) {</span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tryCatch</span>({</span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Processing CS: "</span>, CS)</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      sink(log_file, append = TRUE); cat(Sys.time(), " - Processing: ", CS, "\n"); sink()</span></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Load Seurat object</span></span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a>      A <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/"</span>, CS, <span class="st">"/"</span>, CS, <span class="st">"_seurat.rds"</span>))</span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Load metadata</span></span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>      metadata <span class="ot">&lt;-</span> xlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"</span>, </span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">row.names =</span> <span class="dv">1</span>, <span class="at">sheetIndex =</span> <span class="dv">1</span>)</span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>      covariables <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/TRANSFORMED_COVARIABLES/ArcSin/C9/ArcSin_FTD_C9_neuropath_SOM.csv"</span>)</span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Merge metadata</span></span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>      covariables<span class="sc">$</span>X <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"X"</span>, <span class="st">""</span>, covariables<span class="sc">$</span>X)</span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^X"</span>, <span class="st">""</span>, A<span class="sc">@</span>meta.data<span class="sc">$</span>Sample)</span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>      metadata_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(metadata)</span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a>      metadata_df<span class="sc">$</span>Sample_clean <span class="ot">&lt;-</span> <span class="fu">rownames</span>(metadata_df)</span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a>      meta_joined <span class="ot">&lt;-</span> A<span class="sc">@</span>meta.data <span class="sc">%&gt;%</span></span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">Sample_clean =</span> <span class="fu">gsub</span>(<span class="st">"^X"</span>, <span class="st">""</span>, Sample)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a>        <span class="fu">left_join</span>(metadata_df, <span class="at">by =</span> <span class="st">"Sample_clean"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a>        <span class="fu">left_join</span>(covariables, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Sample_clean"</span> <span class="ot">=</span> <span class="st">"X"</span>))</span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rownames</span>(meta_joined) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(A)</span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">@</span>meta.data <span class="ot">&lt;-</span> meta_joined</span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Align rownames</span></span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(<span class="fu">rownames</span>(A<span class="sc">@</span>meta.data) <span class="sc">==</span> <span class="fu">colnames</span>(A))) {</span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rownames</span>(A<span class="sc">@</span>meta.data) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(A)</span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Ensure WGCNA results are present</span></span>
+<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="st">"pseudobulk"</span> <span class="sc">%in%</span> <span class="fu">names</span>(A<span class="sc">@</span>misc)) <span class="fu">stop</span>(<span class="st">"WGCNA results not found in @misc$pseudobulk for "</span>, CS)</span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Remove outlier</span></span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a>      outlier <span class="ot">&lt;-</span> <span class="st">""</span></span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (outlier <span class="sc">%in%</span> <span class="fu">colnames</span>(A)) {</span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a>        A <span class="ot">&lt;-</span> <span class="fu">subset</span>(A, <span class="at">cells =</span> <span class="fu">setdiff</span>(<span class="fu">colnames</span>(A), outlier))</span>
+<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rownames</span>(A<span class="sc">@</span>meta.data) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(A)</span>
+<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Ensure numeric trait</span></span>
+<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a>      <span class="co"># A@meta.data$TDP43b &lt;- as.numeric(as.character(A@meta.data$TDP43b))</span></span>
+<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a>      <span class="co"># if (all(is.na(A@meta.data$TDP43b))) stop("TDP43b column is all NA for ", CS)</span></span>
+<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Calculate module eigengenes inside Seurat object</span></span>
+<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a>      MEs <span class="ot">&lt;-</span> hdWGCNA<span class="sc">::</span><span class="fu">GetMEs</span>(A, <span class="at">wgcna_name =</span> <span class="st">"pseudobulk"</span>)</span>
+<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a>      A<span class="sc">@</span>misc<span class="sc">$</span>pseudobulk<span class="sc">$</span>MEs <span class="ot">&lt;-</span> MEs</span>
+<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Check MEs exist</span></span>
+<span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">is.null</span>(A<span class="sc">@</span>misc<span class="sc">$</span>pseudobulk<span class="sc">$</span>MEs)) <span class="fu">stop</span>(<span class="st">"No MEs found in object for "</span>, CS)</span>
+<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Run Module-Trait correlation</span></span>
+<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a>      cor_results <span class="ot">&lt;-</span> hdWGCNA<span class="sc">::</span><span class="fu">ModuleTraitCorrelation</span>(</span>
+<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a>        <span class="at">seurat_obj =</span> A,</span>
+<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a>        <span class="at">traits =</span> <span class="st">"pTDP43"</span>,</span>
+<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a>        <span class="at">wgcna_name =</span> <span class="st">"pseudobulk"</span></span>
+<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Extract correlation dataframe safely</span></span>
+<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a>      cor_df <span class="ot">&lt;-</span> <span class="fu">GetModuleTraitCorrelation</span>(cor_results)</span>
+<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Sort correlations</span></span>
+<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Extract correlations for 'all_cells'</span></span>
+<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>      cor_vec <span class="ot">&lt;-</span> cor_df<span class="sc">$</span>cor<span class="sc">$</span>all_cells</span>
+<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a>      pval_vec <span class="ot">&lt;-</span> cor_df<span class="sc">$</span>pval<span class="sc">$</span>all_cells</span>
+<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a>      fdr_vec <span class="ot">&lt;-</span> cor_df<span class="sc">$</span>fdr<span class="sc">$</span>all_cells</span>
+<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Convert to data frame</span></span>
+<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a>      cor_df_clean <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a>        <span class="at">module =</span> <span class="fu">names</span>(cor_vec),</span>
+<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a>        <span class="at">cor =</span> <span class="fu">as.numeric</span>(cor_vec),</span>
+<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a>        <span class="at">p.value =</span> <span class="fu">as.numeric</span>(pval_vec),</span>
+<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>        <span class="at">fdr =</span> <span class="fu">as.numeric</span>(fdr_vec)</span>
+<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Sort by absolute correlation and then p-value</span></span>
+<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a>      <span class="fu">library</span>(dplyr)</span>
+<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a>      cor_df_sorted <span class="ot">&lt;-</span> cor_df_clean <span class="sc">%&gt;%</span></span>
+<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a>        <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="fu">abs</span>(cor)), p.value)</span>
+<span id="cb6-216"><a href="#cb6-216" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-217"><a href="#cb6-217" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Save results</span></span>
+<span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a>      outdir <span class="ot">&lt;-</span> <span class="st">"/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/EGG_VS_COV/FTLD/C9/CS_Moduletraitcorrelations_Asin_pTDP43/"</span></span>
+<span id="cb6-219"><a href="#cb6-219" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(outdir)) <span class="fu">dir.create</span>(outdir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a>      <span class="fu">write.csv</span>(cor_df_sorted, <span class="at">file =</span> <span class="fu">paste0</span>(outdir, CS, <span class="st">".csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)      </span>
+<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Cleanup</span></span>
+<span id="cb6-222"><a href="#cb6-222" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rm</span>(A, metadata, covariables, </span>
+<span id="cb6-223"><a href="#cb6-223" aria-hidden="true" tabindex="-1"></a>         cor_vec, pval_vec, fdr_vec,</span>
+<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a>         cor_df_sorted, cor_results, cor_df, cor_df_clean); <span class="fu">gc</span>()</span>
+<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Finished processing CS: "</span>, CS)</span>
+<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      sink(log_file, append = TRUE); cat(Sys.time(), " - Finished: ", CS, "\n"); sink()</span></span>
+<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      sink(log_file, append = TRUE)</span></span>
+<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">Sys.time</span>(), <span class="st">"ERROR in "</span>, CS, <span class="st">": "</span>, <span class="fu">conditionMessage</span>(e), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a>      <span class="co">#      sink()</span></span>
+<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">"Error in CS: "</span>, CS, <span class="st">" → "</span>, <span class="fu">conditionMessage</span>(e))</span>
+<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

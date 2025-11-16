@@ -2,7 +2,7 @@
 title: "Single-cell Gene modules correlation with neuropathology markers"
 ---
 
-```{r}
+```{r eval=FALSE}
 A <-read.delim("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CELL_PROP/FTLD/TDP/significatives_nonparametric_with_means_cs.tsv")
 
 
@@ -177,7 +177,7 @@ for (file in files) {
 }
 ```
 
-```{r correlation-modules-data}
+```{r correlation-modules-data, eval=FALSE}
 correlation_modules <- load_or_placeholder(
   option_name = "results_vis.correlation_modules",
   pattern = "module.*correlation.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
@@ -189,7 +189,7 @@ correlation_modules <- load_or_placeholder(
 )
 ```
 
-```{r correlation-modules-plot}
+```{r correlation-modules-plot, eval=FALSE}
 render_source_note(correlation_modules, "module correlations")
 correlation_wide <- correlation_modules %>%
   tidyr::pivot_wider(names_from = Target, values_from = Correlation)

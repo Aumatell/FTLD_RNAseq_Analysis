@@ -16,7 +16,7 @@ To ensure robust inference across the four cohorts studied, differential express
 
 Raw gene-level count matrices were generated from poly(A)-selected bulk RNA-sequencing of frontal cortex tissue. Analyses were performed independently for:
 
--    **Sant Pau FTLD-C9 vs. controls**
+-   **Sant Pau FTLD-C9 vs. controls**
 
 -   **Sant Pau FTLD-TDP vs. control.**
 
@@ -26,11 +26,13 @@ Raw gene-level count matrices were generated from poly(A)-selected bulk RNA-sequ
 
 To harmonize analyses, each dataset underwent identical preprocessing:
 
--    Removal of low-quality samples or ambiguous diagnostic classifications.
+-   Removal of low-quality samples or ambiguous diagnostic classifications.
 
--    Filtering of genes using **filterByExpr()**, retaining only transcripts with sufficient expression to yield reliable tests.
+-   Filtering of genes using **filterByExpr()**, retaining only transcripts with sufficient expression to yield reliable tests.
 
-    -   Typical retained genes: **\~21k** per cohort
+```         
+-   Typical retained genes: **\~21k** per cohort
+```
 
 -   Construction of **DGEList** objects for each comparison.
 
@@ -38,13 +40,13 @@ To harmonize analyses, each dataset underwent identical preprocessing:
 
 Sequencing depth and composition biases were corrected using:
 
--    **Trimmed Mean of M-values (TMM)** normalization, generating effective library sizes.
+-   **Trimmed Mean of M-values (TMM)** normalization, generating effective library sizes.
 
 -   Conversion to **log2-counts per million (logCPM)** for exploratory diagnostics (PCA, MDS).
 
 To account for biological and technical variability:
 
--    Dispersion estimates were obtained using **estimateDisp()**,
+-   Dispersion estimates were obtained using **estimateDisp()**,
 
 -   Followed by **glmQLFit()** to fit quasi-likelihood negative binomial generalized linear models.
 
@@ -54,9 +56,9 @@ Where available, **surrogate variables (SVs)** estimated from the bulk data were
 
 For each dataset, a design matrix modeled diagnostic group as the primary variable of interest:
 
--    **FTLD-C9 vs. Healthy**
+-   **FTLD-C9 vs. Healthy**
 
--    **FTLD-TDP vs. Healthy**
+-   **FTLD-TDP vs. Healthy**
 
 Controls were defined as the reference level.\
 Contrast vectors were constructed to explicitly test for group differences.\
@@ -67,11 +69,11 @@ This yielded gene-wise quasi-likelihood F-tests or likelihood ratio tests (**glm
 All p-values were adjusted using the **Benjamini–Hochberg FDR** procedure.\
 Genes were considered significantly differentially expressed when:
 
--    **FDR \< 0.05**
+-   **FDR \< 0.05**
 
 For interpretability, the following statistics were extracted:
 
--    Fold change (FC)
+-   Fold change (FC)
 
 -   log2 fold change (logFC)
 
@@ -83,7 +85,7 @@ For interpretability, the following statistics were extracted:
 
 To assess robustness:
 
--    Differential expression results from the Sant Pau FTLD-C9 cohort were compared with the **Menden et al. FTLD-C9 dataset**.
+-   Differential expression results from the Sant Pau FTLD-C9 cohort were compared with the **Menden et al. FTLD-C9 dataset**.
 
 -   FTLD-TDP results were compared to **Pottier et al.**
 
@@ -95,27 +97,27 @@ This approach enabled identification of **cell-type–agnostic signatures** that
 
 The bulk RNA-seq analyses were designed to:
 
-1.   **Identify transcriptional signatures distinguishing FTLD-C9, FTLD-TDP, and healthy controls**, providing a global overview of disease-associated dysregulation.
+1.  **Identify transcriptional signatures distinguishing FTLD-C9, FTLD-TDP, and healthy controls**, providing a global overview of disease-associated dysregulation.
 
-2.   **Establish baseline transcriptomic differences** prior to deconvolution, enabling direct comparison with cell-state–resolved results obtained using BayesPrism.
+2.  **Establish baseline transcriptomic differences** prior to deconvolution, enabling direct comparison with cell-state–resolved results obtained using BayesPrism.
 
-3.   **Serve as a foundation for validation**, enabling cross-cohort consistency checks with large, published datasets (Menden et al., Pottier et al.).
+3.  **Serve as a foundation for validation**, enabling cross-cohort consistency checks with large, published datasets (Menden et al., Pottier et al.).
 
-4.   **Generate disease-relevant gene lists** for downstream functional enrichment, co-expression network analyses (hdWGCNA), and neuropathology correlation analyses.
+4.  **Generate disease-relevant gene lists** for downstream functional enrichment, co-expression network analyses (hdWGCNA), and neuropathology correlation analyses.
 
 5.  **Provide independent evidence for known FTLD mechanisms**, including:
 
-    -    synaptic deficits,
+    -   synaptic deficits,
 
     -   glial and immune activation,
 
     -   metabolic and mitochondrial disruption,
 
-    -    TDP-43 target dysregulation (e.g., **STMN2**, **UNC13A**).
+    -   TDP-43 target dysregulation (e.g., **STMN2**, **UNC13A**).
 
 By integrating these bulk findings with cell-type–resolved analyses, we were able to map global transcriptomic alterations to their cellular origins and characterize convergent and divergent molecular pathways across FTLD-C9 and FTLD-TDP.
 
-```{r}
+```{r eval=FALSE}
 # EDGER on Bulk RNASEQ LRT
 
 library(edgeR)
@@ -260,7 +262,7 @@ for (condition in CONDITIONS) {
 
 ```
 
-```{r}
+```{r, eval=FALSE}
 ################################################################################
 # NEW LRTFIT
 
@@ -381,7 +383,7 @@ for (condition in CONDITIONS) {
 
 ```
 
-```{r}
+```{r eval=FALSE}
 ################################################################################
 # FTLD C9
 
@@ -498,7 +500,7 @@ for (condition in CONDITIONS) {
 
 ```
 
-```{r}
+```{r eval=FALSE}
 
 ################################################################################
 # Rimmod

@@ -60,8 +60,13 @@ website:
 
       - text: Discussion
         menu:
-          - file: Discussion/discussion.qmd
+          - file: Discussion/Discussion.qmd
             text: Discussion
+
+      - text: References
+        menu:
+          - file: References/References.qmd
+            text: References
 
 format:
   html:

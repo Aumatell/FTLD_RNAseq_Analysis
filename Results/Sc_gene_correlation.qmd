@@ -2,10 +2,61 @@
 title: "Single cell gene correlation with neuropathology markers"
 ---
 
-About this site
+## C9
 
+### pTDP43
 
-```{r goi-corr-data}
+```{r}
+
+```
+
+### STMN2
+
+```{r}
+
+```
+
+### fociSENSE
+
+```{r}
+
+```
+
+### fociANTI
+
+```{r}
+
+```
+
+### PolyGP
+
+```{r}
+
+```
+
+### PolyGA
+
+```{r}
+
+```
+
+## TDP
+
+### pTDP43
+
+```{r}
+
+```
+
+### STMN2
+
+```{r}
+
+```
+
+### 
+
+```{r goi-corr-data, eval=FALSE}
 goi_corr <- load_or_placeholder(
   option_name = "results_vis.goi_corr",
   pattern = "genes.*(interest|goi).*corr.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
@@ -18,7 +69,7 @@ goi_corr <- load_or_placeholder(
 )
 ```
 
-```{r goi-corr-plot}
+```{r goi-corr-plot, eval=FALSE}
 render_source_note(goi_corr, "genes of interest correlation")
 goi_wide <- goi_corr %>%
   tidyr::pivot_wider(names_from = Metric, values_from = Correlation)

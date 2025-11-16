@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction – FTLD Analysis Documentation</title>
+<title>Cell composition correlation with neuropathology – FTLD Analysis Documentation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -262,14 +262,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#hypothesis" id="toc-hypothesis" class="nav-link active" data-scroll-target="#hypothesis"><strong>Hypothesis</strong></a></li>
-  <li><a href="#objectives" id="toc-objectives" class="nav-link" data-scroll-target="#objectives"><strong>Objectives</strong></a>
+  <li><a href="#c9-sant-pau" id="toc-c9-sant-pau" class="nav-link active" data-scroll-target="#c9-sant-pau">C9 Sant Pau</a>
   <ul class="collapse">
-  <li><a href="#characterize-cell-typespecific-transcriptional-alterations-in-ftld-c9-and-ftld-tdp" id="toc-characterize-cell-typespecific-transcriptional-alterations-in-ftld-c9-and-ftld-tdp" class="nav-link" data-scroll-target="#characterize-cell-typespecific-transcriptional-alterations-in-ftld-c9-and-ftld-tdp"><strong>1. Characterize cell-type–specific transcriptional alterations in FTLD-C9 and FTLD-TDP</strong></a></li>
-  <li><a href="#quantify-disease-associated-alterations-in-inferred-cell-state-composition" id="toc-quantify-disease-associated-alterations-in-inferred-cell-state-composition" class="nav-link" data-scroll-target="#quantify-disease-associated-alterations-in-inferred-cell-state-composition"><strong>2. Quantify disease-associated alterations in inferred cell-state composition</strong></a></li>
-  <li><a href="#link-transcriptional-changes-and-cell-state-proportions-to-neuropathological-markers" id="toc-link-transcriptional-changes-and-cell-state-proportions-to-neuropathological-markers" class="nav-link" data-scroll-target="#link-transcriptional-changes-and-cell-state-proportions-to-neuropathological-markers"><strong>3. Link transcriptional changes and cell-state proportions to neuropathological markers</strong></a></li>
-  <li><a href="#identify-and-functionally-annotate-cell-statespecific-co-expression-modules" id="toc-identify-and-functionally-annotate-cell-statespecific-co-expression-modules" class="nav-link" data-scroll-target="#identify-and-functionally-annotate-cell-statespecific-co-expression-modules"><strong>4. Identify and functionally annotate cell-state–specific co-expression modules</strong></a></li>
-  <li><a href="#validate-findings-across-two-independent-external-datasets" id="toc-validate-findings-across-two-independent-external-datasets" class="nav-link" data-scroll-target="#validate-findings-across-two-independent-external-datasets"><strong>5. Validate findings across two independent external datasets</strong></a></li>
+  <li><a href="#ptdp43" id="toc-ptdp43" class="nav-link" data-scroll-target="#ptdp43">pTDP43</a></li>
+  <li><a href="#stmn2" id="toc-stmn2" class="nav-link" data-scroll-target="#stmn2">STMN2</a></li>
+  <li><a href="#focisense" id="toc-focisense" class="nav-link" data-scroll-target="#focisense">fociSENSE</a></li>
+  <li><a href="#focianti" id="toc-focianti" class="nav-link" data-scroll-target="#focianti">fociANTI</a></li>
+  <li><a href="#polygp" id="toc-polygp" class="nav-link" data-scroll-target="#polygp">PolyGP</a></li>
+  <li><a href="#polyga" id="toc-polyga" class="nav-link" data-scroll-target="#polyga">PolyGA</a></li>
+  </ul></li>
+  <li><a href="#tdp-sant-pau" id="toc-tdp-sant-pau" class="nav-link" data-scroll-target="#tdp-sant-pau">TDP Sant Pau</a>
+  <ul class="collapse">
+  <li><a href="#ptdp43-1" id="toc-ptdp43-1" class="nav-link" data-scroll-target="#ptdp43-1">pTDP43</a></li>
+  <li><a href="#stmn2-1" id="toc-stmn2-1" class="nav-link" data-scroll-target="#stmn2-1">STMN2</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -279,7 +284,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Introduction</h1>
+<h1 class="title">Cell composition correlation with neuropathology</h1>
 </div>
 
 
@@ -296,63 +301,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Frontotemporal lobar degeneration (FTLD) comprises a heterogeneous group of neurodegenerative disorders marked by progressive impairment in behaviour, language, and executive functions. Among its molecular subtypes, <strong>FTLD with TDP-43 pathology (FTLD-TDP)</strong> and <strong>FTLD caused by C9orf72 hexanucleotide repeat expansions (FTLD-C9)</strong> represent the most frequent forms. Although these subtypes share TDP-43 dysregulation as a pathological hallmark, they differ substantially in their upstream disease mechanisms: <strong>RNA foci and dipeptide repeat (DPR) toxicity</strong> in FTLD-C9 versus <strong>primary TDP-43 mislocalization and aggregation</strong> in sporadic FTLD-TDP.</p>
-<p>Bulk RNA-seq studies have shown broad alterations in synaptic, inflammatory, metabolic, and RNA-processing pathways in FTLD. Yet, bulk tissue obscures the cell-type specificity of these changes—an essential dimension given the layer-specific vulnerability of excitatory neurons, the selective involvement of interneurons, and the diverse responses of astrocytes, microglia, oligodendrocytes, and vascular cells. Recent single-nucleus sequencing studies underscore the importance of <strong>cell-type and cell-state–specific transcriptional programs</strong>, but comprehensive integrative analyses across disease subtypes and neuropathological markers remain lacking.</p>
-<p>The emergence of <strong>Bayesian deconvolution frameworks</strong>, combined with high-resolution snRNA-seq references such as Pineda et al.&nbsp;(Synapse ID: syn51105515), now enables cell-state–resolved inference from bulk data. Such approaches provide an unprecedented opportunity to map FTLD-associated transcriptional dysregulation to specific neuronal and non-neuronal compartments, and to integrate these changes with quantitative neuropathological measures such as <strong>pTDP-43 burden, STMN2 loss, RNA foci density, and DPR pathology</strong>.</p>
-<p>By leveraging four independent bulk RNA-seq cohorts—including two newly generated datasets from Sant Pau and two large external datasets—it becomes possible to identify reproducible, cell-type–specific features of FTLD-C9 and FTLD-TDP, and to uncover convergent and divergent disease mechanisms across subtypes.</p>
-<section id="hypothesis" class="level2">
-<h2 class="anchored" data-anchor-id="hypothesis"><strong>Hypothesis</strong></h2>
-<p>We hypothesized that:</p>
-<ol type="1">
-<li><p><strong>FTLD-C9 and sporadic FTLD-TDP exhibit distinct and cell-type–specific transcriptional alterations</strong>, particularly within excitatory neurons and glial populations, reflecting their divergent upstream mechanisms (repeat-associated toxicity vs.&nbsp;primary TDP-43 dysfunction).</p></li>
-<li><p><strong>Bayesian deconvolution using the Pineda et al.&nbsp;single-nucleus reference</strong> can resolve these subtype-specific differences at both cell type and cell state resolution, revealing transcriptional programs obscured in bulk analyses.</p></li>
-<li><p><strong>Neuropathological markers</strong>—including RNA foci (sense/antisense), dipeptide repeat proteins (polyGA, polyGP, polyGR), ACSL3, lncRNAs, pTDP-43, and STMN2 levels—<strong>correlate with discrete transcriptional signatures within specific cell states</strong>, reflecting coordinated pathological processes rather than global tissue-level effects.</p></li>
-<li><p>These cell-type–specific signatures and their associated co-expression modules are <strong>reproducible across independent external datasets</strong> (Menden et al.&nbsp;and Pottier et al.), supporting their generality as molecular hallmarks of FTLD-C9 and FTLD-TDP.</p></li>
-</ol>
+<section id="c9-sant-pau" class="level2">
+<h2 class="anchored" data-anchor-id="c9-sant-pau">C9 Sant Pau</h2>
+<section id="ptdp43" class="level3">
+<h3 class="anchored" data-anchor-id="ptdp43">pTDP43</h3>
 </section>
-<section id="objectives" class="level2">
-<h2 class="anchored" data-anchor-id="objectives"><strong>Objectives</strong></h2>
-<p>To test these hypotheses, we pursued the following objectives:</p>
-<section id="characterize-cell-typespecific-transcriptional-alterations-in-ftld-c9-and-ftld-tdp" class="level3">
-<h3 class="anchored" data-anchor-id="characterize-cell-typespecific-transcriptional-alterations-in-ftld-c9-and-ftld-tdp"><strong>1. Characterize cell-type–specific transcriptional alterations in FTLD-C9 and FTLD-TDP</strong></h3>
-<ul>
-<li><p>Perform bulk differential gene expression analyses in newly sequenced Sant Pau FTLD-C9 and FTLD-TDP cohorts.</p></li>
-<li><p>Apply BayesPrism deconvolution using the Pineda et al.&nbsp;single-cell reference to derive cell-type– and cell-state–specific expression matrices.</p></li>
-</ul>
+<section id="stmn2" class="level3">
+<h3 class="anchored" data-anchor-id="stmn2">STMN2</h3>
 </section>
-<section id="quantify-disease-associated-alterations-in-inferred-cell-state-composition" class="level3">
-<h3 class="anchored" data-anchor-id="quantify-disease-associated-alterations-in-inferred-cell-state-composition"><strong>2. Quantify disease-associated alterations in inferred cell-state composition</strong></h3>
-<ul>
-<li><p>Compare arcsin-transformed cellular proportions between FTLD cases and healthy controls.</p></li>
-<li><p>Identify specific neuronal, glial, vascular, and immune cell states enriched or depleted in each FTLD subtype.</p></li>
-</ul>
+<section id="focisense" class="level3">
+<h3 class="anchored" data-anchor-id="focisense">fociSENSE</h3>
 </section>
-<section id="link-transcriptional-changes-and-cell-state-proportions-to-neuropathological-markers" class="level3">
-<h3 class="anchored" data-anchor-id="link-transcriptional-changes-and-cell-state-proportions-to-neuropathological-markers"><strong>3. Link transcriptional changes and cell-state proportions to neuropathological markers</strong></h3>
-<ul>
-<li><p>Correlate cell-state proportions and gene expression with ACSL3, lncRNAs, DPR burden (polyGA, polyGP, polyGR), RNA foci, pTDP-43 levels, and STMN2 expression.</p></li>
-<li><p>Determine subtype-specific molecular markers of disease progression and vulnerability.</p></li>
-</ul>
+<section id="focianti" class="level3">
+<h3 class="anchored" data-anchor-id="focianti">fociANTI</h3>
 </section>
-<section id="identify-and-functionally-annotate-cell-statespecific-co-expression-modules" class="level3">
-<h3 class="anchored" data-anchor-id="identify-and-functionally-annotate-cell-statespecific-co-expression-modules"><strong>4. Identify and functionally annotate cell-state–specific co-expression modules</strong></h3>
-<ul>
-<li><p>Construct hdWGCNA networks from deconvolved expression profiles.</p></li>
-<li><p>Identify modules associated with disease status and neuropathological markers.</p></li>
-<li><p>Characterize enriched GO pathways across excitatory, inhibitory, glial, vascular, and immune cell states.</p></li>
-</ul>
+<section id="polygp" class="level3">
+<h3 class="anchored" data-anchor-id="polygp">PolyGP</h3>
 </section>
-<section id="validate-findings-across-two-independent-external-datasets" class="level3">
-<h3 class="anchored" data-anchor-id="validate-findings-across-two-independent-external-datasets"><strong>5. Validate findings across two independent external datasets</strong></h3>
-<ul>
-<li><p>Replicate differential expression, cell-state composition alterations, and module-level changes in the Menden et al.&nbsp;and Pottier et al.&nbsp;cohorts.</p></li>
-<li><p>Assess reproducibility using overlap statistics (Jaccard index, GeneOverlap) and module gene preservation.</p></li>
-</ul>
+<section id="polyga" class="level3">
+<h3 class="anchored" data-anchor-id="polyga">PolyGA</h3>
+<pre><code></code></pre>
+</section>
+</section>
+<section id="tdp-sant-pau" class="level2">
+<h2 class="anchored" data-anchor-id="tdp-sant-pau">TDP Sant Pau</h2>
+<section id="ptdp43-1" class="level3">
+<h3 class="anchored" data-anchor-id="ptdp43-1">pTDP43</h3>
+</section>
+<section id="stmn2-1" class="level3">
+<h3 class="anchored" data-anchor-id="stmn2-1">STMN2</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cell_prop_corr <span class="ot">&lt;-</span> <span class="fu">load_or_placeholder</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">option_name =</span> <span class="st">"results_vis.cell_prop_corr"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="st">"cell.*prop.*(corr|correlation).*</span><span class="sc">\\</span><span class="st">.(csv|tsv|txt|rds|rda|RData|xlsx)$"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">generator =</span> <span class="cf">function</span>() {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    cell_types <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Astrocyte"</span>, <span class="st">"Neuron"</span>, <span class="st">"Microglia"</span>, <span class="st">"Oligodendrocyte"</span>, <span class="st">"Endothelial"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    metrics <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Age"</span>, <span class="st">"DiseaseDuration"</span>, <span class="st">"MMSE"</span>, <span class="st">"Module1"</span>, <span class="st">"Module2"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="at">CellType =</span> cell_types, <span class="at">Metric =</span> metrics) <span class="sc">%&gt;%</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Correlation =</span> <span class="fu">runif</span>(<span class="fu">n</span>(), <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">render_source_note</span>(cell_prop_corr, <span class="st">"cell proportion correlations"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cell_prop_corr_wide <span class="ot">&lt;-</span> cell_prop_corr <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Metric, <span class="at">values_from =</span> Correlation)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>cell_prop_corr_matrix <span class="ot">&lt;-</span> cell_prop_corr_wide <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">"CellType"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>cell_prop_corr_hover <span class="ot">&lt;-</span> cell_prop_corr <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">label =</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"{CellType} vs {Metric}&lt;br&gt;Correlation: {round(Correlation, 2)}"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Metric, <span class="at">values_from =</span> label) <span class="sc">%&gt;%</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">"CellType"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">colnames</span>(cell_prop_corr_matrix),</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">rownames</span>(cell_prop_corr_matrix),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">z =</span> cell_prop_corr_matrix,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"heatmap"</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">colors =</span> <span class="st">"RdBu"</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">reversescale =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">text =</span> cell_prop_corr_hover,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">hoverinfo =</span> <span class="st">"text"</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">title =</span> <span class="st">"Correlation of Cell Proportions with Metadata"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate_placeholder</span>(cell_prop_corr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 

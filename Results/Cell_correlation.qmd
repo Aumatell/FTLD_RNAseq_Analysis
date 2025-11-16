@@ -2,10 +2,56 @@
 title: "Cell composition correlation with neuropathology"
 ---
 
-About this site
+## C9 Sant Pau
 
+### pTDP43
 
-```{r cell-prop-corr-data}
+```{r}
+```
+
+### STMN2
+
+```{r}
+```
+
+### fociSENSE
+
+```{r}
+```
+
+### fociANTI
+
+```{r}
+```
+
+### PolyGP
+
+```{r}
+```
+
+### PolyGA
+
+```{r}
+```
+
+```         
+```
+
+## TDP Sant Pau
+
+### pTDP43
+
+```{r}
+
+```
+
+### STMN2
+
+```{r}
+
+```
+
+```{r cell-prop-corr-data, eval=FALSE}
 cell_prop_corr <- load_or_placeholder(
   option_name = "results_vis.cell_prop_corr",
   pattern = "cell.*prop.*(corr|correlation).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
@@ -18,7 +64,7 @@ cell_prop_corr <- load_or_placeholder(
 )
 ```
 
-```{r cell-prop-corr-plot}
+```{r cell-prop-corr-plot, eval=FALSE}
 render_source_note(cell_prop_corr, "cell proportion correlations")
 cell_prop_corr_wide <- cell_prop_corr %>%
   tidyr::pivot_wider(names_from = Metric, values_from = Correlation)

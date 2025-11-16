@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Libraries
+
 ```{r libraries, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(openxlsx)
@@ -28,15 +29,16 @@ suppressWarnings(library(BayesPrism))
 This document consolidates the analytical workflow across bulk and single-cell datasets. Each numbered section mirrors the repository folder structure, embeds the corresponding R scripts verbatim, and reserves space for figures that summarize intermediate and final results.
 
 ## 0. SVA
+
 Estimate surrogate variables (SVs) for each bulk RNA-seq cohort to control for unwanted variation prior to downstream analyses.
 
 Scripts included in this step:
 
-- `0. SVA/SVA_FTLD_C9.R`
-- `0. SVA/SVA_FTLD_Pottier.R`
-- `0. SVA/SVA_FTLD_Rimmod.R`
-- `0. SVA/SVA_FTLD_TDP.R`
-- `0. SVA/SVA_FTLD_tau.R`
+-   `0. SVA/SVA_FTLD_C9.R`
+-   `0. SVA/SVA_FTLD_Pottier.R`
+-   `0. SVA/SVA_FTLD_Rimmod.R`
+-   `0. SVA/SVA_FTLD_TDP.R`
+-   `0. SVA/SVA_FTLD_tau.R`
 
 ```{r code_0_sva_sva_ftld_c9_r, eval=FALSE}
 library("sva")
@@ -327,11 +329,12 @@ write.table(sva_dataframe, file = "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FT
 ```
 
 ## 1. Bulk DEA
+
 Run edgeR likelihood-ratio tests on bulk RNA-seq counts to identify genes differentially expressed between case and control groups.
 
 Scripts included in this step:
 
-- `1. Bulk DEA/1.Bulk_DEA(All).R`
+-   `1. Bulk DEA/1.Bulk_DEA(All).R`
 
 ```{r code_1_bulk_dea_1_bulk_deaall_r, eval=FALSE}
 # EDGER on Bulk RNASEQ LRT
@@ -871,14 +874,15 @@ for (condition in CONDITIONS) {
 ```
 
 ## 2. Bayesprism
+
 Perform BayesPrism deconvolution to estimate cell-type proportions in each FTLD cohort using reference single-cell signatures.
 
 Scripts included in this step:
 
-- `2. Bayesprism/2.Baysprism_FTLD_C9.R`
-- `2. Bayesprism/2.Baysprism_FTLD_TDP.R`
-- `2. Bayesprism/2.Baysprism_Pottier.R`
-- `2. Bayesprism/2.Baysprism_Rimod.R`
+-   `2. Bayesprism/2.Baysprism_FTLD_C9.R`
+-   `2. Bayesprism/2.Baysprism_FTLD_TDP.R`
+-   `2. Bayesprism/2.Baysprism_Pottier.R`
+-   `2. Bayesprism/2.Baysprism_Rimod.R`
 
 ```{r code_2_bayesprism_2_baysprism_ftld_c9_r, eval=FALSE}
 library("ggplot2")
@@ -1639,16 +1643,17 @@ for (cell_state in levels(as.factor(cell.state.labels))){
 ```
 
 ## 3. CELL PROP DIFFERENCES
+
 Compare inferred cell-type proportions across diagnosis groups using multiple statistical tests and data transformations.
 
 Scripts included in this step:
 
-- `3. CELL PROP DIFFERENCES/3. Diferences in cell proportions with transformations.R`
-- `3. CELL PROP DIFFERENCES/FTLD_C9_CELL_PROP_DIFFERENCES.R`
-- `3. CELL PROP DIFFERENCES/FTLD_TDP_CELL_PROP_DIFFERENCES.R`
-- `3. CELL PROP DIFFERENCES/Pottier_CELL_PROP_DIFFERENCES.R`
-- `3. CELL PROP DIFFERENCES/Rimod_CELL_PROP_DIFFERENCES.R`
-- `3. CELL PROP DIFFERENCES/TDP_CELL_PROP_DIFFERENCES.R`
+-   `3. CELL PROP DIFFERENCES/3. Diferences in cell proportions with transformations.R`
+-   `3. CELL PROP DIFFERENCES/FTLD_C9_CELL_PROP_DIFFERENCES.R`
+-   `3. CELL PROP DIFFERENCES/FTLD_TDP_CELL_PROP_DIFFERENCES.R`
+-   `3. CELL PROP DIFFERENCES/Pottier_CELL_PROP_DIFFERENCES.R`
+-   `3. CELL PROP DIFFERENCES/Rimod_CELL_PROP_DIFFERENCES.R`
+-   `3. CELL PROP DIFFERENCES/TDP_CELL_PROP_DIFFERENCES.R`
 
 ```{r code_3_cell_prop_differences_3_diferences_in_cell_proportions_with_transformations_r, eval=FALSE}
 
@@ -3934,13 +3939,14 @@ ggsave(file.path(output_path, "Boxplots_selected_celltypes.pdf"), p,
 ```
 
 ## 4. CELL PROP CORRELATIONS
+
 Correlate cell-type proportions (raw and transformed) with clinical and pathological variables for FTLD cohorts.
 
 Scripts included in this step:
 
-- `4. CELL PROP CORRELATIONS/4. C9 CELL PROP CORRELATIONS.R`
-- `4. CELL PROP CORRELATIONS/4. CELL PROP TRANSFORMED CORRELATIONS.R`
-- `4. CELL PROP CORRELATIONS/4. TDP CELL PROP CORRELATIONS.R`
+-   `4. CELL PROP CORRELATIONS/4. C9 CELL PROP CORRELATIONS.R`
+-   `4. CELL PROP CORRELATIONS/4. CELL PROP TRANSFORMED CORRELATIONS.R`
+-   `4. CELL PROP CORRELATIONS/4. TDP CELL PROP CORRELATIONS.R`
 
 ```{r code_4_cell_prop_correlations_4_c9_cell_prop_correlations_r, eval=FALSE}
 
@@ -4440,15 +4446,16 @@ write.csv(results, "/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/TDP_s
 ```
 
 ## 5. CELL TYPE DEA
+
 Detect differential expression within single-cell-derived cell-type profiles using edgeR-based workflows across cohorts.
 
 Scripts included in this step:
 
-- `5. CELL TYPE DEA/5. DEA_FTLD-C9.R`
-- `5. CELL TYPE DEA/5. DEA_FTLD-TDP.R`
-- `5. CELL TYPE DEA/5. DEA_Rimmod.R`
-- `5. CELL TYPE DEA/5.EDGER_SV_Pottier.R`
-- `5. CELL TYPE DEA/5.Extract_pvals_for_genes_uri.R`
+-   `5. CELL TYPE DEA/5. DEA_FTLD-C9.R`
+-   `5. CELL TYPE DEA/5. DEA_FTLD-TDP.R`
+-   `5. CELL TYPE DEA/5. DEA_Rimmod.R`
+-   `5. CELL TYPE DEA/5.EDGER_SV_Pottier.R`
+-   `5. CELL TYPE DEA/5.Extract_pvals_for_genes_uri.R`
 
 ```{r code_5_cell_type_dea_5_dea_ftld_c9_r, eval=FALSE}
 library("edgeR")
@@ -5162,13 +5169,14 @@ write.csv(results, file = "/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/TDP_
 ```
 
 ## 6. GENES OF INTERST CORRELATION
+
 Evaluate correlations between selected genes of interest and transformed cell-type proportions across FTLD cohorts.
 
 Scripts included in this step:
 
-- `6. GENES OF INTERST CORRELATION/6.C9_Correlation_genes_with_transformations.R`
-- `6. GENES OF INTERST CORRELATION/6.Correlation_genes_in_non-neur_and_ex-neur_with_transformations.R`
-- `6. GENES OF INTERST CORRELATION/6.TDP_Correlation_genes_with_transformations.R`
+-   `6. GENES OF INTERST CORRELATION/6.C9_Correlation_genes_with_transformations.R`
+-   `6. GENES OF INTERST CORRELATION/6.Correlation_genes_in_non-neur_and_ex-neur_with_transformations.R`
+-   `6. GENES OF INTERST CORRELATION/6.TDP_Correlation_genes_with_transformations.R`
 
 ```{r code_6_genes_of_interst_correlation_6_c9_correlation_genes_with_transformations_r, eval=FALSE}
 library(car)
@@ -6342,11 +6350,12 @@ write.csv(results, file = "/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATIO
 ```
 
 ## 7 HDWGCNA
+
 Build hdWGCNA modules from single-nucleus data to capture co-expression patterns across neuronal subtypes.
 
 Scripts included in this step:
 
-- `7 HDWGCNA/hdWGCNA generate modules .R`
+-   `7 HDWGCNA/hdWGCNA generate modules .R`
 
 ```{r code_7_hdwgcna_hdwgcna_generate_modules_r, eval=FALSE}
 # single-cell analysis package
@@ -6578,11 +6587,12 @@ for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TD
 ```
 
 ## 8. DIFFERENCES IN MODULES
+
 Test for differential module eigengene expression between diagnostic groups for each hdWGCNA module.
 
 Scripts included in this step:
 
-- `8. DIFFERENCES IN MODULES/8. hdWGCNA case_control differences.R`
+-   `8. DIFFERENCES IN MODULES/8. hdWGCNA case_control differences.R`
 
 ```{r code_8_differences_in_modules_8_hdwgcna_case_control_differences_r, eval=FALSE}
 library(dplyr)
@@ -6750,13 +6760,14 @@ for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_
 ```
 
 ## 9. CORRELATION MODULES
+
 Assess correlations between hdWGCNA modules and phenotypic traits, including historical correlation pipelines.
 
 Scripts included in this step:
 
-- `9. CORRELATION MODULES/9. hdWGCNA_step3_Version2.R`
-- `9. CORRELATION MODULES/OLD 9. Correlations of modules c9 and TDP .R`
-- `9. CORRELATION MODULES/RESUM_CORRELACIONS_MODULS.R`
+-   `9. CORRELATION MODULES/9. hdWGCNA_step3_Version2.R`
+-   `9. CORRELATION MODULES/OLD 9. Correlations of modules c9 and TDP .R`
+-   `9. CORRELATION MODULES/RESUM_CORRELACIONS_MODULS.R`
 
 ```{r code_9_correlation_modules_9_hdwgcna_step3_version2_r, eval=FALSE}
 
@@ -7383,11 +7394,12 @@ wrap_plots(plots) + plot_annotation(title = "Faceted Venn Diagrams by Group")
 ```
 
 ## 10. VALIDATION
+
 Validate overlap between hdWGCNA modules across cohorts using Jaccard similarity analyses.
 
 Scripts included in this step:
 
-- `10. VALIDATION/Jaccard test for C9 and TDP43.R`
+-   `10. VALIDATION/Jaccard test for C9 and TDP43.R`
 
 ```{r code_10_validation_jaccard_test_for_c9_and_tdp43_r, eval=FALSE}
 # JACCARD 
@@ -7653,7 +7665,7 @@ Scripts not covered in the numbered workflow are listed here for completeness.
 
 Scripts included in this step:
 
-- `CORRELATION PLOTS RETREAT.R`
+-   `CORRELATION PLOTS RETREAT.R`
 
 ```{r code_correlation_plots_retreat_r, eval=FALSE}
 
@@ -9279,4 +9291,3 @@ ggplot(cell_data, aes(x = Phenotype, y = Cell_proportion, fill = Phenotype)) +
 ```{r fig_additional_scripts_2, echo=FALSE, eval=FALSE}
 # knitr::include_graphics("figures/fig_additional_scripts_2.png")
 ```
-

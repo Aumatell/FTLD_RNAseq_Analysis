@@ -2,9 +2,35 @@
 title: "Differences in cell composition"
 ---
 
-About this site
+## C9
 
-```{r cell-prop-diff-data}
+### Sant Pau
+
+```{r}
+
+```
+
+### Rimmod
+
+```{r}
+
+```
+
+## TDP
+
+### Sant Pau
+
+```{r}
+
+```
+
+### Pottier
+
+```{r}
+
+```
+
+```{r cell-prop-diff-data, eval=FALSE}
 cell_prop_diff <- load_or_placeholder(
   option_name = "results_vis.cell_prop_diff",
   pattern = "cell.*prop.*(diff|difference).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
@@ -18,7 +44,7 @@ cell_prop_diff <- load_or_placeholder(
 )
 ```
 
-```{r cell-prop-diff-plot}
+```{r cell-prop-diff-plot, eval=FALSE}
 render_source_note(cell_prop_diff, "cell proportion differences")
 plot_ly(
   cell_prop_diff,

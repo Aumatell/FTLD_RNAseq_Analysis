@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Cohort – FTLD Analysis Documentation</title>
+<title>Cohorts and Reference Dataset – FTLD Analysis Documentation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -195,8 +230,19 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-discussion">    
         <li>
-    <a class="dropdown-item" href="../Discussion/discussion.qmd">
+    <a class="dropdown-item" href="../Discussion/Discussion.html">
  <span class="dropdown-text">Discussion</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-references" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">References</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-references">    
+        <li>
+    <a class="dropdown-item" href="../References/References.html">
+ <span class="dropdown-text">References</span></a>
   </li>  
     </ul>
   </li>
@@ -211,15 +257,28 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#cohorts" id="toc-cohorts" class="nav-link active" data-scroll-target="#cohorts">Cohorts</a>
+  <ul class="collapse">
+  <li><a href="#sant-pau-ftld-c9" id="toc-sant-pau-ftld-c9" class="nav-link" data-scroll-target="#sant-pau-ftld-c9"><strong>Sant Pau FTLD-C9</strong></a></li>
+  <li><a href="#sant-pau-ftld-tdp" id="toc-sant-pau-ftld-tdp" class="nav-link" data-scroll-target="#sant-pau-ftld-tdp"><strong>Sant Pau FTLD-TDP</strong></a></li>
+  <li><a href="#menden-et-al.-validation-cohort-ega" id="toc-menden-et-al.-validation-cohort-ega" class="nav-link" data-scroll-target="#menden-et-al.-validation-cohort-ega"><strong>Menden et al.&nbsp;Validation Cohort (EGA)</strong></a></li>
+  <li><a href="#pottier-et-al.-validation-cohort" id="toc-pottier-et-al.-validation-cohort" class="nav-link" data-scroll-target="#pottier-et-al.-validation-cohort"><strong>Pottier et al.&nbsp;Validation Cohort</strong></a></li>
+  </ul></li>
+  <li><a href="#single-cell-reference-pineda-et-al.-snrna-seq-atlas" id="toc-single-cell-reference-pineda-et-al.-snrna-seq-atlas" class="nav-link" data-scroll-target="#single-cell-reference-pineda-et-al.-snrna-seq-atlas"><strong>Single-Cell Reference: Pineda et al.&nbsp;snRNA-seq Atlas</strong></a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Cohort</h1>
+<h1 class="title">Cohorts and Reference Dataset</h1>
 </div>
 
 
@@ -236,17 +295,34 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Sant Pau</p>
-<p>C9</p>
-<p>TDP</p>
-<p>Validation datasets:</p>
-<p>Rimmod - C9</p>
-<p>Pottier -TDP</p>
-<p>Single cell Reference</p>
-<p>Pineda</p>
-<pre><code></code></pre>
+<section id="cohorts" class="level1">
+<h1>Cohorts</h1>
+<p>Our analysis integrated transcriptomic data from <strong>four independent bulk RNA-sequencing cohorts</strong>, comprising two newly generated datasets from Hospital de la Santa Creu i Sant Pau and two publicly available external datasets used for validation. All datasets consisted of post-mortem frontal cortex samples from individuals diagnosed with FTLD and cognitively healthy controls. Collectively, these cohorts enabled robust, cross-cohort evaluation of cell-type–resolved transcriptional alterations and disease-associated gene expression programs.</p>
+<section id="sant-pau-ftld-c9" class="level2">
+<h2 class="anchored" data-anchor-id="sant-pau-ftld-c9"><strong>Sant Pau FTLD-C9</strong></h2>
+<p>The first primary dataset was generated at <strong>Hospital de la Santa Creu i Sant Pau</strong> and included <strong>11 individuals with FTLD due to a C9orf72 hexanucleotide repeat expansion (FTLD-C9)</strong> and <strong>7 cognitively healthy controls</strong>. Diagnoses were neuropathologically verified, and all samples were sequenced from the frontal cortex. This cohort served as the discovery dataset for identifying disease-associated transcriptional changes, alterations in inferred cell-state composition, and correlations with C9orf72-specific neuropathological markers, including RNA foci, dipeptide repeat proteins (polyGA, polyGP, polyGR), and TDP-43–related measures.</p>
+</section>
+<section id="sant-pau-ftld-tdp" class="level2">
+<h2 class="anchored" data-anchor-id="sant-pau-ftld-tdp"><strong>Sant Pau FTLD-TDP</strong></h2>
+<p>A second independent dataset from Sant Pau included <strong>9 individuals with sporadic FTLD-TDP</strong> and <strong>7 controls</strong> from the same anatomical region and processed using equivalent library preparation and sequencing pipelines. This cohort provided complementary transcriptomic profiling for FTLD-TDP, enabling direct comparison between genetic (C9orf72-associated) and sporadic TDP-43 proteinopathies within a harmonized experimental framework. Neuropathological quantification of <strong>pTDP-43</strong> and <strong>STMN2</strong> levels allowed integration of transcriptional changes with molecular markers of TDP-43 dysfunction.</p>
+</section>
+<section id="menden-et-al.-validation-cohort-ega" class="level2">
+<h2 class="anchored" data-anchor-id="menden-et-al.-validation-cohort-ega"><strong>Menden et al.&nbsp;Validation Cohort (EGA)</strong></h2>
+<p>To evaluate the reproducibility of FTLD-C9 transcriptional signatures, we used the bulk RNA-seq dataset published by <strong>Menden et al.&nbsp;(2023)</strong> and available through the <strong>European Genome-Phenome Archive (EGAC00001001879)</strong>. From this study, we selected <strong>13 C9orf72-expansion FTLD cases</strong> and <strong>16 controls</strong>, restricting analyses to neuropathologically confirmed FTLD-C9 samples. This dataset served as an external validation cohort for differential expression, Bayesian deconvolution, and co-expression network findings from the Sant Pau FTLD-C9 dataset.</p>
+</section>
+<section id="pottier-et-al.-validation-cohort" class="level2">
+<h2 class="anchored" data-anchor-id="pottier-et-al.-validation-cohort"><strong>Pottier et al.&nbsp;Validation Cohort</strong></h2>
+<p>Validation of FTLD-TDP results was performed using the dataset published by <strong>Pottier et al.</strong> [1], which includes frontal cortex RNA-sequencing data from <strong>44 FTLD-TDP cases</strong> and <strong>24 controls</strong>. Only individuals with neuropathologically verified <strong>FTLD-TDP type A or B</strong> pathology were retained for analysis. This dataset provided an independent, high-powered external resource to assess the robustness of the Sant Pau FTLD-TDP differential expression, cell-state–specific transcriptional shifts, and co-expression modules.</p>
+</section>
+</section>
+<section id="single-cell-reference-pineda-et-al.-snrna-seq-atlas" class="level1">
+<h1><strong>Single-Cell Reference: Pineda et al.&nbsp;snRNA-seq Atlas</strong></h1>
+<p>All deconvolution analyses were performed using a high-resolution single-nucleus RNA-sequencing (snRNA-seq) reference published by <strong>Pineda et al.</strong> (Synapse ID: <strong>syn51105515</strong>). This dataset was generated from frontal cortex tissue of both healthy individuals and FTLD-C9 cases, providing <strong>19 major cell types and 44 transcriptionally distinct cell states</strong>. The atlas includes excitatory and inhibitory neuronal subclasses, astrocyte and microglial populations, oligodendrocytes and OPCs, and diverse vascular and immune-associated cell populations.</p>
+<p>The Pineda et al.&nbsp;reference was processed to remove low-quality nuclei, mitochondrial transcripts, ribosomal reads, and sex-chromosome genes, and only protein-coding genes expressed in at least five cells were retained. This atlas enabled <strong>Bayesian estimation of cell-type proportions and cell-state–specific gene expression profiles</strong> from each bulk RNA-seq cohort through the BayesPrism framework. Because Pineda et al.&nbsp;provide a disease- and layer-resolved cellular taxonomy of the human frontal cortex, their atlas is well suited to investigate the precise cellular origins of transcriptomic alterations in FTLD (C9 and TDP) at single-cell resolution.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

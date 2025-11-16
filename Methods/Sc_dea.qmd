@@ -24,7 +24,7 @@ used as direct input to edgeR differential expression workflows.
 
 Only cell states with **sufficient expression and non-zero counts** across samples were retained for statistical modeling.
 
-```{r}
+```{r eval=FALSE}
 library("edgeR")
 library("dplyr")
 library("GO.db")
@@ -95,7 +95,7 @@ For each cell state:
 
 This ensured that differential expression reflected biologically meaningful changes rather than sparsity-related artifacts.
 
-```{r}
+```{r, eval=FALSE}
 comparison_data <- case_legend[case_legend$group_ID %in% c(REFERENCE_GROUP, condition), ]
       comparison_data$group_ID <- factor(comparison_data$group_ID)
       
@@ -132,7 +132,7 @@ To account for unwanted technical and biological variability:
 
 This approach improves statistical robustness, especially in modest sample sizes typical of post-mortem FTLD cohorts.
 
-```{r}
+```{r eval=FALSE}
    group <- factor(comparison_data$group_ID, levels = c(REFERENCE_GROUP, condition))
       comparison_data$group_ID <- relevel(comparison_data$group_ID, ref = REFERENCE_GROUP)
       design <- model.matrix(~ 0 + comparison_data$group_ID + comparison_data$SV1, data = comparison_data)
@@ -168,7 +168,7 @@ For each significant gene, the following metrics were extracted:
 
 -   average CPM per condition
 
-```{r}
+```{r eval=FALSE}
      # Diferential expression analysis
       B.LvsP <- makeContrasts(paste0(condition, " - ", REFERENCE_GROUP), levels=design)
       res <- glmLRT(fit, contrast=B.LvsP)
@@ -198,7 +198,7 @@ Overlap significance was quantified using:
 
 This allowed identification of **robust cell-state–specific signatures** conserved across cohorts.
 
-```{r}
+```{r eval=FALSE}
 # JACCARD 
 library("openxlsx")
 library("GeneOverlap")
@@ -352,7 +352,7 @@ write.csv(Results, file = paste0(RESULTS_PATH, "/TDP43_Validation_results_cs.csv
 
 ```
 
-```{r}
+```{r eval= FALSE}
 # C9
 
 FTLD_TDP <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/FTLD/C9/CS_SV/"

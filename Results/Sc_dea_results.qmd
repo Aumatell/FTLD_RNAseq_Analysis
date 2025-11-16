@@ -2,10 +2,35 @@
 title: "Single cell difference expression analysis"
 ---
 
-About this site
+## C9
 
+### Sant Pau
 
-```{r cell-type-dea-data}
+```{r}
+
+```
+
+### Rimmod
+
+```{r}
+
+```
+
+## TDP
+
+### Sant Pau
+
+```{r}
+
+```
+
+### Pottier
+
+```{r}
+
+```
+
+```{r cell-type-dea-data, eval=FALSE}
 cell_type_dea <- load_or_placeholder(
   option_name = "results_vis.cell_type_dea",
   pattern = "cell.*type.*dea.*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
@@ -22,7 +47,7 @@ cell_type_dea <- load_or_placeholder(
 )
 ```
 
-```{r cell-type-dea-plot}
+```{r cell-type-dea-plot, eval=FALSE}
 render_source_note(cell_type_dea, "cell type DEA")
 plot_ly(
   cell_type_dea,

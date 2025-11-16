@@ -395,7 +395,7 @@ for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TD
 
 ```
 
-```{r}
+```{r eval=FALSE}
 library(dplyr)
 library(hdWGCNA)
 library(xlsx)
@@ -552,7 +552,7 @@ for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_
 }
 ```
 
-```{r}
+```{r eval=FALSE}
 
 ############################## Correlation MEs VS Covariables ###############################
 library(hdWGCNA)

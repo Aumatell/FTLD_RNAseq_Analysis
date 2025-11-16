@@ -230,8 +230,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-discussion">    
         <li>
-    <a class="dropdown-item" href="../Discussion/discussion.qmd">
+    <a class="dropdown-item" href="../Discussion/Discussion.html">
  <span class="dropdown-text">Discussion</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-references" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">References</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-references">    
+        <li>
+    <a class="dropdown-item" href="../References/References.html">
+ <span class="dropdown-text">References</span></a>
   </li>  
     </ul>
   </li>
@@ -246,8 +257,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#bayesian-deconvolution-framework-bayesprism-rationale-approach-and-analytical-objectives" id="toc-bayesian-deconvolution-framework-bayesprism-rationale-approach-and-analytical-objectives" class="nav-link active" data-scroll-target="#bayesian-deconvolution-framework-bayesprism-rationale-approach-and-analytical-objectives"><strong>Bayesian Deconvolution Framework (BayesPrism): Rationale, Approach, and Analytical Objectives</strong></a>
+  <ul class="collapse">
+  <li><a href="#rationale" id="toc-rationale" class="nav-link" data-scroll-target="#rationale"><strong>Rationale</strong></a></li>
+  <li><a href="#analytical-strategy" id="toc-analytical-strategy" class="nav-link" data-scroll-target="#analytical-strategy"><strong>Analytical Strategy</strong></a>
+  <ul class="collapse">
+  <li><a href="#construction-of-the-single-cell-reference" id="toc-construction-of-the-single-cell-reference" class="nav-link" data-scroll-target="#construction-of-the-single-cell-reference"><strong>1. Construction of the Single-Cell Reference</strong></a></li>
+  <li><a href="#alignment-of-bulk-and-single-cell-data" id="toc-alignment-of-bulk-and-single-cell-data" class="nav-link" data-scroll-target="#alignment-of-bulk-and-single-cell-data"><strong>2. Alignment of Bulk and Single-Cell Data</strong></a></li>
+  <li><a href="#bayesprism-initialization-and-inference" id="toc-bayesprism-initialization-and-inference" class="nav-link" data-scroll-target="#bayesprism-initialization-and-inference"><strong>3. BayesPrism Initialization and Inference</strong></a></li>
+  <li><a href="#extraction-of-cell-state-proportions-and-expression-matrices" id="toc-extraction-of-cell-state-proportions-and-expression-matrices" class="nav-link" data-scroll-target="#extraction-of-cell-state-proportions-and-expression-matrices"><strong>4. Extraction of Cell-State Proportions and Expression Matrices</strong></a></li>
+  <li><a href="#standardized-processing-across-the-four-cohorts" id="toc-standardized-processing-across-the-four-cohorts" class="nav-link" data-scroll-target="#standardized-processing-across-the-four-cohorts"><strong>5. Standardized Processing Across the Four Cohorts</strong></a></li>
+  </ul></li>
+  <li><a href="#objectives-of-applying-bayesprism" id="toc-objectives-of-applying-bayesprism" class="nav-link" data-scroll-target="#objectives-of-applying-bayesprism"><strong>Objectives of Applying BayesPrism</strong></a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -271,7 +300,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>About this site</p>
+<section id="bayesian-deconvolution-framework-bayesprism-rationale-approach-and-analytical-objectives" class="level1">
+<h1><strong>Bayesian Deconvolution Framework (BayesPrism): Rationale, Approach, and Analytical Objectives</strong></h1>
+<section id="rationale" class="level2">
+<h2 class="anchored" data-anchor-id="rationale"><strong>Rationale</strong></h2>
+<p>Bulk RNA-sequencing provides a high-throughput snapshot of gene expression in brain tissue but masks the substantial cellular heterogeneity of the human cortex. FTLD pathology affects specific neuronal populations—particularly RORB-expressing excitatory neurons—as well as diverse non-neuronal cell classes including astrocytes, microglia, oligodendrocytes, vascular cells, and infiltrating immune cells. As a result, interpreting bulk transcriptomic changes requires methods capable of <strong>deconvolving mixed-cell signals into cell-type–specific expression profiles and cell-state proportions</strong>.</p>
+<p>Bayesian deconvolution methods, such as <strong>BayesPrism</strong>, offer major advantages over traditional regression or matrix factorization approaches by explicitly modeling biological variability and uncertainty. Using a high-resolution single-nucleus RNA-seq reference—such as the dataset from <strong>Pineda et al.&nbsp;(Synapse ID: syn51105515)</strong>—BayesPrism integrates single-cell information with bulk counts to infer, for each sample:</p>
+<ol type="1">
+<li><p><strong>Cell-type and cell-state fractions</strong>, representing the estimated proportion of each transcriptional state in the tissue.</p></li>
+<li><p><strong>Cell-type–specific expression estimates</strong>, reconstructing a matrix of gene expression for each cell state within each patient.</p></li>
+</ol>
+<p>This dual output allows downstream <strong>cell-state–resolved differential expression, co-expression network analysis (hdWGCNA), and correlations with neuropathological markers</strong>.</p>
+</section>
+<section id="analytical-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="analytical-strategy"><strong>Analytical Strategy</strong></h2>
+<p>The Bayesian deconvolution approach consisted of the following steps:</p>
+<section id="construction-of-the-single-cell-reference" class="level3">
+<h3 class="anchored" data-anchor-id="construction-of-the-single-cell-reference"><strong>1. Construction of the Single-Cell Reference</strong></h3>
+<p>The reference atlas from Pineda et al.&nbsp;contained <strong>19 major cell classes and 44 transcriptionally distinct cell states</strong> derived from human frontal cortex single-nucleus RNA-seq. The reference was preprocessed to:</p>
+<ul>
+<li><p>exclude genes with low expression,</p></li>
+<li><p>remove mitochondrial, ribosomal, and sex-chromosome transcripts,</p></li>
+<li><p>retain only protein-coding genes expressed in ≥5 nuclei.</p></li>
+</ul>
+<p>This produced a biologically curated transcriptional reference ideal for Bayesian modeling of cortical cell populations.</p>
+</section>
+<section id="alignment-of-bulk-and-single-cell-data" class="level3">
+<h3 class="anchored" data-anchor-id="alignment-of-bulk-and-single-cell-data"><strong>2. Alignment of Bulk and Single-Cell Data</strong></h3>
+<p>Bulk RNA-seq counts from all four cohorts (two Sant Pau, Menden et al., Pottier et al.) were matched to the gene identifiers in the reference.<br>
+Counts were log-transformed where appropriate, and samples were retained only if sequencing quality and pathological classification were robust.</p>
+</section>
+<section id="bayesprism-initialization-and-inference" class="level3">
+<h3 class="anchored" data-anchor-id="bayesprism-initialization-and-inference"><strong>3. BayesPrism Initialization and Inference</strong></h3>
+<p>A <strong>BayesPrism object</strong> was created using the filtered single-cell matrix as the reference component and the raw bulk count matrix as the mixture component. The algorithm:</p>
+<ul>
+<li><p>identifies <strong>outlier genes</strong> (cutoff = 0.01),</p></li>
+<li><p>performs <strong>Gibbs sampling</strong> to estimate posterior distributions for each sample,</p></li>
+<li><p>infers <strong>cell-type fractions</strong> (θ) and <strong>cell-type–specific expression matrices</strong> (φ) simultaneously.</p></li>
+</ul>
+<p>Posterior estimates were extracted after convergence diagnostics ensured stable sampling across chains.</p>
+</section>
+<section id="extraction-of-cell-state-proportions-and-expression-matrices" class="level3">
+<h3 class="anchored" data-anchor-id="extraction-of-cell-state-proportions-and-expression-matrices"><strong>4. Extraction of Cell-State Proportions and Expression Matrices</strong></h3>
+<p>For each sample, BayesPrism returned:</p>
+<ul>
+<li><p><strong>Posterior-estimated cell-state proportions</strong>, enabling comparisons between FTLD-C9, FTLD-TDP, and controls.</p></li>
+<li><p><strong>Cell-state–specific expression matrices</strong>, which served as the basis for:</p>
+<ul>
+<li><p>edgeR-based cell-state differential expression.</p></li>
+<li><p>construction of pseudobulk Seurat objects,</p></li>
+<li><p>hdWGCNA module detection,</p></li>
+<li><p>correlation analysis with neuropathology (ACSL3, lncRNAs, RNA foci, DPRs, pTDP-43, STMN2).</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="standardized-processing-across-the-four-cohorts" class="level3">
+<h3 class="anchored" data-anchor-id="standardized-processing-across-the-four-cohorts"><strong>5. Standardized Processing Across the Four Cohorts</strong></h3>
+<p>All steps—from reference alignment, through BayesPrism modeling, to extraction of posterior values—were performed identically in:</p>
+<ul>
+<li><p><strong>Sant Pau FTLD-C9</strong></p></li>
+<li><p><strong>Sant Pau FTLD-TDP</strong></p></li>
+<li><p><strong>Menden et al.&nbsp;FTLD-C9</strong></p></li>
+<li><p><strong>Pottier et al.&nbsp;FTLD-TDP</strong></p></li>
+</ul>
+<p>This standardized pipeline enabled robust <strong>cross-cohort comparison</strong> of:</p>
+<ul>
+<li><p>cell-state proportions,</p></li>
+<li><p>cell-type–specific differential expression.</p></li>
+<li><p>co-expression networks,</p></li>
+<li><p>pathological-marker correlations.</p></li>
+</ul>
+</section>
+</section>
+<section id="objectives-of-applying-bayesprism" class="level2">
+<h2 class="anchored" data-anchor-id="objectives-of-applying-bayesprism"><strong>Objectives of Applying BayesPrism</strong></h2>
+<p>BayesPrism was employed to achieve the following methodological goals:</p>
+<ol type="1">
+<li><p><strong>Resolve bulk RNA-seq into cell-type and cell-state contributions</strong> to uncover FTLD-associated alterations hidden in tissue-level averages.</p></li>
+<li><p><strong>Enable differential expression analysis at single-cell resolution</strong>, identifying the precise neuronal and glial subtypes driving FTLD-C9 and FTLD-TDP transcriptional changes.</p></li>
+<li><p><strong>Quantify disease-related changes in cell-state composition</strong>, including excitatory/inhibitory neuron loss and reactive glial expansion.</p></li>
+<li><p><strong>Map neuropathological burden (RNA foci, DPRs, pTDP-43, STMN2)</strong> to transcriptional changes within specific cell states.</p></li>
+<li><p><strong>Generate high-dimensional transcriptional networks (hdWGCNA)</strong> to identify disease-relevant modules that would otherwise be unresolvable in bulk data.</p></li>
+<li><p><strong>Validate findings across independent datasets</strong> using a unified Bayesian framework to ensure reproducibility and generalizability.</p></li>
+</ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"openxlsx"</span>)</span>
@@ -1020,6 +1131,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
