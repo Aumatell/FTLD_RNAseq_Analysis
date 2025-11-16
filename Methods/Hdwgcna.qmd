@@ -2,8 +2,174 @@
 title: "Gene modules"
 ---
 
-About this site
+# **High-Dimensional Weighted Gene Co-Expression Network Analysis (hdWGCNA): Rationale, Construction, and Analytical Goals**
 
+## **Rationale**
+
+While differential expression identifies gene-level changes associated with FTLD, it does not capture the higher-order organization of transcriptional programs or the coordinated dysregulation of functional gene networks. Neurodegenerative diseases—including FTLD-C9 and FTLD-TDP—are characterized by complex regulatory alterations affecting synaptic systems, glial and immune reactivity, metabolic rewiring, and RNA-processing machinery. These processes are best understood at the **module** (network) level rather than through isolated transcripts.
+
+To resolve network-level biology at **cell-state resolution**, we applied **hdWGCNA**, a scalable adaptation of weighted gene co-expression network analysis (WGCNA) optimized for single-cell and pseudobulk data. By applying hdWGCNA to BayesPrism-derived expression matrices, we reconstructed **cell-state–specific co-expression networks**, enabling detection of modules associated with disease status, neuropathological markers, and lineage-specific vulnerability.
+
+## **Analytical Strategy**
+
+### **1. Input Data: Cell-State Pseudobulk Matrices**
+
+For each cohort (Sant Pau FTLD-C9, Sant Pau FTLD-TDP, Menden et al., Pottier et al.), hdWGCNA was performed **independently for every cell state** inferred by BayesPrism.
+
+The input matrices consisted of:
+
+-   log2-transformed counts per million (logCPM),
+
+-   gene expression estimates for each sample within each cell state,
+
+-   only genes expressed in at least **5% of samples** in that state (to reduce network noise and ensure connectivity).
+
+Each cell state was stored as a **pseudobulk Seurat object**, enabling hdWGCNA’s native functions for network construction and visualization.
+
+### **2. Network Construction and Soft-Thresholding**
+
+Following standard WGCNA principles, hdWGCNA constructs networks that approximate scale-free topology. For each cell state:
+
+1.  **Soft-thresholding power (β)** was selected using the scale-free topology criterion (pickSoftThreshold), ensuring:
+
+```         
+-   high scale-free fit index,
+
+-   sufficient mean connectivity,
+
+-   biologically interpretable network structure.
+```
+
+2.  An **unsigned network** was used for all analyses, allowing detection of both positively and negatively co-expressed gene relationships.
+
+### **3. Topological Overlap Matrix (TOM) and Module Detection**
+
+For each cell state:
+
+-   A **topological overlap matrix** quantified shared connectivity between genes.
+
+-   Hierarchical clustering of TOM dissimilarity produced dendrograms representing gene trees.
+
+-   Modules were identified using **dynamic tree cutting** with a merge height threshold of **0.15**, enabling detection of:
+
+    -   fine-grained modules in highly heterogeneous states,
+
+    -   large modules in transcriptionally stable lineages.
+
+Each module received a unique color annotation.
+
+### **4. Module Eigengenes and Association With Disease**
+
+A **module eigengene (ME)**—the first principal component summarizing module expression—was computed for each module.
+
+For each cell state and each module:
+
+-   MEs were compared between **FTLD-C9** or **FTLD-TDP** and controls to identify **disease-associated modules** using linear models.
+
+```         
+MEs were correlated (Spearman) with:
+
+-   **neuropathological markers** (ACSL3, lncRNAs, RNA foci sense/antisense, polyGA, polyGP, polyGR, pTDP-43, STMN2)
+
+-   **diagnostic group**
+
+-   **cell-state proportions**.
+```
+
+This yielded **marker-associated modules**, capturing functional programs linked to pathological burden.
+
+Modules were ranked by:
+
+-   correlation magnitude,
+
+-   p-value,
+
+-   biological coherence,
+
+-   number of hub genes.
+
+### **5. Hub Gene Identification**
+
+Hub genes for each module were identified using:
+
+-   **kME (module membership)**,
+
+-   correlation of each gene with the corresponding eigengene.
+
+Genes with **kME ≥ 0.90** were classified as high-confidence hub genes.\
+These anchors define the regulatory core of each transcriptional module.
+
+### **6. Functional Enrichment Analysis**
+
+For each significantly disease-associated module:
+
+-   Gene Ontology enrichment was performed using **Metascape**, restricted to:
+
+```         
+-   Biological Process
+
+-   Molecular Function
+
+-    Cellular Component
+```
+
+Background sets were defined as:
+
+-   All genes expressed in that cell state (from Pineda et al. reference).
+
+This ensured biologically appropriate enrichment interpretations.
+
+Enrichment pinpointed:
+
+-   synaptic processes,
+
+-   immune and inflammatory pathways,
+
+-   RNA metabolism,
+
+-   apoptotic signaling,
+
+-   vascular remodeling,
+
+-   glial activation states.
+
+### **7. Cross-Cohort Module Validation**
+
+For module validation:
+
+-   Gene lists from modules identified in Sant Pau cohorts were compared with those obtained from **Menden et al.** (for FTLD-C9) or **Pottier et al.** (for FTLD-TDP).
+
+    Overlap statistics were computed using:
+
+    -   **GeneOverlap tests**,
+
+    -   **Jaccard indices**,
+
+    -   directionality of eigengene changes.
+
+A module was considered **validated** if:
+
+-   it showed significant gene overlap (p \< 0.05), and
+
+-   the eigengene change direction matched between cohorts.
+
+## **Analytical Goals of the hdWGCNA Component**
+
+The hdWGCNA pipeline was designed to:
+
+1.  **Identify cell-state–specific transcriptional modules** that distinguish FTLD-C9, FTLD-TDP, and healthy cortex.
+
+2.  **Reveal convergent and divergent network-level changes** between genetic and sporadic FTLD subtypes.
+
+3.  **Map disease-associated pathways** (synaptic signaling, immune activation, metabolic programs) to their cellular origins.
+
+4.  **Integrate pathology burden** (e.g., pTDP-43, STMN2 loss, DPR accumulation, RNA foci density) with module activities.
+
+5.  **Detect hub genes** representing potential mechanistic drivers or biomarkers.
+
+6.  **Validate transcriptional networks** across independent external datasets.
+
+7.  Provide a **systems-level framework** for interpreting FTLD pathophysiology beyond individual DEGs.
 
 ```{r code_7_hdwgcna_hdwgcna_generate_modules_r, eval=FALSE}
 # single-cell analysis package
@@ -223,5 +389,405 @@ for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TD
     print(paste0("Finished: ", CS))
     
   }) # end try
+}
+
+
+
+```
+
+```{r}
+library(dplyr)
+library(hdWGCNA)
+library(xlsx)
+
+for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/", full.names = FALSE, recursive = FALSE)) {
+  try({
+    
+    # Load Seurat object
+    A <- readRDS(paste0("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/", CS, "/", CS, "_seurat.rds"))
+    
+    # Load metadata
+    metadata <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx", 
+                                row.names = 1, sheetIndex = 1)
+    metadata_df <- as.data.frame(metadata)
+    metadata_df$Sample_clean <- rownames(metadata_df)
+    
+    # Harmonize sample names
+    A$Sample_clean <- gsub("^X", "", A@meta.data$Sample)
+    meta_joined <- A@meta.data %>%
+      mutate(Sample_clean = gsub("^X", "", Sample)) %>%
+      left_join(metadata_df, by = "Sample_clean")
+    A@meta.data <- meta_joined
+    
+    # Get Module Eigengenes
+    MEs <- hdWGCNA::GetMEs(A)
+    
+    # Ensure sample order matches between MEs and metadata
+    sample_order <- rownames(MEs)
+    # Ensure consistent factor order: Healthy (control), TDP (case)
+    group_vector <- factor(
+      A@meta.data[match(sample_order, A@meta.data$Sample), "group.ID"],
+      levels = c("Healthy", "TDP")
+    )
+    
+    # Apply Wilcoxon test and calculate fold change
+    test_results <- lapply(1:ncol(MEs), function(i) {
+      vec <- MEs[, i]
+      group1 <- vec[group_vector == "Healthy"]
+      group2 <- vec[group_vector == "TDP"]
+      fc <- mean(group2, na.rm = TRUE) - mean(group1, na.rm = TRUE)  # TDP - Healthy
+      test <- wilcox.test(group1, group2)
+      
+      list(
+        module = colnames(MEs)[i],
+        fold_change = fc,
+        p.value = test$p.value
+      )
+    })
+    
+    cor_df <- do.call(rbind, lapply(test_results, as.data.frame))
+    cor_df_sorted <- cor_df[order(cor_df$p.value), ]
+    
+    # Create output directory
+    outdir <- paste0("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/", CS, "/MODULES/")
+    dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
+    
+    # Write gene lists for significant modules
+    module_colors <- A@misc$pseudobulk$wgcna_degrees
+    sig_modules <- cor_df_sorted$module[!is.na(cor_df_sorted$module)]
+    
+    for (mod in sig_modules) {
+      genes <- module_colors$gene_name[module_colors$module == mod]
+      write.csv(genes, file = paste0(outdir,mod, ".csv"), row.names = FALSE)
+    }
+    
+    # Write summary and hub genes
+    Hubs <- GetHubGenes(A, n_hubs = 10, mods = NULL, wgcna_name = NULL)
+    write.csv(cor_df_sorted, file = paste0(outdir, "/cor_summary.csv"), row.names = FALSE)
+    write.csv(as.data.frame(Hubs), file = paste0(outdir, "/hubs.csv"), row.names = FALSE)
+    
+    print(paste0("Finished: ", CS))
+  })
+}
+
+
+library(Seurat)
+library(dplyr)
+library(hdWGCNA)
+
+# Loop over directories
+for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_bo/", full.names = FALSE, recursive = FALSE)) {
+  try({
+    
+    # Load Seurat object
+    A <- readRDS(paste0("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_bo/", CS, "/", CS, "_seurat.rds"))
+    
+    # Load metadata
+    metadata <- read.delim("/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/METADATA/Sample_info.txt", 
+                           row.names = 1, sep = "\t")
+    metadata_df <- as.data.frame(metadata)
+    metadata_df$Sample_clean <- gsub("-", "\\.",rownames(metadata_df))
+    rownames(metadata_df) <- metadata_df$Sample_clean 
+    # Filter out FTLD-TDP-C and recode group labels
+    metadata_df <- metadata_df[metadata_df$GROUP != "FTLD-TDP-C", ]
+    metadata_df$GROUP <- ifelse(metadata_df$GROUP == "Control", "Healthy", "TDP")
+    
+    samples_to_keep <- intersect(rownames(A@meta.data), metadata_df$Sample_clean)
+    A <- subset(A,cells= samples_to_keep)
+                
+    # Harmonize and merge metadata
+    A@meta.data <- metadata_df
+    
+    # Get Module Eigengenes
+    MEs <- hdWGCNA::GetMEs(A)
+    samples_in_A <- rownames(A@meta.data)
+    MEs <- MEs[rownames(MEs) %in% samples_in_A, ]
+    sample_order <- rownames(MEs)
+    
+    # Ensure correct group assignment order
+    group_vector <- factor(
+      A@meta.data[match(sample_order, rownames(A@meta.data)), "GROUP"],
+      levels = c("Healthy", "TDP")
+    )
+    
+    # Apply Wilcoxon test and compute fold change
+    test_results <- lapply(1:ncol(MEs), function(i) {
+      vec <- MEs[, i]
+      group1 <- vec[group_vector == "Healthy"]
+      group2 <- vec[group_vector == "TDP"]
+      fc <- mean(group2, na.rm = TRUE) - mean(group1, na.rm = TRUE)  # TDP - Healthy
+      test <- wilcox.test(group1, group2)
+      
+      list(
+        module = colnames(MEs)[i],
+        fold_change = fc,
+        p.value = test$p.value
+      )
+    })
+    
+    # Compile and sort results
+    cor_df <- do.call(rbind, lapply(test_results, as.data.frame))
+    cor_df_sorted <- cor_df[order(cor_df$p.value), ]
+    
+    # Create output directory
+    outdir <- paste0("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_bo/", CS, "/MODULES/")
+    dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
+    
+    # Write gene lists for significant modules
+    module_colors <- A@misc$pseudobulk$wgcna_degrees
+    sig_modules <- cor_df_sorted$module[!is.na(cor_df_sorted$module)]
+    
+    for (mod in sig_modules) {
+      genes <- module_colors$gene_name[module_colors$module == mod]
+      write.csv(genes, file = paste0(outdir, mod, ".csv"), row.names = FALSE)
+    }
+    
+    # Write summary and hub genes
+    Hubs <- GetHubGenes(A, n_hubs = 10, mods = NULL, wgcna_name = NULL)
+    write.csv(cor_df_sorted, file = paste0(outdir, "/cor_summary.csv"), row.names = FALSE)
+    write.csv(as.data.frame(Hubs), file = paste0(outdir, "/hubs.csv"), row.names = FALSE)
+    
+    print(paste0("Finished: ", CS))
+  })
+}
+```
+
+```{r}
+
+############################## Correlation MEs VS Covariables ###############################
+library(hdWGCNA)
+library(dplyr)
+library(Seurat)
+library(xlsx)
+
+CS <- list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/", full.names = FALSE, recursive = FALSE)[1]
+
+for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/", 
+                     full.names = FALSE, recursive = FALSE)) {
+  if (file.exists(paste0("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/", CS, "/", CS, "_seurat.rds"))) {
+    
+    tryCatch({
+      
+      message("Processing CS: ", CS)
+#      sink(log_file, append = TRUE); cat(Sys.time(), " - Processing: ", CS, "\n"); sink()
+      
+      # Load Seurat object
+      A <- readRDS(paste0("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/", CS, "/", CS, "_seurat.rds"))
+      
+      # Load metadata
+      metadata <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx", 
+                                  row.names = 1, sheetIndex = 1)
+      covariables <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/TRANSFORMED_COVARIABLES/ArcSin/TDP/ArcSin_FTD_TDP_neuropath_SOM")
+      
+      # Merge metadata
+      covariables$X <- gsub("long", "", covariables$X)
+      A$Sample_clean <- gsub("^X", "", A@meta.data$Sample)
+      metadata_df <- as.data.frame(metadata)
+      metadata_df$Sample_clean <- rownames(metadata_df)
+      
+      meta_joined <- A@meta.data %>%
+        mutate(Sample_clean = gsub("^X", "", Sample)) %>%
+        left_join(metadata_df, by = "Sample_clean") %>%
+        left_join(covariables, by = c("Sample_clean" = "X"))
+      
+      rownames(meta_joined) <- colnames(A)
+      A@meta.data <- meta_joined
+
+      # Align rownames
+      if (!all(rownames(A@meta.data) == colnames(A))) {
+        rownames(A@meta.data) <- colnames(A)
+      }
+      
+      # Ensure WGCNA results are present
+      if (!"pseudobulk" %in% names(A@misc)) stop("WGCNA results not found in @misc$pseudobulk for ", CS)
+      
+      # Remove outlier
+      outlier <- "7BLACK"
+      if (outlier %in% colnames(A)) {
+        A <- subset(A, cells = setdiff(colnames(A), outlier))
+        rownames(A@meta.data) <- colnames(A)
+      }
+      
+      # Ensure numeric trait
+      A@meta.data$TDP43b <- as.numeric(as.character(A@meta.data$TDP43b))
+      if (all(is.na(A@meta.data$TDP43b))) stop("TDP43b column is all NA for ", CS)
+      
+      # Calculate module eigengenes inside Seurat object
+      MEs <- hdWGCNA::GetMEs(A, wgcna_name = "pseudobulk")
+      A@misc$pseudobulk$MEs <- MEs
+      
+      # Check MEs exist
+      if (is.null(A@misc$pseudobulk$MEs)) stop("No MEs found in object for ", CS)
+      
+      # Run Module-Trait correlation
+      cor_results <- hdWGCNA::ModuleTraitCorrelation(
+        seurat_obj = A,
+        traits = "TDP43b",
+        wgcna_name = "pseudobulk"
+      )
+      
+      # Extract correlation dataframe safely
+      cor_df <- GetModuleTraitCorrelation(cor_results)
+      
+      # Sort correlations
+      # Extract correlations for 'all_cells'
+      cor_vec <- cor_df$cor$all_cells
+      pval_vec <- cor_df$pval$all_cells
+      fdr_vec <- cor_df$fdr$all_cells
+      
+      # Convert to data frame
+      cor_df_clean <- data.frame(
+        module = names(cor_vec),
+        cor = as.numeric(cor_vec),
+        p.value = as.numeric(pval_vec),
+        fdr = as.numeric(fdr_vec)
+      )
+      
+      # Sort by absolute correlation and then p-value
+      library(dplyr)
+      cor_df_sorted <- cor_df_clean %>%
+        arrange(desc(abs(cor)), p.value)
+      
+      # Save results
+      outdir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/EGG_VS_COV/FTLD/TDP/CS_asin_moduletraitcorrelation_tdp43b_tdp/"
+      if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+      write.csv(cor_df_sorted, file = paste0(outdir, CS, ".csv"), row.names = FALSE)      
+      # Cleanup
+      rm(A, metadata, covariables, 
+         cor_vec, pval_vec, fdr_vec,
+         cor_df_sorted, cor_results, cor_df, cor_df_clean); gc()
+      message("Finished processing CS: ", CS)
+      
+#      sink(log_file, append = TRUE); cat(Sys.time(), " - Finished: ", CS, "\n"); sink()
+      
+    }, error = function(e) {
+#      sink(log_file, append = TRUE)
+      cat(Sys.time(), "ERROR in ", CS, ": ", conditionMessage(e), "\n")
+#      sink()
+      message("Error in CS: ", CS, " → ", conditionMessage(e))
+    })
+  }
+}
+
+
+
+############################## Correlation MEs VS Covariables ###############################
+
+# C9 
+
+# Must change the covariable name for each case.
+
+library(hdWGCNA)
+library(dplyr)
+library(Seurat)
+library(xlsx)
+
+CS <- list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/", full.names = FALSE, recursive = FALSE)[1]
+
+for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/", 
+                     full.names = FALSE, recursive = FALSE)) {
+  if (file.exists(paste0("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/", CS, "/", CS, "_seurat.rds"))) {
+    
+    tryCatch({
+      
+      message("Processing CS: ", CS)
+      #      sink(log_file, append = TRUE); cat(Sys.time(), " - Processing: ", CS, "\n"); sink()
+      
+      # Load Seurat object
+      A <- readRDS(paste0("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/", CS, "/", CS, "_seurat.rds"))
+      
+      # Load metadata
+      metadata <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx", 
+                                  row.names = 1, sheetIndex = 1)
+      covariables <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/TRANSFORMED_COVARIABLES/ArcSin/C9/ArcSin_FTD_C9_neuropath_SOM.csv")
+      
+      # Merge metadata
+      covariables$X <- gsub("X", "", covariables$X)
+      A$Sample_clean <- gsub("^X", "", A@meta.data$Sample)
+      metadata_df <- as.data.frame(metadata)
+      metadata_df$Sample_clean <- rownames(metadata_df)
+      
+      meta_joined <- A@meta.data %>%
+        mutate(Sample_clean = gsub("^X", "", Sample)) %>%
+        left_join(metadata_df, by = "Sample_clean") %>%
+        left_join(covariables, by = c("Sample_clean" = "X"))
+      
+      rownames(meta_joined) <- colnames(A)
+      A@meta.data <- meta_joined
+      
+      # Align rownames
+      if (!all(rownames(A@meta.data) == colnames(A))) {
+        rownames(A@meta.data) <- colnames(A)
+      }
+      
+      # Ensure WGCNA results are present
+      if (!"pseudobulk" %in% names(A@misc)) stop("WGCNA results not found in @misc$pseudobulk for ", CS)
+      
+      # Remove outlier
+      outlier <- ""
+      if (outlier %in% colnames(A)) {
+        A <- subset(A, cells = setdiff(colnames(A), outlier))
+        rownames(A@meta.data) <- colnames(A)
+      }
+      
+      # Ensure numeric trait
+      # A@meta.data$TDP43b <- as.numeric(as.character(A@meta.data$TDP43b))
+      # if (all(is.na(A@meta.data$TDP43b))) stop("TDP43b column is all NA for ", CS)
+      
+      # Calculate module eigengenes inside Seurat object
+      MEs <- hdWGCNA::GetMEs(A, wgcna_name = "pseudobulk")
+      A@misc$pseudobulk$MEs <- MEs
+      
+      # Check MEs exist
+      if (is.null(A@misc$pseudobulk$MEs)) stop("No MEs found in object for ", CS)
+      
+      # Run Module-Trait correlation
+      cor_results <- hdWGCNA::ModuleTraitCorrelation(
+        seurat_obj = A,
+        traits = "pTDP43",
+        wgcna_name = "pseudobulk"
+      )
+      
+      # Extract correlation dataframe safely
+      cor_df <- GetModuleTraitCorrelation(cor_results)
+      
+      # Sort correlations
+      # Extract correlations for 'all_cells'
+      cor_vec <- cor_df$cor$all_cells
+      pval_vec <- cor_df$pval$all_cells
+      fdr_vec <- cor_df$fdr$all_cells
+      
+      # Convert to data frame
+      cor_df_clean <- data.frame(
+        module = names(cor_vec),
+        cor = as.numeric(cor_vec),
+        p.value = as.numeric(pval_vec),
+        fdr = as.numeric(fdr_vec)
+      )
+      
+      # Sort by absolute correlation and then p-value
+      library(dplyr)
+      cor_df_sorted <- cor_df_clean %>%
+        arrange(desc(abs(cor)), p.value)
+      
+      # Save results
+      outdir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/EGG_VS_COV/FTLD/C9/CS_Moduletraitcorrelations_Asin_pTDP43/"
+      if (!dir.exists(outdir)) dir.create(outdir, recursive = TRUE)
+      write.csv(cor_df_sorted, file = paste0(outdir, CS, ".csv"), row.names = FALSE)      
+      # Cleanup
+      rm(A, metadata, covariables, 
+         cor_vec, pval_vec, fdr_vec,
+         cor_df_sorted, cor_results, cor_df, cor_df_clean); gc()
+      message("Finished processing CS: ", CS)
+      
+      #      sink(log_file, append = TRUE); cat(Sys.time(), " - Finished: ", CS, "\n"); sink()
+      
+    }, error = function(e) {
+      #      sink(log_file, append = TRUE)
+      cat(Sys.time(), "ERROR in ", CS, ": ", conditionMessage(e), "\n")
+      #      sink()
+      message("Error in CS: ", CS, " → ", conditionMessage(e))
+    })
+  }
 }
 ```

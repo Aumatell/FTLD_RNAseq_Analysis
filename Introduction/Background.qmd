@@ -2,14 +2,95 @@
 title: "Background"
 ---
 
-FTLD
+# FTLD
 
-C9
+Frontotemporal lobar degeneration (FTLD) comprises a group of neurodegenerative disorders characterized by progressive atrophy of the frontal and temporal lobes, leading to profound changes in personality, behaviour, language, and executive function. It represents the most common cause of dementia under 65 years of age and exhibits substantial clinical, genetic, and neuropathological heterogeneity. From a pathological standpoint, FTLD is primarily classified according to the molecular identity of the protein aggregates present in neurons and glia, most commonly **TDP-43**, **tau**, or **FUS**. Among these, **FTLD-TDP** accounts for \~50% of cases and represents the major pathological subtype associated with both sporadic disease and several genetic forms.
 
-Sporadic TDP
+At the molecular level, FTLD is increasingly understood as a disorder of **RNA metabolism**, **proteostasis**, **synaptic function**, and **neuroimmune interactions**, with convergent disruptions across multiple cell types. Early transcriptomic studies in bulk cortical tissue identified dysregulation in synaptic signalling, immune activation, vesicle trafficking, and RNA-processing pathways. More recently, **single-nucleus RNA sequencing** has shown that FTLD pathology arises through **cell-type–specific vulnerabilities**, affecting both excitatory and inhibitory neurons, glial populations, vascular cells, and immune-infiltrating populations. This cell-type specificity is essential to understanding how different FTLD subtypes converge or diverge in pathophysiology, particularly in the most prevalent forms: **FTLD due to C9orf72 repeat expansion (FTLD-C9)** and **sporadic FTLD-TDP**.
 
-Neuropathologycal markers
+## C9
 
-```{r}
-1 + 1
-```
+The **C9orf72 hexanucleotide repeat expansion** (HRE) is the most common genetic cause of both FTLD and amyotrophic lateral sclerosis (ALS). The pathogenic expansion of GGGGCC (G4C2) repeats leads to at least three convergent mechanisms:
+
+1.   **Haploinsufficiency of C9orf72**, reducing levels of a protein involved in autophagy–lysosomal function and endosomal trafficking.\
+    *References: PMC3430713; Nature 2019 reviews.*
+
+2.   **RNA toxicity**, where expanded sense and antisense repeat-containing transcripts accumulate in the nucleus, forming **RNA foci** that sequester numerous RNA-binding proteins and disrupt splicing and RNA homeostasis.\
+    *References: Nature Neuroscience; Acta Neuropathologica 2018.*
+
+3.   **Dipeptide repeat proteins (DPRs)** produced by repeat-associated non-AUG (RAN) translation, including **poly-GA, poly-GP, poly-GR, poly-PA**, and **poly-PR**, which accumulate in cytoplasmic inclusions and disrupt nucleocytoplasmic transport, ribosomal function, and proteostasis.\
+    *References: Cell 2015; Nature Genetics 2013; Acta Neuropathol 2018.*
+
+Neuropathologically, FTLD-C9 is characterized by:
+
+-    Abundant DPR inclusions (poly-GA \> poly-GP \> poly-GR),
+
+-    Widespread RNA foci (sense and antisense),
+
+-    Variable TDP-43 pathology (usually FTLD-TDP type B),
+
+-   Marked vulnerability of extratelencephalic pathways, including corticospinal tracts and cerebellum,
+
+-    Pronounced neuroinflammation and glial activation.
+
+Transcriptomic studies reveal a consistent pattern of **synaptic dysfunction**, **altered neuronal excitability**, **astrocytic and microglial activation**, **vesicular trafficking deficits**, and **downregulation of STMN2** due to TDP-43 dysfunction. Single-cell analyses demonstrate that specific excitatory neuron populations (e.g., RORB-positive L4/5 neurons) are highly vulnerable, while glial populations show diverse inflammatory signatures.
+
+The combination of RNA foci, DPR toxicity, and TDP-43 dyshomeostasis creates a multifactorial, cell-type-dependent cascade culminating in widespread cortical degeneration.
+
+## Sporadic TDP
+
+Sporadic FTLD-TDP comprises the largest cluster of FTLD cases and is defined by the intracellular accumulation of phosphorylated, ubiquitinated, and cleaved forms of **TDP-43**, a ubiquitously expressed RNA-binding protein essential for splicing repression, cryptic exon suppression, stress-granule dynamics, and mRNA transport.
+
+Loss of nuclear TDP-43 function leads to:
+
+-    **Cryptic exon inclusion** in critical neuronal genes (e.g., **STMN2**, **UNC13A**)\
+    *References: Brown et al., 2022; Pasquini et al., 2024.*
+
+-    Impaired RNA metabolism across thousands of transcripts
+
+-    Disruption of synaptic vesicle cycling and axonal maintenance
+
+-    Widespread transcriptional deregulation in vulnerable neurons
+
+Concomitantly, cytoplasmic gain-of-function mechanisms contribute to toxicity:
+
+-    Aberrant TDP-43 aggregation
+
+-    Dysregulated stress granules
+
+-    Sequestration of RNA-binding proteins
+
+-    Impairment of nucleocytoplasmic transport\
+    *References: Sirkis et al., 2019; Grossman et al., 2023.*
+
+Neuropathologically, FTLD-TDP is subdivided into four major patterns (types A–D) based on laminar distribution and morphology of TDP-43 inclusions. The **type B** pattern is the most common in sporadic disease and in C9orf72 expansion carriers.
+
+Transcriptomic studies consistently show:
+
+-    Downregulation of neuronal and synaptic programs
+
+-    Upregulation of immune and inflammatory pathways (CHI3L1/CHI3L2, SPP1, complement)
+
+-    Selective vulnerability of excitatory neurons and layer-specific cortical circuits
+
+-    Astroglial and microglial activation
+
+-    Altered oligodendrocyte function
+
+Recent single-nucleus studies have identified **STMN2 loss** as a central molecular hallmark linked directly to TDP-43 nuclear depletion, with strong correlation to disease severity.
+
+## Neuropathologycal markers
+
+Below is a concise table summarizing the key FTLD neuropathological markers relevant for your study (ACSL3, lncRNA, DPRs, RNA foci, pTDP-43, STMN2), their origin, and pathological impact.
+
+| **Marker**     | **Origin / Biological Basis**                                                                 | **Pathological Impact**                                                                                     |
+|----------------|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| **ACSL3**      | Enzyme involved in long-chain fatty-acid metabolism; upregulated in C9orf72 HRE brains.       | Reflects metabolic reprogramming; associated with glial activation and neuronal stress.                      |
+| **lncRNAs**    | Long non-coding RNAs transcribed from expanded sense/antisense C9orf72 repeat sequences.      | Contribute to RNA toxicity; sequester splicing factors; correlate with disease severity.                     |
+| **RNA foci** (sense & antisense) | Nuclear aggregates of expanded G4C2/G2C4 transcripts.                                   | Sequester RBPs; disrupt splicing and RNA metabolism; correlate with neuronal vulnerability.                  |
+| **polyGA**     | Dipeptide repeat protein generated by RAN translation (sense transcript).                      | Most abundant DPR; impairs proteostasis and protein clearance pathways; forms large cytoplasmic inclusions.  |
+| **polyGP**     | DPR generated from both sense and antisense RAN translation.                                   | Less toxic; strong biofluid biomarker of repeat expansion activity.                                         |
+| **polyGR**     | Arginine-rich DPR with high nucleolar and ribosomal toxicity.                                  | Highly toxic; disrupts ribosomes, translation, stress granules, and nucleocytoplasmic transport.            |
+| **pTDP-43**    | Phosphorylated, cleaved, cytoplasmic TDP-43 aggregates.                                        | Hallmark of FTLD-TDP; indicates nuclear TDP-43 loss-of-function and cytoplasmic gain-of-function toxicity.  |
+| **STMN2**      | Axonal maintenance gene aberrantly spliced due to TDP-43 nuclear depletion.                    | Sensitive marker of TDP-43 dysfunction; its reduction correlates with disease severity and neuronal loss.    |
+

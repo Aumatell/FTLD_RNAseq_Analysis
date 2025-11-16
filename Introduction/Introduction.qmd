@@ -2,7 +2,61 @@
 title: "Introduction"
 ---
 
-About this site
+Frontotemporal lobar degeneration (FTLD) comprises a heterogeneous group of neurodegenerative disorders marked by progressive impairment in behaviour, language, and executive functions. Among its molecular subtypes, **FTLD with TDP-43 pathology (FTLD-TDP)** and **FTLD caused by C9orf72 hexanucleotide repeat expansions (FTLD-C9)** represent the most frequent forms. Although these subtypes share TDP-43 dysregulation as a pathological hallmark, they differ substantially in their upstream disease mechanisms: **RNA foci and dipeptide repeat (DPR) toxicity** in FTLD-C9 versus **primary TDP-43 mislocalization and aggregation** in sporadic FTLD-TDP.
+
+Bulk RNA-seq studies have shown broad alterations in synaptic, inflammatory, metabolic, and RNA-processing pathways in FTLD. Yet, bulk tissue obscures the cell-type specificity of these changes—an essential dimension given the layer-specific vulnerability of excitatory neurons, the selective involvement of interneurons, and the diverse responses of astrocytes, microglia, oligodendrocytes, and vascular cells. Recent single-nucleus sequencing studies underscore the importance of **cell-type and cell-state–specific transcriptional programs**, but comprehensive integrative analyses across disease subtypes and neuropathological markers remain lacking.
+
+The emergence of **Bayesian deconvolution frameworks**, combined with high-resolution snRNA-seq references such as Pineda et al. (Synapse ID: syn51105515), now enables cell-state–resolved inference from bulk data. Such approaches provide an unprecedented opportunity to map FTLD-associated transcriptional dysregulation to specific neuronal and non-neuronal compartments, and to integrate these changes with quantitative neuropathological measures such as **pTDP-43 burden, STMN2 loss, RNA foci density, and DPR pathology**.
+
+By leveraging four independent bulk RNA-seq cohorts—including two newly generated datasets from Sant Pau and two large external datasets—it becomes possible to identify reproducible, cell-type–specific features of FTLD-C9 and FTLD-TDP, and to uncover convergent and divergent disease mechanisms across subtypes.
+
+## **Hypothesis**
+
+We hypothesized that:
+
+1.   **FTLD-C9 and sporadic FTLD-TDP exhibit distinct and cell-type–specific transcriptional alterations**, particularly within excitatory neurons and glial populations, reflecting their divergent upstream mechanisms (repeat-associated toxicity vs. primary TDP-43 dysfunction).
+
+2.  **Bayesian deconvolution using the Pineda et al. single-nucleus reference** can resolve these subtype-specific differences at both cell type and cell state resolution, revealing transcriptional programs obscured in bulk analyses.
+
+3.   **Neuropathological markers**—including RNA foci (sense/antisense), dipeptide repeat proteins (polyGA, polyGP, polyGR), ACSL3, lncRNAs, pTDP-43, and STMN2 levels—**correlate with discrete transcriptional signatures within specific cell states**, reflecting coordinated pathological processes rather than global tissue-level effects.
+
+4.   These cell-type–specific signatures and their associated co-expression modules are **reproducible across independent external datasets** (Menden et al. and Pottier et al.), supporting their generality as molecular hallmarks of FTLD-C9 and FTLD-TDP.
+
+## **Objectives**
+
+To test these hypotheses, we pursued the following objectives:
+
+### **1. Characterize cell-type–specific transcriptional alterations in FTLD-C9 and FTLD-TDP**
+
+-    Perform bulk differential gene expression analyses in newly sequenced Sant Pau FTLD-C9 and FTLD-TDP cohorts.
+
+-    Apply BayesPrism deconvolution using the Pineda et al. single-cell reference to derive cell-type– and cell-state–specific expression matrices.
+
+### **2. Quantify disease-associated alterations in inferred cell-state composition**
+
+-    Compare arcsin-transformed cellular proportions between FTLD cases and healthy controls.
+
+-    Identify specific neuronal, glial, vascular, and immune cell states enriched or depleted in each FTLD subtype.
+
+### **3. Link transcriptional changes and cell-state proportions to neuropathological markers**
+
+-    Correlate cell-state proportions and gene expression with ACSL3, lncRNAs, DPR burden (polyGA, polyGP, polyGR), RNA foci, pTDP-43 levels, and STMN2 expression.
+
+-   Determine subtype-specific molecular markers of disease progression and vulnerability.
+
+### **4. Identify and functionally annotate cell-state–specific co-expression modules**
+
+-   Construct hdWGCNA networks from deconvolved expression profiles.
+
+-   Identify modules associated with disease status and neuropathological markers.
+
+-   Characterize enriched GO pathways across excitatory, inhibitory, glial, vascular, and immune cell states.
+
+### **5. Validate findings across two independent external datasets**
+
+-   Replicate differential expression, cell-state composition alterations, and module-level changes in the Menden et al. and Pottier et al. cohorts.
+
+-   Assess reproducibility using overlap statistics (Jaccard index, GeneOverlap) and module gene preservation.
 
 ```{r}
 1 + 1

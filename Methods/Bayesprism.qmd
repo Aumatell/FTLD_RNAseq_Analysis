@@ -2,7 +2,106 @@
 title: "Bayesprism"
 ---
 
-About this site
+# **Bayesian Deconvolution Framework (BayesPrism): Rationale, Approach, and Analytical Objectives**
+
+## **Rationale**
+
+Bulk RNA-sequencing provides a high-throughput snapshot of gene expression in brain tissue but masks the substantial cellular heterogeneity of the human cortex. FTLD pathology affects specific neuronal populations—particularly RORB-expressing excitatory neurons—as well as diverse non-neuronal cell classes including astrocytes, microglia, oligodendrocytes, vascular cells, and infiltrating immune cells. As a result, interpreting bulk transcriptomic changes requires methods capable of **deconvolving mixed-cell signals into cell-type–specific expression profiles and cell-state proportions**.
+
+Bayesian deconvolution methods, such as **BayesPrism**, offer major advantages over traditional regression or matrix factorization approaches by explicitly modeling biological variability and uncertainty. Using a high-resolution single-nucleus RNA-seq reference—such as the dataset from **Pineda et al. (Synapse ID: syn51105515)**—BayesPrism integrates single-cell information with bulk counts to infer, for each sample:
+
+1.   **Cell-type and cell-state fractions**, representing the estimated proportion of each transcriptional state in the tissue.
+
+2.   **Cell-type–specific expression estimates**, reconstructing a matrix of gene expression for each cell state within each patient.
+
+This dual output allows downstream **cell-state–resolved differential expression, co-expression network analysis (hdWGCNA), and correlations with neuropathological markers**.
+
+## **Analytical Strategy**
+
+The Bayesian deconvolution approach consisted of the following steps:
+
+### **1. Construction of the Single-Cell Reference**
+
+The reference atlas from Pineda et al. contained **19 major cell classes and 44 transcriptionally distinct cell states** derived from human frontal cortex single-nucleus RNA-seq. The reference was preprocessed to:
+
+-    exclude genes with low expression,
+
+-   remove mitochondrial, ribosomal, and sex-chromosome transcripts,
+
+-    retain only protein-coding genes expressed in ≥5 nuclei.
+
+This produced a biologically curated transcriptional reference ideal for Bayesian modeling of cortical cell populations.
+
+### **2. Alignment of Bulk and Single-Cell Data**
+
+Bulk RNA-seq counts from all four cohorts (two Sant Pau, Menden et al., Pottier et al.) were matched to the gene identifiers in the reference.\
+Counts were log-transformed where appropriate, and samples were retained only if sequencing quality and pathological classification were robust.
+
+### **3. BayesPrism Initialization and Inference**
+
+A **BayesPrism object** was created using the filtered single-cell matrix as the reference component and the raw bulk count matrix as the mixture component. The algorithm:
+
+-   identifies **outlier genes** (cutoff = 0.01),
+
+-   performs **Gibbs sampling** to estimate posterior distributions for each sample,
+
+-   infers **cell-type fractions** (θ) and **cell-type–specific expression matrices** (φ) simultaneously.
+
+Posterior estimates were extracted after convergence diagnostics ensured stable sampling across chains.
+
+### **4. Extraction of Cell-State Proportions and Expression Matrices**
+
+For each sample, BayesPrism returned:
+
+-   **Posterior-estimated cell-state proportions**, enabling comparisons between FTLD-C9, FTLD-TDP, and controls.
+
+-   **Cell-state–specific expression matrices**, which served as the basis for:
+
+    -   edgeR-based cell-state differential expression.
+
+    -   construction of pseudobulk Seurat objects,
+
+    -   hdWGCNA module detection,
+
+    -   correlation analysis with neuropathology (ACSL3, lncRNAs, RNA foci, DPRs, pTDP-43, STMN2).
+
+### **5. Standardized Processing Across the Four Cohorts**
+
+All steps—from reference alignment, through BayesPrism modeling, to extraction of posterior values—were performed identically in:
+
+-   **Sant Pau FTLD-C9**
+
+-   **Sant Pau FTLD-TDP**
+
+-    **Menden et al. FTLD-C9**
+
+-   **Pottier et al. FTLD-TDP**
+
+This standardized pipeline enabled robust **cross-cohort comparison** of:
+
+-    cell-state proportions,
+
+-   cell-type–specific differential expression.
+
+-   co-expression networks,
+
+-   pathological-marker correlations.
+
+## **Objectives of Applying BayesPrism**
+
+BayesPrism was employed to achieve the following methodological goals:
+
+1.   **Resolve bulk RNA-seq into cell-type and cell-state contributions** to uncover FTLD-associated alterations hidden in tissue-level averages.
+
+2.   **Enable differential expression analysis at single-cell resolution**, identifying the precise neuronal and glial subtypes driving FTLD-C9 and FTLD-TDP transcriptional changes.
+
+3.   **Quantify disease-related changes in cell-state composition**, including excitatory/inhibitory neuron loss and reactive glial expansion.
+
+4.   **Map neuropathological burden (RNA foci, DPRs, pTDP-43, STMN2)** to transcriptional changes within specific cell states.
+
+5.   **Generate high-dimensional transcriptional networks (hdWGCNA)** to identify disease-relevant modules that would otherwise be unresolvable in bulk data.
+
+6.   **Validate findings across independent datasets** using a unified Bayesian framework to ensure reproducibility and generalizability.
 
 ```{r code_2_bayesprism_2_baysprism_ftld_c9_r, eval=FALSE}
 library("ggplot2")
