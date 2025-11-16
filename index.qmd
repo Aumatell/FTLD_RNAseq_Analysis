@@ -2,10 +2,6 @@
 title: "FTLD_RNAseq_Analysis"
 ---
 
-This is a Quarto website.
+This Project studies the effects of Frontotemporal lobule degeneration (FTLD) on it's C9orf72 and sporadic TDP subtypes on transcriptomics.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
 
-```{r}
-1 + 1
-```
