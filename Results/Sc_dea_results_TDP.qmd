@@ -1,0 +1,322 @@
+---
+  title: "Single cell difference expression analysis ( TDP )"
+---
+
+## TDP
+
+From the 43 deconvolved cells, only 27 had sufficient expression levels for EdgeR to perform differential expression analysis. Among these, 15 distinct cell types showed significant differential gene expression. RORB/POU3F2-characterized excitatory neurons exhibited the highest number of alterations, with 8 differentially expressed genes (DEGs), while RORB/LRRK1 showed 1 DEG. Smooth muscle cells (SMCs) also displayed 6 DEGs. Across all cell types, upregulated genes were more frequent than downregulated ones.
+
+### Excitatory neurons
+
+Differences in excitatory neuron composition revealed key transcriptional changes. In RORB/FOXO1 neurons, RTP5 was downregulated (adjusted p = 0.0158; FC = 0,39). Inflammatory marker CHI3L1 was upregulated in RORB/LRRK1 (adjusted p = 0.0038; FC = 2.87) and RORB/POU3F2 (adjusted p = 0.00032; FC = 3,03), consistent with its role as a neuroinflammatory biomarker. Additionally, METRN was downregulated in RORB/POU3F2 (adjusted p = 0.0076; FC =0,74).The deregulated genes do not enrich biological pathways or functions.
+
+### Inhibitory neurons
+
+No differentially expressed genes were detected in inhibitory neuron subtypes.
+
+### Non-neuronal cells
+
+Among non-neuronal cell types—including astrocytes (GFAP+ and GFAP-), microglia, and oligodendrocytes—several transcriptional alterations were observed. In GFAP- astrocytes (adjusted p = 0.00018; FC = 3,04) and microglia (adjusted p = 0.01; FC = 3,04), the inflammatory marker CHI3L1 was upregulated and , reflecting an activation of neuroinflammatory pathways. Conversely, METRN expression was reduced in GFAP- astrocytes (adjusted p = 0.0032; FC = 0,74), and ACSM5 was downregulated in microglia (adjusted p = 0.035; FC = 0,47). In oligodendrocytes, GIPR was significantly upregulated (adjusted p = 0.0009; FC = 3,90), suggesting potential alterations in oligodendrocyte signaling or metabolic processes.
+
+These findings indicate that TDP-43 pathology is associated with both pro-inflammatory activation and suppression of specific functional genes across non-neuronal cell populations. Enrichment analysis do not show significativly enriched pathways.
+
+Vascular cells Arterial, capillary, and T cell subtypes did not display significant differential gene expression. In SMCs, CHI3L1 was upregulated (adjusted p = 0.013; FC = 3,05) and METRN was downregulated (adjusted p = 0.013; FC = 0.74).The enrichment analysis on this cell types did not indicate any enriched term.
+
+Nominal p-values In the case of FTLD-TDP, analysis of nominal p-values per gene and cell type revealed several genes exhibiting p \< 0.05 in specific cell populations, suggesting restricted transcriptional alterations. CHCHD10 showed nominal significance in RORB/FOXO1 neurons (p = 0.056), RORB/LRRK1 neurons (p = 0.132), and SMC (p = 0.039), indicating potential alterations in vascular and neuronal subtypes. GRN presented significant nominal p-values in Oligodendrocytes (p = 0.046), RORB/LRRK1 neurons (p = 0.066), and RORB/POU3F2 neurons (p = 0.121), suggesting glial and neuronal involvement. UNC13A exhibited nominal significance in Oligodendrocytes (p = 0.045), consistent with selective transcriptional changes within this glial subtype. L3MBTL1 showed nominal p-values in GFAP+ astrocytes (p = 0.019) and Oligodendrocytes (p = 0.017), indicating glial cell–specific effects. SMG8 demonstrated nominal significance in Oligodendrocytes (p = 0.045) and RORB/POU3F2 neurons (p = 0.106), supporting moderate transcriptional dysregulation across glial and neuronal populations. NPTX2 displayed the most striking pattern, with highly significant nominal p-values across multiple cell types, including Arterial (p = 0.0008), Capillary (p = 0.0057), CUX2/RASGRF2 neurons (p = 0.003), GFAP - astrocytes (p = 0.013), Oligodendrocytes (p = 0.016), RORB/LRRK1 neurons (p = 0.0096), RORB/POU3F2 neurons (p = 0.0050), SMC (p = 0.0036), and T cells (p = 0.036), confirming strong and cell type–specific transcriptional effects spanning vascular, neuronal, and glial compartments. Other genes such as NEFL, OPTN, MATR3, TBK1, C9orf72, VCP, CHMP2B, SQSTM1, TARDBP, FUS, MAPT, DPP6, TMEM106B, HNRNPA1, HNRNPL, PDS5B, TNIP1, VIPR1, RCL1, C3AR1, TINAG, RBPJL, and FARP2 did not exhibit any nominally significant changes across cell types, whereas UBQLN2, C19orf52, and ANO9 lacked available data. Collectively, these findings suggest that among the tested genes, NPTX2 exhibits the most prominent and broad transcriptional alterations, followed by moderate, cell type–restricted effects for CHCHD10, GRN, L3MBTL1, SMG8, and UNC13A.
+
+## Sant Pau
+
+```{r}
+library(readxl)
+library(plotly)
+library(tidyverse)
+
+# ---- File and sheets ----
+file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_FTLD_TDP.xlsx"
+sheets <- excel_sheets(file)
+
+# ---- Genes to highlight ----
+genes_highlight <- c("")
+
+# ---- Read and standardize data per sheet ----
+data_list <- list()
+
+for (sheet in sheets) {
+  df_raw <- read_excel(file, sheet = sheet)
+  colnames(df_raw) <- tolower(make.names(colnames(df_raw), unique = TRUE))
+  cols <- colnames(df_raw)
+  
+  logfc_col <- intersect(c("logfc", "log2fc"), cols)
+  fdr_col   <- intersect(c("adj_pval", "adj.pval", "fdr", "padj"), cols)
+  pval_col  <- intersect(c("pvalue", "p.val", "pval"), cols)
+  
+  if (length(logfc_col) == 0 || length(fdr_col) == 0) {
+    message("⚠️ Skipping ", sheet, " — missing logFC or FDR/adj_pval column.")
+    next
+  }
+  
+  data <- tibble(
+    gene   = df_raw[[1]],
+    logfc  = as.numeric(df_raw[[logfc_col[1]]]),
+    fdr    = as.numeric(df_raw[[fdr_col[1]]]),
+    pvalue = if (length(pval_col) > 0) as.numeric(df_raw[[pval_col[1]]]) else NA_real_
+  ) %>%
+    mutate(
+      neglog10fdr = -log10(fdr),
+      significance = case_when(
+        fdr < 0.05 & logfc > 0 ~ "Upregulated",
+        fdr < 0.05 & logfc < 0 ~ "Downregulated",
+        TRUE ~ "Not significant"
+      ),
+      label = ifelse(gene %in% genes_highlight, gene, NA_character_)
+    ) %>%
+    drop_na(logfc, fdr)
+  
+  if (nrow(data) == 0) {
+    message("⚠️ Skipping ", sheet, " — no valid rows after cleaning.")
+    next
+  }
+  
+  data_list[[sheet]] <- data
+}
+
+valid_sheets <- names(data_list)
+message("✅ Prepared volcano data for: ", paste(valid_sheets, collapse = ", "))
+
+# ---- Fixed color palette (green for not significant) ----
+col_map <- c(
+  "Upregulated"   = "#D55E00",
+  "Downregulated" = "#0072B2",
+  "Not significant" = "#009E73"   # green tone (replace with grey70 if preferred)
+)
+
+# ---- Build multi-sheet plot ----
+fig <- plot_ly()
+trace_ranges <- list()
+
+for (i in seq_along(valid_sheets)) {
+  sheet <- valid_sheets[i]
+  df <- data_list[[sheet]]
+  
+  start_idx <- length(fig$x$data) + 1
+  
+  for (sig in c("Upregulated", "Downregulated", "Not significant")) {
+    sub <- df %>% filter(significance == sig)
+    if (nrow(sub) == 0) next
+    
+    # Only label highlighted genes
+    text_labels <- ifelse(is.na(sub$label), "", sub$label)
+    
+    fig <- fig %>%
+      add_trace(
+        type = "scatter",
+        mode = "markers+text",
+        x = sub$logfc,
+        y = sub$neglog10fdr,
+        marker = list(
+          color = col_map[[sig]],
+          size = 6,
+          opacity = 0.8
+        ),
+        text = text_labels,
+        textposition = "top center",
+        textfont = list(size = 9),
+        hovertext = paste0(
+          "<b>", sub$gene, "</b><br>",
+          "logFC: ", round(sub$logfc, 2), "<br>",
+          "FDR: ", signif(sub$fdr, 3)
+        ),
+        hoverinfo = "text",
+        name = sig,
+        showlegend = (i == 1),
+        visible = (i == 1)
+      )
+  }
+  
+  end_idx <- length(fig$x$data)
+  trace_ranges[[i]] <- start_idx:end_idx
+}
+
+# ---- Dropdown ----
+buttons <- lapply(seq_along(valid_sheets), function(i) {
+  vis <- rep(FALSE, length(fig$x$data))
+  vis[trace_ranges[[i]]] <- TRUE
+  list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(title = paste("Interactive Volcano Plot —", valid_sheets[i]))
+    ),
+    label = valid_sheets[i]
+  )
+})
+
+# ---- Layout ----
+fig <- fig %>%
+  layout(
+    title = list(text = paste("Interactive Volcano Plot —", valid_sheets[1]), x = 0.05),
+    xaxis = list(title = "log₂ Fold Change"),
+    yaxis = list(title = "−log₁₀(FDR)"),
+    updatemenus = list(list(
+      y = 1.1,
+      x = 0,
+      buttons = buttons,
+      direction = "down",
+      showactive = TRUE,
+      xanchor = "left",
+      yanchor = "top",
+      title = list(text = "Select cell state / sheet")
+    ))
+  )
+
+fig
+
+```
+
+## Pottier
+
+```{r}
+library(readxl)
+library(plotly)
+library(tidyverse)
+
+# ---- File and sheets ----
+file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_Pottier.xlsx"
+sheets <- excel_sheets(file)
+
+# ---- Genes to highlight ----
+genes_highlight <- c("")
+
+# ---- Read and standardize data per sheet ----
+data_list <- list()
+
+for (sheet in sheets) {
+  df_raw <- read_excel(file, sheet = sheet)
+  colnames(df_raw) <- tolower(make.names(colnames(df_raw), unique = TRUE))
+  cols <- colnames(df_raw)
+  
+  logfc_col <- intersect(c("logfc", "log2fc"), cols)
+  fdr_col   <- intersect(c("adj_pval", "adj.pval", "fdr", "padj"), cols)
+  pval_col  <- intersect(c("pvalue", "p.val", "pval"), cols)
+  
+  if (length(logfc_col) == 0 || length(fdr_col) == 0) {
+    message("⚠️ Skipping ", sheet, " — missing logFC or FDR/adj_pval column.")
+    next
+  }
+  
+  data <- tibble(
+    gene   = df_raw[[1]],
+    logfc  = as.numeric(df_raw[[logfc_col[1]]]),
+    fdr    = as.numeric(df_raw[[fdr_col[1]]]),
+    pvalue = if (length(pval_col) > 0) as.numeric(df_raw[[pval_col[1]]]) else NA_real_
+  ) %>%
+    mutate(
+      neglog10fdr = -log10(fdr),
+      significance = case_when(
+        fdr < 0.05 & logfc > 0 ~ "Upregulated",
+        fdr < 0.05 & logfc < 0 ~ "Downregulated",
+        TRUE ~ "Not significant"
+      ),
+      label = ifelse(gene %in% genes_highlight, gene, NA_character_)
+    ) %>%
+    drop_na(logfc, fdr)
+  
+  if (nrow(data) == 0) {
+    message("⚠️ Skipping ", sheet, " — no valid rows after cleaning.")
+    next
+  }
+  
+  data_list[[sheet]] <- data
+}
+
+valid_sheets <- names(data_list)
+message("✅ Prepared volcano data for: ", paste(valid_sheets, collapse = ", "))
+
+# ---- Fixed color palette (green for not significant) ----
+col_map <- c(
+  "Upregulated"   = "#D55E00",
+  "Downregulated" = "#0072B2",
+  "Not significant" = "#009E73"   # green tone (replace with grey70 if preferred)
+)
+
+# ---- Build multi-sheet plot ----
+fig <- plot_ly()
+trace_ranges <- list()
+
+for (i in seq_along(valid_sheets)) {
+  sheet <- valid_sheets[i]
+  df <- data_list[[sheet]]
+  
+  start_idx <- length(fig$x$data) + 1
+  
+  for (sig in c("Upregulated", "Downregulated", "Not significant")) {
+    sub <- df %>% filter(significance == sig)
+    if (nrow(sub) == 0) next
+    
+    # Only label highlighted genes
+    text_labels <- ifelse(is.na(sub$label), "", sub$label)
+    
+    fig <- fig %>%
+      add_trace(
+        type = "scatter",
+        mode = "markers+text",
+        x = sub$logfc,
+        y = sub$neglog10fdr,
+        marker = list(
+          color = col_map[[sig]],
+          size = 6,
+          opacity = 0.8
+        ),
+        text = text_labels,
+        textposition = "top center",
+        textfont = list(size = 9),
+        hovertext = paste0(
+          "<b>", sub$gene, "</b><br>",
+          "logFC: ", round(sub$logfc, 2), "<br>",
+          "FDR: ", signif(sub$fdr, 3)
+        ),
+        hoverinfo = "text",
+        name = sig,
+        showlegend = (i == 1),
+        visible = (i == 1)
+      )
+  }
+  
+  end_idx <- length(fig$x$data)
+  trace_ranges[[i]] <- start_idx:end_idx
+}
+
+# ---- Dropdown ----
+buttons <- lapply(seq_along(valid_sheets), function(i) {
+  vis <- rep(FALSE, length(fig$x$data))
+  vis[trace_ranges[[i]]] <- TRUE
+  list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(title = paste("Interactive Volcano Plot —", valid_sheets[i]))
+    ),
+    label = valid_sheets[i]
+  )
+})
+
+# ---- Layout ----
+fig <- fig %>%
+  layout(
+    title = list(text = paste("Interactive Volcano Plot —", valid_sheets[1]), x = 0.05),
+    xaxis = list(title = "log₂ Fold Change"),
+    yaxis = list(title = "−log₁₀(FDR)"),
+    updatemenus = list(list(
+      y = 1.1,
+      x = 0,
+      buttons = buttons,
+      direction = "down",
+      showactive = TRUE,
+      xanchor = "left",
+      yanchor = "top",
+      title = list(text = "Select cell state / sheet")
+    ))
+  )
+
+fig
+```

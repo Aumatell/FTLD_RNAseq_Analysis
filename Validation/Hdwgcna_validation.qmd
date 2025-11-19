@@ -2,29 +2,812 @@
 title: "Validation: Gene modules analysis"
 ---
 
-## C9
-
 ### HDWGCNA CORRESPONDANCE
 
-```{r}
+Baed on shared genes, we matched the modules obtained from sant pau's cell states with the obteined from the validation datasets.
 
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(DT)
+library(GeneOverlap)
+
+# Function to get list of subfolders in a directory
+list_subfolders <- function(dir_path) {
+  list.dirs(dir_path, recursive = FALSE, full.names = FALSE)
+}
+
+# Function to read gene list from a file (one column named "X")
+read_genes <- function(file_path) {
+  df <- read.csv(file_path, stringsAsFactors = FALSE, col.names = "X")
+  if (!"X" %in% colnames(df)) {
+    stop(paste("File", file_path, "does not contain column named 'X'"))
+  }
+  unique(df$X)
+}
+
+# Main function to compare files
+compare_modules <- function(dir1, dir2) {
+  folders1 <- list_subfolders(dir1)
+  folders2 <- list_subfolders(dir2)
+  
+  # Check if folder structure is the same
+  common_folders <- intersect(folders1, folders2)
+  if (length(common_folders) == 0) {
+    stop("No common folders found between directories")
+  }
+  
+  results <- data.frame(
+    folder         = character(),
+    file_dir1      = character(),
+    file_dir2      = character(),
+    n_coincidences = integer(),
+    jaccard        = numeric(),
+    p_overlap      = numeric(),
+    stringsAsFactors = FALSE
+  )
+  
+  for (folder in common_folders) {
+    modules_dir1 <- file.path(dir1, folder, "MODULES")
+    modules_dir2 <- file.path(dir2, folder, "MODULES")
+    
+    if (!dir.exists(modules_dir1) | !dir.exists(modules_dir2)) {
+      warning(paste("MODULES folder missing in", folder))
+      next
+    }
+    
+    files1 <- list.files(modules_dir1, pattern = "\\.csv$", full.names = TRUE)
+    files2 <- list.files(modules_dir2, pattern = "\\.csv$", full.names = TRUE)
+    
+    # Exclude cor_summary.csv and hubs.csv
+    files1 <- files1[!basename(files1) %in% c("cor_summary.csv", "hubs.csv")]
+    files2 <- files2[!basename(files2) %in% c("cor_summary.csv", "hubs.csv")]
+    
+    # Read all files' genes once to speed up
+    genes_list1 <- lapply(files1, read_genes)
+    names(genes_list1) <- basename(files1)
+    genes_list2 <- lapply(files2, read_genes)
+    names(genes_list2) <- basename(files2)
+    
+    # Gene universe for this folder
+    universe_genes <- unique(c(unlist(genes_list1), unlist(genes_list2)))
+    universe_size  <- length(universe_genes)
+    
+    # Compare each file from dir1 with each file from dir2
+    for (f1 in names(genes_list1)) {
+      for (f2 in names(genes_list2)) {
+        genes1 <- genes_list1[[f1]]
+        genes2 <- genes_list2[[f2]]
+        
+        # Intersection and Jaccard
+        n_common   <- length(intersect(genes1, genes2))
+        union_size <- length(union(genes1, genes2))
+        jaccard    <- if (union_size == 0) NA_real_ else n_common / union_size
+        
+        # GeneOverlap hypergeometric p-value
+        if (universe_size == 0 || (length(genes1) == 0 && length(genes2) == 0)) {
+          p_ov <- NA_real_
+        } else {
+          go_obj <- newGeneOverlap(genes1, genes2, genome.size = universe_size)
+          p_ov   <- testGeneOverlap(go_obj)@pval
+        }
+        
+        results <- rbind(
+          results,
+          data.frame(
+            folder         = folder,
+            file_dir1      = f1,
+            file_dir2      = f2,
+            n_coincidences = n_common,
+            jaccard        = jaccard,
+            p_overlap      = p_ov,
+            stringsAsFactors = FALSE
+          )
+        )
+      }
+    }
+  }
+  
+  results
+}
+
+# Usage example:
+dir1 <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2"
+dir2 <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/Rimod/CS"
+
+output_table <- compare_modules(dir1, dir2)
+
+output_filtered <- output_table %>%
+  filter(
+    !grepl("grey\\.csv", file_dir1),
+    !grepl("grey\\.csv", file_dir2)
+  ) %>%
+  arrange(is.na(p_overlap), p_overlap, desc(n_coincidences))
+
+# ---- Quarto-friendly interactive table (filtered only) ----
+
+datatable(
+  output_filtered,
+  filter  = "top",
+  options = list(pageLength = 25, autoWidth = TRUE),
+  caption = "Module overlaps (non-grey modules) between FTLD-C9 and RiMod, ranked by GeneOverlap p-value"
+)
+
+
+#write.csv(output_table, "C9_modules_gene_overlap_comparison.csv", row.names = FALSE)
+```
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(DT)
+library(GeneOverlap)
+
+# Function to get list of subfolders in a directory
+list_subfolders <- function(dir_path) {
+  list.dirs(dir_path, recursive = FALSE, full.names = FALSE)
+}
+
+# Function to read gene list from a file (one column named "X")
+read_genes <- function(file_path) {
+  df <- read.csv(file_path, stringsAsFactors = FALSE, col.names = "X")
+  if (!"X" %in% colnames(df)) {
+    stop(paste("File", file_path, "does not contain column named 'X'"))
+  }
+  unique(df$X)
+}
+
+# Main function to compare files
+compare_modules <- function(dir1, dir2) {
+  folders1 <- list_subfolders(dir1)
+  folders2 <- list_subfolders(dir2)
+  
+  # Check if folder structure is the same
+  common_folders <- intersect(folders1, folders2)
+  if (length(common_folders) == 0) {
+    stop("No common folders found between directories")
+  }
+  
+  results <- data.frame(
+    folder         = character(),
+    file_dir1      = character(),
+    file_dir2      = character(),
+    n_coincidences = integer(),
+    jaccard        = numeric(),
+    p_overlap      = numeric(),
+    stringsAsFactors = FALSE
+  )
+  
+  for (folder in common_folders) {
+    modules_dir1 <- file.path(dir1, folder, "MODULES")
+    modules_dir2 <- file.path(dir2, folder, "MODULES")
+    
+    if (!dir.exists(modules_dir1) | !dir.exists(modules_dir2)) {
+      warning(paste("MODULES folder missing in", folder))
+      next
+    }
+    
+    files1 <- list.files(modules_dir1, pattern = "\\.csv$", full.names = TRUE)
+    files2 <- list.files(modules_dir2, pattern = "\\.csv$", full.names = TRUE)
+    
+    # Exclude cor_summary.csv and hubs.csv
+    files1 <- files1[!basename(files1) %in% c("cor_summary.csv", "hubs.csv")]
+    files2 <- files2[!basename(files2) %in% c("cor_summary.csv", "hubs.csv")]
+    
+    # Read all files genes once to speed up
+    genes_list1 <- lapply(files1, read_genes)
+    names(genes_list1) <- basename(files1)
+    genes_list2 <- lapply(files2, read_genes)
+    names(genes_list2) <- basename(files2)
+    
+    # Define gene universe for this folder (all genes seen in either dataset)
+    universe_size <- length(unique(c(unlist(genes_list1), unlist(genes_list2))))
+    
+    # Compare each file from dir1 with each file from dir2
+    for (f1 in names(genes_list1)) {
+      for (f2 in names(genes_list2)) {
+        genes1 <- genes_list1[[f1]]
+        genes2 <- genes_list2[[f2]]
+        
+        # Intersection size
+        n_common <- length(intersect(genes1, genes2))
+        
+        # Jaccard similarity
+        union_size <- length(union(genes1, genes2))
+        jaccard <- if (union_size == 0) NA_real_ else n_common / union_size
+        
+        # GeneOverlap hypergeometric p-value
+        if (universe_size == 0 || (length(genes1) == 0 && length(genes2) == 0)) {
+          p_ov <- NA_real_
+        } else {
+          go_obj <- newGeneOverlap(genes1, genes2, genome.size = universe_size)
+          p_ov <- testGeneOverlap(go_obj)@pval
+        }
+        
+        results <- rbind(
+          results,
+          data.frame(
+            folder         = folder,
+            file_dir1      = f1,
+            file_dir2      = f2,
+            n_coincidences = n_common,
+            jaccard        = jaccard,
+            p_overlap      = p_ov,
+            stringsAsFactors = FALSE
+          )
+        )
+      }
+    }
+  }
+  
+  results
+}
+
+# --- Usage example ---
+
+dir1 <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"
+dir2 <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_bo/"
+
+output_table <- compare_modules(dir1, dir2)
+
+# Filter out grey modules and sort by p-value (non-NA first, lowest p first)
+output_filtered <- output_table %>%
+  filter(
+    !grepl("grey\\.csv", file_dir1),
+    !grepl("grey\\.csv", file_dir2)
+  ) %>%
+  arrange(is.na(p_overlap), p_overlap, desc(n_coincidences))
+
+# ---- Quarto-friendly interactive table (filtered only) ----
+
+datatable(
+  output_filtered,
+  filter = "top",
+  options = list(pageLength = 25, autoWidth = TRUE),
+  caption = "Module overlaps between FTLD-TDP and NEW (non-grey modules), ranked by GeneOverlap p-value"
+)
+
+# write.csv(output_table, "TDP_modules_gene_overlap_comparison.csv", row.names = FALSE)
 ```
 
 ### HDWGCNA DIFFERENCES
 
+based on the previous matches the differences found are in modules that consist of a high % of shared genes.\
+\
+Add code and regenerate updated directly
+
+#### C9
+
+| folder       | FTLD_C9_module | Rimmod_module  |  jaccard |    q_overlap |
+|:-------------|:---------------|:---------------|---------:|-------------:|
+| Arterial     | blue           | turquoise      | 0.416882 |            0 |
+| Arterial     | grey           | grey           | 0.497502 | 5.27855e-115 |
+| Arterial     | purple         | tan            | 0.285714 |  3.09461e-93 |
+| Arterial     | tan            | magenta        | 0.166667 |  9.38933e-56 |
+| Arterial     | turquoise      | blue           | 0.244105 | 2.13067e-306 |
+| CDH4_SCGN    | blue           | yellow         |  0.24101 | 2.88187e-213 |
+| CDH4_SCGN    | grey           | turquoise      | 0.231933 |  1.07701e-14 |
+| CDH4_SCGN    | turquoise      | red            | 0.146914 | 4.73743e-149 |
+| CUX2_RASGRF2 | blue           | turquoise      | 0.338117 |            0 |
+| CUX2_RASGRF2 | greenyellow    | purple         | 0.216667 |  5.30089e-72 |
+| CUX2_RASGRF2 | grey           | grey           |   0.5286 |   1.0094e-87 |
+| CUX2_RASGRF2 | lightgreen     | magenta        | 0.150407 |  4.06292e-50 |
+| CUX2_RASGRF2 | turquoise      | brown          | 0.248991 | 2.49888e-239 |
+| CUX2_RASGRF2 | yellow         | yellow         | 0.105263 |  5.31397e-54 |
+| Capillary    | blue           | blue           | 0.337766 |            0 |
+| Capillary    | green          | greenyellow    | 0.160338 |  1.35642e-80 |
+| Capillary    | greenyellow    | pink           | 0.163498 |  1.34793e-52 |
+| Capillary    | grey           | grey           |  0.51381 | 1.01363e-102 |
+| Capillary    | red            | red            | 0.101786 |  8.28814e-39 |
+| Capillary    | turquoise      | turquoise      | 0.291491 |            0 |
+| GFAP-neg     | black          | grey           | 0.116983 |  1.14945e-33 |
+| GFAP-neg     | brown          | magenta        | 0.192464 |  8.4049e-115 |
+| GFAP-neg     | green          | salmon         | 0.193384 |  1.21424e-41 |
+| GFAP-neg     | grey60         | turquoise      | 0.109375 |  1.63093e-05 |
+| GFAP-neg     | pink           | brown          | 0.218667 |  2.9201e-129 |
+| GFAP-neg     | red            | red            | 0.130952 |  1.09409e-38 |
+| GFAP-neg     | salmon         | pink           | 0.117266 |  1.95247e-41 |
+| GFAP-neg     | yellow         | yellow         | 0.170455 |  1.06509e-58 |
+| LAMP5_PMEPA1 | blue           | blue           | 0.178932 |  3.21649e-42 |
+| LAMP5_PMEPA1 | green          | cyan           | 0.119048 |  2.70577e-04 |
+| LAMP5_PMEPA1 | greenyellow    | lightyellow    | 0.132743 |   7.7429e-33 |
+| LAMP5_PMEPA1 | grey           | grey           | 0.361379 |  8.01823e-99 |
+| LAMP5_PMEPA1 | lightgreen     | green          | 0.137931 |  3.13355e-27 |
+| LAMP5_PMEPA1 | yellow         | yellow         | 0.130435 |  1.63894e-29 |
+| Micro        | brown          | brown          | 0.131941 |  1.23965e-42 |
+| Micro        | green          | yellow         | 0.148649 |   1.3979e-64 |
+| Micro        | grey           | grey           | 0.479696 |   1.1564e-85 |
+| Micro        | lightcyan      | lightcyan      | 0.273709 |   4.1714e-39 |
+| Micro        | magenta        | magenta        |  0.14881 |  2.31077e-55 |
+| Micro        | pink           | pink           | 0.296809 |  2.51555e-75 |
+| Micro        | turquoise      | turquoise      | 0.290928 |  4.81013e-59 |
+| Oligo        | black          | black          | 0.339579 |   4.5837e-84 |
+| Oligo        | blue           | blue           | 0.247672 | 8.29445e-105 |
+| Oligo        | brown          | brown          | 0.265873 |   4.2661e-84 |
+| Oligo        | green          | green          | 0.339217 |   4.9621e-92 |
+| Oligo        | greenyellow    | greenyellow    | 0.207031 |  1.91061e-55 |
+| Oligo        | turquoise      | turquoise      | 0.337842 | 4.96813e-104 |
+| RORB_ADGRL4  | darkolivegreen | darkolivegreen | 0.226393 |  7.14429e-48 |
+| RORB_ADGRL4  | greenyellow    | greenyellow    | 0.177215 |  5.37198e-56 |
+| RORB_ADGRL4  | yellow         | yellow         | 0.192079 |    7.912e-43 |
+| RORB_FOXO1   | black          | black          | 0.142827 |   6.1158e-28 |
+| RORB_FOXO1   | cyan           | cyan           | 0.283798 |  3.66145e-81 |
+| RORB_FOXO1   | darkolivegreen | greenyellow    | 0.199186 |  1.06361e-31 |
+| RORB_FOXO1   | midnightblue   | midnightblue   | 0.102586 |  3.31129e-17 |
+| RORB_LRRK1   | black          | black          | 0.188998 |  7.83474e-61 |
+| RORB_LRRK1   | brown          | brown          | 0.175924 |  6.21946e-57 |
+| RORB_LRRK1   | green          | green          | 0.132955 |  7.08706e-43 |
+| RORB_LRRK1   | greenyellow    | greenyellow    | 0.151124 |  1.63094e-54 |
+| RORB_LRRK1   | grey           | grey           | 0.313723 |   1.3885e-80 |
+| RORB_LRRK1   | magenta        | magenta        | 0.144578 |  2.36133e-35 |
+| RORB_LRRK1   | pink           | pink           | 0.184874 |  2.14702e-54 |
+| RORB_LRRK1   | red            | red            | 0.148568 |  8.68834e-38 |
+| RORB_POU3F2  | brown          | brown          | 0.154826 |  4.84153e-33 |
+| RORB_POU3F2  | green          | green          | 0.109551 |   1.5636e-13 |
+| RORB_POU3F2  | magenta        | magenta        | 0.101938 |  2.02627e-14 |
+| RORB_POU3F2  | pink           | pink           | 0.122047 |  3.90982e-27 |
+| RORB_POU3F2  | red            | red            | 0.277585 |  2.90274e-74 |
+| RORB_POU3F2  | turquoise      | turquoise      | 0.343195 |  1.37006e-78 |
+| RORB_POU3F2  | yellow         | yellow         | 0.261681 |  1.77515e-77 |
+| SCN4B_NEFH   | grey           | grey           | 0.538531 |  1.02095e-56 |
+| SMC          | blue           | blue           | 0.120745 |  5.99407e-31 |
+| SMC          | brown          | brown          | 0.170245 |  1.01824e-73 |
+| SMC          | green          | red            | 0.120635 |  6.47049e-53 |
+| SMC          | greenyellow    | greenyellow    | 0.282051 |  6.86907e-97 |
+| SMC          | grey           | grey           | 0.529526 | 1.60197e-126 |
+| SMC          | salmon         | magenta        | 0.155894 |  2.06285e-50 |
+| SMC          | turquoise      | brown          | 0.186704 | 8.86677e-180 |
+| TLE4_MEGF11  | grey           | grey           | 0.345469 |            0 |
+| TLE4_SEMA3D  | blue           | red            | 0.107707 |  2.26414e-50 |
+| TLE4_SEMA3D  | grey           | grey           | 0.115627 |  4.86852e-03 |
+| T_Cell       | blue           | blue           | 0.175222 | 2.45031e-147 |
+| T_Cell       | brown          | red            | 0.101761 |  2.10194e-57 |
+| T_Cell       | grey           | grey           | 0.536773 |  4.28105e-95 |
+| T_Cell       | royalblue      | greenyellow    | 0.147541 |  2.08211e-36 |
+| T_Cell       | tan            | purple         | 0.176724 |  1.44316e-52 |
+| T_Cell       | turquoise      | turquoise      | 0.407814 |            0 |
+| VIP_CLSTN2   | skyblue3       | mediumpurple3  | 0.126126 |  2.79577e-31 |
+
+#### TDP
+
+| folder       | FTLD_TDP_module | Pottier_module |  jaccard |    q_overlap |
+|:-------------|:----------------|:---------------|---------:|-------------:|
+| Arterial     | grey            | grey           |  0.33503 |  1.28039e-28 |
+| Arterial     | turquoise       | turquoise      |  0.15919 | 3.12479e-110 |
+| Arterial     | yellow          | turquoise      | 0.187142 | 6.54105e-156 |
+| Capillary    | grey            | grey           |  0.35542 |  1.10299e-14 |
+| Capillary    | purple          | salmon         | 0.139785 |  6.00672e-50 |
+| Capillary    | turquoise       | green          | 0.122843 |  1.01276e-78 |
+| GFAP-neg     | brown           | turquoise      | 0.108264 |  1.43978e-56 |
+| GFAP-neg     | cyan            | green          | 0.115385 |  1.61595e-53 |
+| GFAP-neg     | grey            | grey           | 0.393621 |  7.33906e-52 |
+| GFAP-neg     | pink            | blue           | 0.115414 |  6.43214e-80 |
+| GFAP-neg     | turquoise       | blue           | 0.247442 | 2.99256e-239 |
+| GFAP-neg     | yellow          | red            | 0.105081 |   2.9816e-47 |
+| GFAP-pos     | blue            | turquoise      | 0.200599 |  8.05861e-71 |
+| GFAP-pos     | brown           | grey           | 0.155962 |  1.08388e-43 |
+| GFAP-pos     | grey            | grey           | 0.107173 |  1.74156e-68 |
+| GFAP-pos     | turquoise       | turquoise      | 0.377572 | 2.22707e-216 |
+| LAMP5_PMEPA1 | grey            | grey           | 0.209703 |  2.35477e-66 |
+| Micro        | grey            | turquoise      | 0.429948 |  8.57902e-64 |
+| Oligo        | grey            | brown          | 0.135573 |  4.42627e-95 |
+| Oligo        | turquoise       | grey           |  0.50771 |  2.60417e-38 |
+| RORB_POU3F2  | grey            | turquoise      | 0.225316 |  8.59423e-26 |
+| SMC          | brown           | turquoise      | 0.233405 |  1.6743e-230 |
+| SMC          | greenyellow     | black          | 0.142602 |  2.55833e-64 |
+| SMC          | grey            | grey           | 0.397181 |  1.10631e-30 |
+| SMC          | salmon          | turquoise      | 0.101393 |  2.94471e-74 |
+| TLE4_CCBE1   | grey            | grey           | 0.149118 |  7.08643e-80 |
+| T_Cell       | grey            | grey           | 0.317161 |   3.2827e-18 |
+| T_Cell       | purple          | greenyellow    | 0.104743 |  2.55601e-40 |
+| T_Cell       | red             | brown          | 0.240702 | 1.63228e-188 |
+
+## LISTS (Will be removed )
+
+#### FTLD-C9
+
+Arterial:
+
+greenyellow - organic hydroxy compound transport, ceramide biosynthetic process, peptide receptor activity, neuropeptide signaling pathway, ligand-gated monoatomic cation channel activity, negative regulation of gliogenesis, synaptic transmission glutamatergic
+
+lightgreen + positive regultaion of stablishment of protein localization telomere, DNA integration , DNA-templated transcription, mismatch repair, catalytic activity acting on DNA, ferrous iron binding, ergulation of endocrine process
+
+red + promoter specific chromatin binding, heterochromatin , chromosome organization
+
+yellow - mechanosensitive monoatomic channel activity, mucocilary cleareanvce, regulation of synaptic vessicle fussion to presinaptic active zone membrane
+
+darkgrey + carbohydrate binding, phosphatidylcholine binding, Schaffer colateral CA1 synapse, chemocal synaptic transmission , response to osmotic stress
+
+green + ribosomal subunit biogenesis, ribonucleoprotein complex biogenesis, tRNA metabolic process, cullin-RING ubiquitin ligase complex, SMN complex, nRNA splicing via spliceosome
+
+magenta + reionalzation, retection of chamical stimulus involved in sensory perception, appendage development, cell fate specification
+
+Capillary:
+
+pink +
+
+green -
+
+grey60 -
+
+black -
+
+brown +
+
+red -
+
+CDH4 SCGN:
+
+darkgreen +
+
+magenta -
+
+darkgrey +
+
+skyblue -
+
+greenyellow -
+
+grey60 -
+
+CUX2 RASGRF:
+
+pink -
+
+black +
+
+royalblue -
+
+yellow +
+
+red +
+
+brown -
+
+GFAP - :
+
+black -
+
+red +
+
+midnightblue +
+
+yellow -
+
+tan -
+
+salmon +
+
+green -
+
+LAMP5_PMEPA1:
+
+red -
+
+midnightblue -
+
+pink +
+
+blue -
+
+yellow +
+
+lightgreen +
+
+green +
+
+Micro:
+
+red -
+
+greenyellow +
+
+pink +
+
+purple +
+
+brown -
+
+green -
+
+Oligo:
+
+green - black + grey60 + purple - brown + royalblue -
+
+RORB_ADGRL4:
+
+mediumpurple3 + lightyellow - salmon - darkolivegreen + midnightblue - plum1 + skyblue3 + magenta + orangered4 + violet + lightgreen + steelblue + orange +
+
+RORB_FOXO1:
+
+darkorange - calcuim ion binding, camera-eye type development, dandrite
+
+RORB_LRRK1:
+
+black - brown + green - red - grey60 - magenta +
+
+RORB_POU3F2:
+
+yellow - green + pink + purple + red + brown -
+
+SMC:
+
+royalblue - magenta + green + yellow - lightcyan - red - pink + greenyellow -
+
+SST\_ BRINP3:
+
+greenyellow + Unconventional myosin complex , liver development , non-motile cilium , multicellular organism-level iron homeostasis, response to copper iron, hippocampal mossy fiber to CA3 sinapse, regulation of leukocyte apoptotic process
+
+SST_NPY:
+
+royalblue + postsynaptic dendrite membrane, axon extension involved in acon guidance, postsynaptic specialiaztion asembly, regulation of PH, adult behaviour,
+
+T Cell:
+
+lightgreen + red - magenta + salmon + white + grey60 - lightyellow + peptide receptor activity, chemical synaptic transmission, membrane lipod metabolic process, feeding behavious, collagen binding darkorange + green - brown + midnightblue - black + royalblue - darkgrey -
+
+THEMIS_NR4A2:
+
+darkgrey - elarning or memory, beta-tubulin binding, positive regulation of protein localization, positive egulation of synaptic vessicle fussing to presinaptic active zone membrane, postsynaptic density, orange + presynapse , neuronal cell body , postsynapse, positive regulation of neuro projection development, vacuole organization , golgi membrane, regulation of mRNA stability
+
+TLE4_MEGF11:
+
+cyan + regulation of skeletal muscle tissue development, olfacotry bulb development, regulation of mitochondrial gene expression , striated muccle cell filament, midnightblue + Sm-like protein family complex, negative regulation of osteoblast differenciation, O-methyltransferase activity, peptide metabolic process, neurotransmitter receptor activity
+
+VIP_CLSTN2:
+
+salmon4 - cortical cytosckeleton organization, coated vessicle membrane, andosomal transport, external encapsulating structure, regulation of cell sunction assembly
+
+#### Rimmod
+
+Arterial:
+
+tan + brown + green - grey + turquoise - blue +
+
+Capillary:
+
+greenyellow + cyan +\
+lightyellow + brown + green - red - blue - grey + turquoise + darkgreen - black +
+
+CDH4_SCHN:
+
+turquoise + white + grey60 + darkgreen + orange + blue + cyan + magenta - skyblue - darkred + tan + violet + purple + darkturquoise + red - lightcyan - greenyellow + darkorange - paleturquoise - lightyellow - darkgrey - darkolivegreen - lightgreen -
+
+CLMP_KCNMA1:
+
+grey + darkorange2 + steelblue + grey60 + turquoise + navajowhite2 + darkturquoise + white + green + yellow + plum1 + lightsteelblue1 + royalblue + purple + black + tan + maroon + lightyellow + pink + brown + yellowgreen + paleturquoise + palevioletred3 + darkgrey - thistle2 + salmon4 + saddlebrown + sienna3 + skyblue3 + thistle1 + darkred + darkolivegreen + ivory + salmon + mediumpurple3 +
+
+CLMP_PDGFRA:
+
+turquoise + grey + blue + red + yellow + black + brown +
+
+CUX2 RASGRF2:
+
+purple + blue + red - lightcyan + grey + black - turquoise -
+
+DISC1_CCK:
+
+white - cyan - darkgreen -
+
+GFAP - :
+
+greenyellow + blue + red - cyan + grey + turquoise - black -
+
+GFAP + :
+
+magenta + purple + grey + turquoise + black -
+
+LAMP5_PMEPA1:
+
+greenyellow + green + lightyellow + yellow - lightgreen + grey + grey60 + blue - turquoise + magenta -
+
+Micro:
+
+magenta + yellow + black - pink - grey + lightcyan + brown + turquoise -
+
+Oligo:
+
+cyan + tan + midnightblue + red + brown - grey + greenyellow - turquoise + blue - black +
+
+PVALB_MYBPC1:
+
+brown -
+
+RORB_ADGRL4:
+
+yellow + greenyellow + lightgreen + darkolivegreen + turquoise + darkmagenta + brown - pink - black + darkgreen - lightcyan + saddlebrown +
+
+RORB_FOXO1:
+
+black + cyan + palevioletred3 + yellowgreen + lightyellow + orange + darkolivegreen + purple + thistle1 + midnightblue + pink + lavenderblush3 + bisque4 - salmon4 + skyblue + mediumpurple3 - saddlebrown + lightcyan + paleturquoise + lightsteelblue1 + darkslateblue - darkgrey + blue - plum2 + skyblue3 + darkorange2 + turquoise + darkmagenta + honeydew1 -
+
+RORB_LRRK1:
+
+purple + blue + darkturquoise + yellow - salmon + greenyellow + pink - royalblue + darkred + turquoise + orange - grey + green - magenta +
+
+SCN4B_NEFH:
+
+grey - salmon + red - brown -
+
+SMC:
+
+greenyellow + brown + green - grey + purple - blue +
+
+SST_GALNT14:
+
+lightyellow +
+
+T Cell:
+
+greenyellow + brown + tan + yellow - midnightblue + green + grey + turquoise -
+
+TLE4_CCBE1:
+
+magenta + saddlebrown + black +
+
+TLE4_SEMA3D:
+
+lightcyan + purple + steelblue + paleturquoise + grey + darkred + cyan + midnightblue + greenyellow + darkgrey + salmon + darkmagenta + darkgreen + saddlebrown + red + lightyellow + darkorange + brown + brown4 + grey60 + yellow + green + white + black + turquoise + navajowhite2 + tan + lightgreen + darkturquoise + blue + floralwhite - royalblue + skyblue + yellowgreen + thistle1 + pink + plum2 + plum1 +
+
+VAT1L EYA4:
+
+lightsteelblue1 - blue - thistle2 -
+
+VIP_CLSTN2:
+
+midnightblue + thistle2 + palevioletred3 + skyblue + yellowgreen + darkolivegreen + darkgreen + ivory + lightcoral + lightcyan + lavenderblush3 - honeydew1 + black + violet + salmon + brown + cyan + purple + maroon + skyblue3 + darkorange2 + grey + greenyellow + darkorange + darkgrey - grey60 + mediumpurple3 + tan + indianred4 + darkolivegreen4 + steelblue + darkseagreen4 + mediumorchid + floralwhite + orangered4 + darkmagenta + saddlebrown + skyblue2 + navajowhite2 + coral2 + sienna3 + yellow4 + mediumpurple2 +
+
+VIP_HTR2C:
+
+lightgreen -
+
+#### FTLD-TDP
+
+Arterial:
+
+darkolivegreen + meiotic cell cycle, digestive system development, male gamete generation , adenylate cyclase-activating G protein-coupled receptor signaling pathway, RNA nuclease activity red + fatty acid metabolic process, neurotreanmitter receptor activity, vacuolar acidification, positive regulation of intercellular estrogen receptor signaling pathway, androgen metabolic process, cellular defense response orange + detection of chmical stimulus involved in sensory perception , cytokine activitym cellular response to copper and iron, hormone metabolic process, cellullar defense response lightgreen + olfactory receptor activity, nuclear division, regulation of mitotic nuclear division , sterioid hydroxylase activity, cell fate specification tan + complement activation classical pathway, regulation of T cell extravasation, error-prone translesions synthesis, response to pain, regulation of B cell mediated immunity, mRNA modification. grey60 - proteoglycan metabolic process, hormone biosinthetic processm glomerular basement membrane development, neuromuscular suiaptic transmission. steelblue + detection of chemical stimulus involved in sensory perception , late endosome lumen, sensory perception of taste, axoneme, positive regulation of T cell proliferation , leucocyte mediated cytotoxicity blue + humoral immune response, cytokine activation , detection of chemical stimulus involved in sensory perception, hormone activiy, inflamatory response, response to bacterium , adaptative immune response yellow - presynapse, active monoatomic ion transmembrane transporter activity, synaptic signaling, regulation of postsynapse assembly
+
+Capillary:
+
+lightgreen - neuropeptide binding, spinal cord development, hyaluronic acid binding, regulation of smooth muscle cell migration, regulation of BPM signaling pathway
+
+CDH4_SCGN:
+
+darkmagenta + positive regulation of protein-coding complex assembly, endoplasmatic reticulum lumen, sodium channel activity plum1 + intrinsic apoptitic signaing pathway, regulation of alternative mRNA splicing via spliceosome
+
+CLMP_PDGFRA:
+
+darkgrey + protein tyrosine phosphate activity, protein serine/theroine kinnase binding, mithocondrial protein-contaiing complex
+
+CUX2_RASGRF2:
+
+orange - detection of chemical stimulus involved in sensory eprception, hormone activity, extracellular matric etructural constituent, retinoid binding, feeding behaviour pink - regulation of muscle system process, cellullar response to peptide hormone stimulus, regulation of blood preassure, regulation of supramoleular fiber organization, regulation of postsynapse assembly, positive regulation of cell migration cyan + 5'-3' exonuclease activity, lipid droplet formation , cell division , response to progesterone, negative regulation of gliogenesis, translation repression activity, transcription reglator inhibitor activity.
+
+GFAP - :
+
+darkturquoise + olfactory receptor activity, neuropeptide signaling pathway, retinol metabolic process, deaminase activity, defense response to bacterium , immune receptor activity green - hormone activity, axternal encapsulating structure, G-protein-coupled peptide receptor activity, angiogenesis, detection of chemical stimulus involved in sensory perception , purple + immunoglobulin binding, endoplasmic reticulum-Golgi intermediate compartment membrane, positive regulation of imune response, androgen metabolic process, signal recognition particle binding, response to ATp,
+
+GFAP +:
+
+grey - olfactory receptor activity, receptor ligand activity, killing of cells of another organism, external encapsulating structure, hummoral immune response, structural constituent of skin epidermis, hormone activiry, defense response o bacterium, inflamatory response, leukocyte migration involved in infammatory response red - CCR4-MOT core complex, cmall molecule catabolic process, regulation of potassium ion transmembrane transporter activity, quinone metabolic process, positive regulation by host of viral genome replication, darkturquoise + detection of chemical stimulus involved in sensory perception, icosanoid secretion , hormone metabolic process, regulation of blood pressure, response to bacterium, killing of cells of another organism lightyellow - GTPase regulator activity, mitochondrion-endoplasmatic reticulum membrane tethering, axon , microglia differenciation , regulation of postsynapse assembly, positive regulation of apoptotic process cyan + detection of chemical stimulus involved in sensory perception, signaling receptor regulator activity, serine-type endopeptidase activity, DNA-binding transcription activator activity RNApolymerase II specific, natural killer cell activation, monooxigenase activity, regulation of type II interferon production greenyellow + olgfactory receptor activity, negative regulation of transmission of nerve impulse, xenobiotic metabolic process, negative regulation of homeostasis, endopeptidase inhibitor activity, killing of cells of another organism lightcyan + olfactory receptor activity, sister chromatid segregation , cell fate specification , cornified envelope, hormone activity, cell maturation black + signaling receptor regulator activitym rsponse to bacterium , immune receptor activity, external side of plasma membrane , adaptative immune response, regulation of effector immune process, leukocyte activation , mononuclear cell migration , cegulatio nof inflammatory response grey60 + olfactory receptor activity, positive regulation of immune efector process, humoral immune response, peptidase inhibitor activity
+
+Micro:
+
+lightyellow + catalytic activity acting on RNA, mRNAmodification , subpallium development, miotic sister chromatid cohesion green - synaptic signaling, cell body, regulation of synaptic plasticity, negative regulation of cation transmembrane transport, spinal cord development, meuropeptide signaling pathway, dendritic shaft, tau protein binding magenta + estradiol 17-beta-dehidrogenase NADP+ activity postsynaptic neurotransmitter receptor activity, nuclear exosome RNAse complex brown + signaling receptor regulation activity, killing of cells of another organism, heparin binding, external encapsulating structure, cell-cell adhesion , cormone activity
+
+OPC:
+
+purple + amide metabolic process, insulin processing, methyl-cpg binding, positive regulation of cation channel activity
+
+RORB_POU3F2:
+
+pink - angiogenesis, negative rgulation of fibroblast growth factor receptor signaling pathway, polysaccharide biosynthetic process, structural costituent of postsynaptic actin sytosckeleton, external encapsulating structure red + fattyaccid oxidation using acyl-CoA oxidase, gluttamate-gated calcuim ion channel activity, cellular response to unfolded protein, vacuolar acidification, mRNA cis-splicing via spliceosome. turquoise + hummoral immune response, killing of cells of another ogranism, immune effector process , response to bacterium , inflammatory response, positive regulation of immune response, mononuclear cell migration, leukocyte mediated immunity, immune receptor activity, regulation of immune response, regulation of mononulear cell proliferation magenta - celular response to hormone stimulus, regualtion of calcium-mediated stimulus , regulation of anatomical structure size, postsynapse , axon , synaptic signaling
+
+SMC:
+
+yellow + fattyacid beta-oxidation using acyl-CoA oxidase, DNA replication preinitiation complex, mRNA cis splicing via spliceosome, cillium movement involved in cell motillity, postsinaptic neurotreansmitter receptor activity green - hydrolase activity acting on glicosyl bonds, fat-soluble vitamin metabolic process, peptide receptor activity, signaling receptor regulator activity, neuropeptide signaling pathway, paleturquoise - ( no enriched terms)
+
+T Cell:
+
+turquoise + external encapsulating structure, receptor ligand activity, cell-cell adhesion via plasma-membrane adhesion molecules , detection of stimulus involved in sensory perception , alpha-amino acid metabolic process, peptide receptor activity, hummoral immune response, endoplasmatic reticulum lument, yellow + hormone byosinthetic process , intramolecular transferase activity, neurotransmitter receptor activity, dolichol-linked oligosaccharide syoisinthetic process, white + chromosome segregation , porphyrin-containing compound biosynthetic process, visual perception , centromere complex assembly, RNA methylation, negative regulation of mitotic nuclear division magenta - regulation of muscle system process, response to pain, inositol1-4 5 triphosphate 5-phosphatase activity, regulation of polysynapse assembly, RNA polymerase III complex, associative learning, postsynaptic vessicle membrane darkred - external encapsulating structure, lymph vessel development, megative regulation of keratinocyte differenciation,
+
+#### Pottier
+
+Arterial:
+
+tan + pink - green + yellow + salmon - cyan + red + brown -
+
+Capillary:
+
+greenyellow - salmon + green - pink + grey + turquoise +
+
+CLMP_KCNMA1:
+
+grey + lightcyan + green + magenta + yellow + midnightblue + red + purple + tan + black + brown + cyan +
+
+CLMP_PDGFRA:
+
+grey + royalblue +
+
+DISC1_CKK:
+
+plum2 - violet + lightyellow - darkgrey - magenta + tan - palevioletred3 -
+
+GFAP - :
+
+magenta - green + black + tan + yellow + cyan - purple + turquoise +
+
+GFAP + :
+
+turquoise + grey + purple + blue + pink + lightcyan + midnightblue + red + green + brown + magenta + tan + salmon + yellow + cyan + lightgreen + greenyellow + grey60 - black +
+
+LAMP5_CA3:
+
+mediumpurple3 - magenta - floralwhite - grey - darkorange - yellow -
+
+LAMP5_PMEPA1:
+
+violet - turquoise - grey - darkred - darkgreen + yellow - darkorange - darkgrey - tan - paleturquoise - black - steelblue -
+
+Oligo:
+
+magenta - black + blue + greenyellow + cyan + red + salmon - yellow - midnightblue + purple + tan + brown - pink + grey - turquoise -
+
+Pericyte:
+
+steelblue -
+
+PVALB_CEMIP:
+
+purple + skyblue - grey - blue - turquoise +
+
+PVALB_MYBPC1:
+
+white - plum2 + maroon - darkturquoise - grey - grey60 - saddlebrown - magenta - thistle1 - darkgreen +
+
+SCN4B_NEFH:
+
+ivory - mediumorchid - saddlebrown - blue - grey - lightcyan - black + mediumpurple3 - brown - pink - skyblue1 + maroon + darkturquoise - grey60 - violet - bisque4 + plum1 + plum2 - tan + turquoise - steelblue - lightyellow - coral1 -
+
+SMC:
+
+green - purple + yellow + black + brown + cyan + tan +
+
+SST_ADAMTS19:
+
+brown4 - orangered4 - darkolivegreen - bisque4 -
+
+SST_BRINP3:
+
+floralwhite -
+
+SST_GALNT14:
+
+lightyellow - darkolivegreen + floralwhite - plum1 + darkgrey + thistle2 +
+
+T_Cell:
+
+yellow - magenta + greenyellow + red + black + cyan + green - lightcyan + midnightblue + purple +
+
+THEMIS_TMEM233:
+
+purple + blue + yellow + lightcyan1 - brown + cyan -
+
+TLE4_CCBE1:
+
+bisque4 + lightsteelblue1 -
+
+TLE4_MEGF11:
+
+orangered4 - skyblue3 - tan - lightgreen + brown -
+
+TLE4_SEMA3D:
+
+orange - thistle2 +
+
 ```{r}
 
 ```
-
-## TDP
-
-### HDWGCNA CORRESPONDANCE
-
-```{r}
-
-```
-
-### HDWGCNA DIFFERENCES
 
 ```{r}
 

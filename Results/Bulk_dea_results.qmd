@@ -6,53 +6,293 @@ The results on bulk differencial expression analysis showed....
 
 ## C9
 
-In the case of C9 our dataset shown ......
-
-Rimmod in the other hand was ......
+In the FTLD-C9 group, we detected 424 DEGs, with 113 upregulated and 311 downregulated. Among the most significantly deregulated genes were C4B (FC = 3.09, adjusted p = 0.010), SEMA3D (FC = 1.75, adjusted p = 0.011), TMEM255A (FC = 1.74, adjusted p = 0.0018), EGR4 (FC = 0.39, adjusted p = 1.6×10⁻⁹), and TRIM29 (FC = 0.23, adjusted p = 9.5×10⁻¹²). These findings point towards both synaptic signaling alterations (e.g., SEMA3D) and transcriptional dysregulation (e.g., EGR4, TRIM29). Validation against the Rimmod dataset, which reported 317 DEGs (252 upregulated, 65 downregulated), confirms the presence of widespread transcriptional alterations in FTLD-C9, although again our cohort showed fewer DEGs, likely reflecting differences in sample size and sequencing depth. Metascape indicated upregulated positive regulation of apoptotic cell cleareance and downregulated dendrite and postsinaptic transmission functions.
 
 ### Sant Pau
 
 ```{r}
+library(dplyr)
+library(plotly)
+library(DT)
 
+data<-readODS::read_ods("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/1. Bulk DEA/ALL_Bulk_DEA.xlsx", sheet = 2)
+
+colnames(data)[1] <- "Gene"
+
+DT::datatable(
+  data,
+  options = list(
+    pageLength = 5,     
+    lengthMenu = c(5, 10, 20, 50, 100),
+    scrollX = TRUE      
+  ),
+  rownames = FALSE,
+  filter = "top",       
+  style = "bootstrap"
+)
 ```
 
 ```{r}
+library(dplyr)
+library(plotly)
+library(DT)
+
+df <- data %>%
+  mutate(
+    neglog10FDR = -log10(adj_pval),
+    sig = case_when(
+      adj_pval < 0.05 & logFC > 0 ~ "Up",
+      adj_pval < 0.05 & logFC < 0 ~ "Down",
+      TRUE ~ "NS"
+    )
+  )
+
+plot_ly(
+  df,
+  x = ~logFC,
+  y = ~neglog10FDR,
+  color = ~sig,
+  colors = c("Down" = "blue", "NS" = "grey", "Up" = "red"),
+  type = "scatter",
+  mode = "markers",
+  text = ~paste(
+    "Gene:", Gene,
+    "<br>logFC:", round(logFC, 3),
+    "<br>FDR:", signif(adj_pval, 3)
+  ),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = "Volcano Plot (Interactive)",
+    xaxis = list(title = "log2 Fold Change",
+                 zeroline = TRUE, zerolinewidth = 1, zerolinecolor = "black"),
+    yaxis = list(title = "-log10(FDR)"),
+    shapes = list(
+      # FC = 0
+      list(type = "line",
+           x0 = 0, x1 = 0, y0 = 0, y1 = max(df$neglog10FDR),
+           line = list(dash = "dash")),
+      # FDR = 0.05
+      list(type = "line",
+           x0 = min(df$logFC), x1 = max(df$logFC),
+           y0 = -log10(0.05), y1 = -log10(0.05),
+           line = list(dash = "dash"))
+    )
+  )
+
 
 ```
 
 ### Rimmod
 
 ```{r}
+data<-readODS::read_ods("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/1. Bulk DEA/ALL_Bulk_DEA.xlsx", sheet = 4)
 
+colnames(data)[1] <- "Gene"
+
+DT::datatable(
+  data,
+  options = list(
+    pageLength = 5,     
+    lengthMenu = c(5, 10, 20, 50, 100),
+    scrollX = TRUE      
+  ),
+  rownames = FALSE,
+  filter = "top",       
+  style = "bootstrap"
+)
 ```
 
 ```{r}
+library(dplyr)
+library(plotly)
+
+df <- data %>%
+  mutate(
+    neglog10FDR = -log10(adj_pval),
+    sig = case_when(
+      adj_pval < 0.05 & logFC > 0 ~ "Up",
+      adj_pval < 0.05 & logFC < 0 ~ "Down",
+      TRUE ~ "NS"
+    )
+  )
+
+plot_ly(
+  df,
+  x = ~logFC,
+  y = ~neglog10FDR,
+  color = ~sig,
+  colors = c("Down" = "blue", "NS" = "grey", "Up" = "red"),
+  type = "scatter",
+  mode = "markers",
+  text = ~paste(
+    "Gene:", Gene,
+    "<br>logFC:", round(logFC, 3),
+    "<br>FDR:", signif(adj_pval, 3)
+  ),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = "Volcano Plot (Interactive)",
+    xaxis = list(title = "log2 Fold Change",
+                 zeroline = TRUE, zerolinewidth = 1, zerolinecolor = "black"),
+    yaxis = list(title = "-log10(FDR)"),
+    shapes = list(
+      # FC = 0
+      list(type = "line",
+           x0 = 0, x1 = 0, y0 = 0, y1 = max(df$neglog10FDR),
+           line = list(dash = "dash")),
+      # FDR = 0.05
+      list(type = "line",
+           x0 = min(df$logFC), x1 = max(df$logFC),
+           y0 = -log10(0.05), y1 = -log10(0.05),
+           line = list(dash = "dash"))
+    )
+  )
 
 ```
 
 ## TDP
 
-In the case of TDP our dataset shown ......
-
-Pineda in the other hand was ......
+In the FTLD-TDP group, we identified 14 differentially expressed genes (DEGs) relative to healthy controls (FDR \< 0.05), of which 9 were upregulated and 5 downregulated. Among the upregulated genes, CHI3L2 (FC = 11.08, adjusted p = 0.022) and CHI3L1 (FC = 3.71, adjusted p = 5.2×10⁻⁴) showed the strongest associations, both previously linked to neuroinflammatory processes. SPP1 (FC = 3.19, adjusted p = 0.026) was also significantly upregulated. In comparison, the independent validation dataset from Pottier et al., reported 5624 DEGs (2758 upregulated, 2866 downregulated). The downregulated genes from validation dataset point to a loss in pre and postsynaptic functions but only perinuclear cytoplasmic region is found enriched on sant Pau TDP dataset. Metascape enrichment indicated an upregulation in perinuclear region of cytoplasm.
 
 ### Sant Pau
 
 ```{r}
+data<-readODS::read_ods("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/1. Bulk DEA/ALL_Bulk_DEA.xlsx", sheet = 1)
 
+colnames(data)[1] <- "Gene"
+
+DT::datatable(
+  data,
+  options = list(
+    pageLength = 5,     
+    lengthMenu = c(5, 10, 20, 50, 100),
+    scrollX = TRUE      
+  ),
+  rownames = FALSE,
+  filter = "top",       
+  style = "bootstrap"
+)
 ```
 
 ```{r}
+library(dplyr)
+library(plotly)
+library(DT)
+
+df <- data %>%
+  mutate(
+    neglog10FDR = -log10(adj_pval),
+    sig = case_when(
+      adj_pval < 0.05 & logFC > 0 ~ "Up",
+      adj_pval < 0.05 & logFC < 0 ~ "Down",
+      TRUE ~ "NS"
+    )
+  )
+
+plot_ly(
+  df,
+  x = ~logFC,
+  y = ~neglog10FDR,
+  color = ~sig,
+  colors = c("Down" = "blue", "NS" = "grey", "Up" = "red"),
+  type = "scatter",
+  mode = "markers",
+  text = ~paste(
+    "Gene:", Gene,
+    "<br>logFC:", round(logFC, 3),
+    "<br>FDR:", signif(adj_pval, 3)
+  ),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = "Volcano Plot (Interactive)",
+    xaxis = list(title = "log2 Fold Change",
+                 zeroline = TRUE, zerolinewidth = 1, zerolinecolor = "black"),
+    yaxis = list(title = "-log10(FDR)"),
+    shapes = list(
+      # FC = 0
+      list(type = "line",
+           x0 = 0, x1 = 0, y0 = 0, y1 = max(df$neglog10FDR),
+           line = list(dash = "dash")),
+      # FDR = 0.05
+      list(type = "line",
+           x0 = min(df$logFC), x1 = max(df$logFC),
+           y0 = -log10(0.05), y1 = -log10(0.05),
+           line = list(dash = "dash"))
+    )
+  )
 
 ```
 
 ### Pottier
 
 ```{r}
+data<-readODS::read_ods("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/1. Bulk DEA/ALL_Bulk_DEA.xlsx", sheet = 3)
+
+colnames(data)[1] <- "Gene"
+
+DT::datatable(
+  data,
+  options = list(
+    pageLength = 5,     
+    lengthMenu = c(5, 10, 20, 50, 100),
+    scrollX = TRUE      
+  ),
+  rownames = FALSE,
+  filter = "top",       
+  style = "bootstrap"
+)
 
 ```
 
 ```{r}
+library(dplyr)
+library(plotly)
+
+df <- data %>%
+  mutate(
+    neglog10FDR = -log10(adj_pval),
+    sig = case_when(
+      adj_pval < 0.05 & logFC > 0 ~ "Up",
+      adj_pval < 0.05 & logFC < 0 ~ "Down",
+      TRUE ~ "NS"
+    )
+  )
+
+plot_ly(
+  df,
+  x = ~logFC,
+  y = ~neglog10FDR,
+  color = ~sig,
+  colors = c("Down" = "blue", "NS" = "grey", "Up" = "red"),
+  type = "scatter",
+  mode = "markers",
+  text = ~paste(
+    "Gene:", Gene,
+    "<br>logFC:", round(logFC, 3),
+    "<br>FDR:", signif(adj_pval, 3)
+  ),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = "Volcano Plot (Interactive)",
+    xaxis = list(title = "log2 Fold Change",
+                 zeroline = TRUE, zerolinewidth = 1, zerolinecolor = "black"),
+    yaxis = list(title = "-log10(FDR)"),
+    shapes = list(
+      # FC = 0
+      list(type = "line",
+           x0 = 0, x1 = 0, y0 = 0, y1 = max(df$neglog10FDR),
+           line = list(dash = "dash")),
+      # FDR = 0.05
+      list(type = "line",
+           x0 = min(df$logFC), x1 = max(df$logFC),
+           y0 = -log10(0.05), y1 = -log10(0.05),
+           line = list(dash = "dash"))
+    )
+  )
 
 ```
 

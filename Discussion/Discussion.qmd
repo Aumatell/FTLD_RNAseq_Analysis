@@ -2,11 +2,121 @@
 title: "Discussion"
 ---
 
-## Discussion 1
+## Cell type differences indicate vulnerable cell types
 
-## Discussion 2
+### VAL1L EYA4
 
-## Discussion 3
+### RORB LRRK1
 
-## Discussion 4
 
+## Differences in C9 and TDP differencial expression
+
+
+## Potential target genes
+
+### NPTX2
+
+
+## Differences in C9 and TDP gene modules correlation
+
+### C9
+
+Across cell states, pathology-associated modules converge on several neurobiologically coherent themes:
+
+1. Synaptic dysfunction
+
+postsynaptic specialization
+
+dendritic architecture
+
+dopaminergic synapse
+
+mossy-fiber → CA3 circuit impairment
+
+voltage-gated ion channel activity
+
+These align with well-established signatures of FTLD-C9 involving synaptic weakening and circuit disintegration. [@Starr2018_BrainRes_C9Synaptic]
+
+2. Neuronal metabolic impairment
+
+mitochondrial complex III
+
+aerobic respiration
+
+pyruvate metabolism
+
+Consistent with emerging literature showing mitochondrial collapse downstream of C9orf72-related toxicity. [@Wang2021_CellMetab_C9orf72Mito]
+
+3. Neuroimmune dysregulation
+
+leukocyte and microglial activation
+
+IL-10 pathway regulation
+
+antimicrobial peptide signaling
+
+cytokine binding
+
+Matching known findings that FTLD-C9 evokes aberrant neuroinflammatory programs. [@Lall2017_JCI_C9orf72Microglia]
+
+4. Neurovascular dysfunction
+
+pericyte mitochondrial regulation
+
+ligand-gated channel activity
+
+sensory/chemical detection in vascular cells
+
+glial migration + vascular patterning pathways
+
+Highlighting mechanisms increasingly recognized in C9orf72-related pathology. [@AragonGonzalez2024_FluidsBarriersCNS_BBB]
+
+### TDP
+
+Across cell states, pathology-associated modules converge on key neurobiological mechanisms central to FTLD-TDP:
+
+1. Axonal and cytoskeletal breakdown
+
+impaired axon projection and microtubule organization
+
+disrupted organelle transport
+
+altered membrane potential and vesicle cycling
+
+Reflecting loss of the STMN2-dependent axonal maintenance program. [@Baughn2023_Science_STMN2]
+
+2. Synaptic disintegration
+
+dysfunction of excitatory synapses
+
+impaired pre/post-synaptic architecture
+
+dysregulated GPCR and calcium-channel signaling
+
+Consistent with early circuit-level deficits in FTLD-TDP. [@Cheemala2025_SciAdv_EndothelialTDP43]
+
+3. RNA metabolic failure
+
+compromised splicing, RNA modification, and co-transcriptional processing
+
+loss of chromatin regulatory functions
+
+Paralleling hallmark TDP-43 nuclear loss-of-function. [@Sirkis2019_CurrOpinNeurol_Immunology]
+
+4. Glial reactivity and neuroimmune remodeling
+
+astrocytic and neuronal cytokine signaling
+
+microglia-interacting receptor pathways
+
+leukocyte recruitment and immune effector activation
+
+Matching well-established inflammatory signatures in FTLD-TDP. (https://pmc.ncbi.nlm.nih.gov/articles/PMC8025661/?utm_source=chatgpt.com)
+
+5. Vascular and neuroimmune signaling disturbances
+
+endothelial and leukocyte adhesion pathways
+
+neuron–vascular cytokine cross-talk
+
+Suggesting neurovascular involvement in the cortical response to TDP-43 pathology. [@Arribas2024_JCIInsight_EndothelialTDP43]

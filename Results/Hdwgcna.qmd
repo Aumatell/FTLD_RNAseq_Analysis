@@ -1,0 +1,175 @@
+---
+title: "Hdwgcna"
+format: html
+---
+
+# C9
+
+## Sant pau
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(jsonlite)
+library(readr)
+library(stringr)
+
+# ---- Base directory containing cell state folders ----
+
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/C9/CS"
+
+# ---- Discover folders ----
+
+folders <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+folder_names <- basename(folders)
+
+# ---- Helper to filter valid module files ----
+
+is_valid_module <- function(filename) {
+!str_detect(tolower(filename), "hub") &&
+!str_detect(tolower(filename), "corr_summary")
+}
+
+# ---- List modules per folder (excluding hubs & corr_summary) ----
+
+modules_by_folder <- lapply(folders, function(fold) {
+mod_dir <- file.path(fold, "MODULES")
+if (!dir.exists(mod_dir)) return(character(0))
+
+files <- list.files(
+mod_dir,
+pattern = "\\.(csv|tsv|txt)$",
+full.names = TRUE
+)
+
+files[ sapply(basename(files), is_valid_module) ]
+})
+
+names(modules_by_folder) <- folder_names
+
+# ---- Read modules into memory (extract column x) ----
+
+module_genes <- list()
+
+for (i in seq_along(folder_names)) {
+folder <- folder_names[i]
+module_genes[[folder]] <- list()
+
+for (mod_path in modules_by_folder[[i]]) {
+mod_name <- tools::file_path_sans_ext(basename(mod_path))
+
+
+df <- tryCatch(read_delim(mod_path, show_col_types = FALSE),
+               error = function(e) NULL)
+
+if (!is.null(df) && "x" %in% names(df)) {
+  genes <- paste(df$x, collapse = ", ")
+  module_genes[[folder]][[mod_name]] <- genes
+} else {
+  module_genes[[folder]][[mod_name]] <- "(no x column found)"
+}
+
+
+}
+}
+
+# ---- Convert to JSON for JavaScript ----
+
+folders_json <- toJSON(folder_names)
+modules_json <- toJSON(modules_by_folder)
+genes_json   <- toJSON(module_genes)
+
+```
+
+<label><b>Select cell state folder:</b></label> <select id="folder_select"></select>
+
+<br><br>
+
+<label><b>Select module:</b></label> <select id="module_select"></select>
+
+<br><br>
+
+<b>Genes in selected module:</b>
+
+<div id="gene_list" style="margin-top:10px; white-space:pre-wrap; font-family:monospace;"></div>
+
+<script>
+// Data from R
+const folders    = {{folders_json}};
+const modules    = {{modules_json}};
+const geneData   = {{genes_json}};
+
+// DOM elements
+const folderSel = document.getElementById("folder_select");
+const moduleSel = document.getElementById("module_select");
+const geneBox   = document.getElementById("gene_list");
+
+// Populate folder dropdown
+folders.forEach(f => {
+  let opt = document.createElement("option");
+  opt.value = f;
+  opt.textContent = f;
+  folderSel.appendChild(opt);
+});
+
+// Update module dropdown
+function updateModules() {
+  const folder = folderSel.value;
+  const available = modules[folder] || [];
+
+  moduleSel.innerHTML = "";
+
+  available.forEach(p => {
+    const mod = p.split("/").pop().split(".")[0];
+    let opt = document.createElement("option");
+    opt.value = mod;
+    opt.textContent = mod;
+    moduleSel.appendChild(opt);
+  });
+
+  updateGeneList();
+}
+
+// Update gene list
+function updateGeneList() {
+  const folder = folderSel.value;
+  const module = moduleSel.value;
+
+  geneBox.textContent = geneData[folder][module] || "(no genes)";
+}
+
+// Listeners
+folderSel.addEventListener("change", updateModules);
+moduleSel.addEventListener("change", updateGeneList);
+
+// Initialize UI
+updateModules();
+</script>
+
+
+## Rimmod
+
+
+```{r}
+
+```
+
+
+# TDP
+
+## Sant pau
+
+```{r}
+
+```
+
+
+## Pottier
+
+```{r}
+
+```
+
+

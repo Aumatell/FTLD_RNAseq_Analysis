@@ -8,7 +8,7 @@ title: "Bulk differencial expression analysis"
 
 Bulk RNA-sequencing provides a comprehensive measurement of transcriptional activity at the tissue level and remains the foundation for molecular characterization in neurodegenerative disease. In FTLD, bulk analyses have repeatedly identified widespread alterations in **synaptic signaling**, **immune activation**, **vesicle trafficking**, **lipid metabolism**, and **RNA-processing pathways**. However, reproducibly detecting these signatures requires rigorous statistical modeling due to subtle but biologically meaningful differences in gene expression, limited sample sizes typical of post-mortem cohorts, and technical variability between sequencing libraries.
 
-To ensure robust inference across the four cohorts studied, differential expression was performed using **edgeR**, a negative binomial framework specifically designed for RNA-seq count data. The quasi-likelihood (QL) pipeline implemented in edgeR provides improved control of false positives and greater stability in small cohorts, making it an appropriate choice for FTLD studies where subtle expression changes may reflect early or cell-type–specific pathological processes.
+To ensure robust inference across the four cohorts studied, differential expression was performed using **edgeR** [@robinson2010_edger], a negative binomial framework specifically designed for RNA-seq count data . The quasi-likelihood (QL) pipeline implemented in edgeR provides improved control of false positives and greater stability in small cohorts, making it an appropriate choice for FTLD studies where subtle expression changes may reflect early or cell-type–specific pathological processes.
 
 ## **Analytical Strategy**
 
@@ -48,7 +48,7 @@ To account for biological and technical variability:
 
 -   Dispersion estimates were obtained using **estimateDisp()**,
 
--   Followed by **glmQLFit()** to fit quasi-likelihood negative binomial generalized linear models.
+-   Followed by **glmFit()** to fit negative binomial generalized linear models.
 
 Where available, **surrogate variables (SVs)** estimated from the bulk data were included as covariates to control for latent confounders.
 
@@ -62,7 +62,7 @@ For each dataset, a design matrix modeled diagnostic group as the primary variab
 
 Controls were defined as the reference level.\
 Contrast vectors were constructed to explicitly test for group differences.\
-This yielded gene-wise quasi-likelihood F-tests or likelihood ratio tests (**glmQLFTest** or **glmLRT**).
+This yielded gene-wise likelihood ratio tests (**glmLRT**).
 
 ### **4. Multiple Testing Correction and Significance Criteria**
 
@@ -117,9 +117,9 @@ The bulk RNA-seq analyses were designed to:
 
 By integrating these bulk findings with cell-type–resolved analyses, we were able to map global transcriptomic alterations to their cellular origins and characterize convergent and divergent molecular pathways across FTLD-C9 and FTLD-TDP.
 
-```{r eval=FALSE}
-# EDGER on Bulk RNASEQ LRT
+#### Sant Pau - TDP
 
+```{r eval=FALSE}
 library(edgeR)
 library(dplyr)
 library(GO.db)
@@ -127,12 +127,11 @@ library(xlsx)
 
 ################################################################################
 # Paths and parameters
-BULK_COUNTS_PATH <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/DATA/TDP.csv"  # Path to bulk RNA-seq count matrix CSV
+BULK_COUNTS_PATH <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/DATA/TDP.csv"
 CASE_LEGEND <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
 OUTPUT_DIRECTORY <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/BULK_DEA/FTLD/TDP_LRT"
 REFERENCE_GROUP <- "Healthy"
-CONDITIONS <- "TDP"  # Same condition(s) you want to test
-
+CONDITIONS <- "TDP"  
 ################################################################################
 
 # Load sample metadata
@@ -262,11 +261,9 @@ for (condition in CONDITIONS) {
 
 ```
 
-```{r, eval=FALSE}
-################################################################################
-# NEW LRTFIT
+#### Pottier - TDP
 
-# EDGER on Bulk RNASEQ
+```{r, eval=FALSE}
 library(edgeR)
 library(dplyr)
 library(GO.db)
@@ -383,11 +380,9 @@ for (condition in CONDITIONS) {
 
 ```
 
-```{r eval=FALSE}
-################################################################################
-# FTLD C9
+#### Sant Pau - C9orf72
 
-# EDGER on Bulk RNASEQ
+```{r eval=FALSE}
 library(edgeR)
 library(dplyr)
 library(GO.db)
@@ -500,12 +495,9 @@ for (condition in CONDITIONS) {
 
 ```
 
+#### Rimmod - C9orf72
+
 ```{r eval=FALSE}
-
-################################################################################
-# Rimmod
-
-# EDGER on Bulk RNASEQ
 library(edgeR)
 library(dplyr)
 library(GO.db)

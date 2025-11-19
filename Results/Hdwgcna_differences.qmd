@@ -4,60 +4,968 @@ title: "Gene modules differences"
 
 ## C9
 
+The co-expression network analysis of FTLD-C9 identified distinct modular organizations within 22 of the 44 individual cell states analyzed, revealing a spectrum of transcriptional complexities across vascular, neural, and immune populations.
+
+Among the calculated co-expression modules there were some of them with differences between FTLD cases and healthy controls in 19 of the 22 cell states. Remarkably we find 13 differentially expressed modules in RORB/ADGRL4 and 14 in T CELL.
+
+The biological functional enrichment shown differences on the pathways of the different cell states.
+
+The excitatory neurons have modules that pioint to an enrichmentin fucntions related to immune responses and cell migration. RORB characterized excitatory neurons are associated with mononuclear cell migration, on ADGRL4 enriched and in LRRK1 reduced. RORB/POU3F2 neuron diferenciation function was found reduced as well as mononuclear cell migration, but leukocyte migration onflamatory process is enriched. CUX2/RASGRF2 shown enrichment in regulation of celular senecense and leukocyte apoptotic process. Among the excitatory neurons cell states it also was seen that THEMIS/NR4A2 is negatively associated with learning and memory.
+
+Inhibitory cell states shown less modules associated to FTLD than the found in excitatory ones. This modules are mostly functionally reduced in several immune response and inflammatory processes like regulation of intrinsic apoptotic pathway in LAMP5/PMEPA1. The cell state SST/BRIN3 shown a totally different group of associated biological functions with a reduction on eating and adult behaviors.
+
+Vascular cells modules biological functions enrichment point to a reduction in external encapsulating structure-related pathways. We find different increased biological pathways among the cells on this group. Arterial and capillary show mostly transcription, structures and organization functions. SMC and T Cell enriched functions indicate a immune respone and cell regulation activation on this cell states.
+
+The non-neuronal cell states mostly point to immune processes but the states individually also indicate other different enriched functions. GFAP – is associated with mononuclear cell migration and mRNA CIS splicing. Oligodendrocytes are enriched in regulation of muscle cell apoptosis and RNA translation processes.
+
 ### Sant Pau
 
 ```{r}
+library(readxl)
+library(readODS)
+library(dplyr)
+library(tibble)
+library(DT)
+
+# ============================================================
+# AUTO-DETECT FILE TYPE (ODS vs XLSX)
+# ============================================================
+
+file_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/8. DIFFERENCES IN MODULES/FTLD-C9-Modules.xlsx"
+
+file_type <- tryCatch({
+  readxl::excel_sheets(file_path)
+  "xlsx"
+}, error = function(e) "ods")
+
+message("Detected file type: ", file_type)
+
+# ============================================================
+# FUNCTION TO READ ONE SHEET + ADD CELL COLUMN
+# ============================================================
+
+read_one_sheet <- function(path, sheet, type) {
+  
+  df <- tryCatch({
+    if (type == "xlsx") readxl::read_excel(path, sheet = sheet)
+    else readODS::read_ods(path, sheet = sheet)
+  }, error = function(e) data.frame())
+  
+  if (nrow(df) == 0) df <- data.frame()
+  
+  df %>%
+    tibble::as_tibble() %>%
+    mutate(cell = sheet, .before = 1)
+}
+
+# ============================================================
+# READ ALL SHEETS
+# ============================================================
+
+sheets <- if (file_type == "xlsx") {
+  readxl::excel_sheets(file_path)
+} else {
+  readODS::ods_sheets(file_path)
+}
+
+all_tables <- lapply(sheets, function(s) read_one_sheet(file_path, s, file_type))
+names(all_tables) <- sheets
+
+merged <- bind_rows(all_tables)
+
+# ============================================================
+# FILTERABLE HTML TABLE (DT)
+# ============================================================
+
+datatable(
+  merged,
+  filter = "top",          # <-- FILTER ROWS
+  extensions = c("Buttons"),
+  options = list(
+    scrollX = TRUE,
+    pageLength = 25,
+    dom = "Bfrtip"
+  )
+)
+```
+
+```{r fig_8_differences_in_modules_1, echo=FALSE}
+library(plotly)
+library(tidyverse)
+library(Seurat)
+library(hdWGCNA)
+
+# ---- Base directory containing cell-state folders ----
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2"
+
+# ---- Detect folders that contain a Seurat object ----
+cell_states <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+cell_states <- cell_states[file.exists(file.path(cell_states,
+                                                 paste0(basename(cell_states), "_seurat.rds")))]
+names(cell_states) <- basename(cell_states)
+
+# ---- Prepare metadata ----
+meta_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+metadata <- xlsx::read.xlsx(meta_path, row.names = 1, sheetIndex = 1)
+metadata_df <- as.data.frame(metadata)
+metadata_df$Sample_clean <- rownames(metadata_df)
+
+# ---- Load eigengenes for all cell states ----
+ME_list <- list()
+
+for (cs in names(cell_states)) {
+  A <- readRDS(file.path(cell_states[cs], paste0(cs, "_seurat.rds")))
+  
+  # Harmonize metadata
+  A$Sample_clean <- gsub("^X", "", A@meta.data$Sample)
+  meta_joined <- A@meta.data %>%
+    mutate(Sample_clean = gsub("^X", "", Sample)) %>%
+    left_join(metadata_df, by = "Sample_clean")
+  A@meta.data <- meta_joined
+  
+  MEs <- hdWGCNA::GetMEs(A)
+  sample_order <- rownames(MEs)
+  group_vector <- factor(
+    A@meta.data[match(sample_order, A@meta.data$Sample), "group.ID"],
+    levels = c("Healthy", "C9orf72")
+  )
+  
+  df_long <- as_tibble(MEs, rownames = "Sample") %>%
+    pivot_longer(-Sample, names_to = "Module", values_to = "MEvalue") %>%
+    mutate(CellState = cs,
+           Condition = group_vector[match(Sample, sample_order)])
+  
+  ME_list[[cs]] <- df_long
+  rm(A)
+}
+
+ME_all <- bind_rows(ME_list)
+ME_all <- ME_all %>% drop_na(Condition)
+
+# ---- Create interactive boxplots ----
+fig <- plot_ly(type = "box")
+
+# Each combination of CellState × Module becomes a separate trace
+unique_pairs <- ME_all %>% distinct(CellState, Module)
+
+for (i in seq_len(nrow(unique_pairs))) {
+  cs  <- unique_pairs$CellState[i]
+  mod <- unique_pairs$Module[i]
+  df  <- ME_all %>% filter(CellState == cs, Module == mod)
+  
+  fig <- fig %>% add_boxplot(
+    data = df,
+    x = ~Condition,
+    y = ~MEvalue,
+    name = paste(cs, mod),
+    boxpoints = "all",
+    jitter = 0.4,
+    marker = list(opacity = 0.6, size = 4),
+    line = list(width = 1),
+    visible = ifelse(i == 1, TRUE, FALSE)
+  )
+}
+
+# ---- Dropdown menus ----
+cells  <- unique(ME_all$CellState)
+mods   <- unique(ME_all$Module)
+n_combo <- nrow(unique_pairs)
+
+# visibility control function
+make_vis <- function(cell_idx, mod_idx) {
+  vis <- rep(FALSE, n_combo)
+  # which trace corresponds to this combination
+  idx <- which(unique_pairs$CellState == cells[cell_idx] &
+               unique_pairs$Module    == mods[mod_idx])
+  if (length(idx) == 1) vis[idx] <- TRUE
+  vis
+}
+
+buttons_cell <- lapply(seq_along(cells), function(i) {
+  list(
+    method = "update",
+    args = list(list(visible = make_vis(i, 1)),
+                list(title = paste0("Cell state: ", cells[i]))),
+    label = cells[i]
+  )
+})
+
+buttons_mod <- lapply(seq_along(mods), function(j) {
+  list(
+    method = "update",
+    args = list(list(visible = make_vis(1, j)),
+                list(title = paste0("Module: ", mods[j]))),
+    label = mods[j]
+  )
+})
+
+# ---- Layout ----
+fig <- fig %>%
+  layout(
+    title = paste0("Module eigengenes — ", cells[1], " / ", mods[1]),
+    yaxis = list(title = "Module eigengene value", autorange = TRUE),
+    xaxis = list(title = "Condition"),
+    updatemenus = list(
+      list(
+        y = 1.15, x = 0,
+        buttons = buttons_cell,
+        direction = "down",
+        showactive = TRUE,
+        pad = list(r = 10, t = 10),
+        xanchor = "left", yanchor = "top",
+        name = "CellState", title = list(text = "Cell state")
+      ),
+      list(
+        y = 1.15, x = 0.35,
+        buttons = buttons_mod,
+        direction = "down",
+        showactive = TRUE,
+        pad = list(r = 10, t = 10),
+        xanchor = "left", yanchor = "top",
+        name = "Module", title = list(text = "Module")
+      )
+    ),
+    showlegend = FALSE
+  )
+
+fig
 
 ```
 
 ### Rimmod
 
 ```{r}
+library(readxl)
+library(readODS)
+library(dplyr)
+library(tibble)
+library(DT)
 
+# ============================================================
+# AUTO-DETECT FILE TYPE (ODS vs XLSX)
+# ============================================================
+
+file_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/8. DIFFERENCES IN MODULES/Rimmod-Modules.xlsx"
+
+file_type <- tryCatch({
+  readxl::excel_sheets(file_path)
+  "xlsx"
+}, error = function(e) "ods")
+
+message("Detected file type: ", file_type)
+
+# ============================================================
+# FUNCTION TO READ ONE SHEET + ADD CELL COLUMN
+# ============================================================
+
+read_one_sheet <- function(path, sheet, type) {
+  
+  df <- tryCatch({
+    if (type == "xlsx") readxl::read_excel(path, sheet = sheet)
+    else readODS::read_ods(path, sheet = sheet)
+  }, error = function(e) data.frame())
+  
+  if (nrow(df) == 0) df <- data.frame()
+  
+  df %>%
+    tibble::as_tibble() %>%
+    mutate(cell = sheet, .before = 1)
+}
+
+# ============================================================
+# READ ALL SHEETS
+# ============================================================
+
+sheets <- if (file_type == "xlsx") {
+  readxl::excel_sheets(file_path)
+} else {
+  readODS::ods_sheets(file_path)
+}
+
+all_tables <- lapply(sheets, function(s) read_one_sheet(file_path, s, file_type))
+names(all_tables) <- sheets
+
+merged <- bind_rows(all_tables)
+
+# ============================================================
+# FILTERABLE HTML TABLE (DT)
+# ============================================================
+
+datatable(
+  merged,
+  filter = "top",          # <-- FILTER ROWS
+  extensions = c("Buttons"),
+  options = list(
+    scrollX = TRUE,
+    pageLength = 25,
+    dom = "Bfrtip"
+  )
+)
+```
+
+```{r fig_8_differences_in_modules_2, echo=TRUE}
+library(plotly)
+library(tidyverse)
+library(Seurat)
+library(hdWGCNA)
+
+# ---- Base directory containing cell-state folders ----
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/Rimod/CS"
+
+# ---- Detect folders that contain a Seurat object ----
+cell_states <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+cell_states <- cell_states[
+  file.exists(file.path(cell_states, paste0(basename(cell_states), "_seurat.rds")))
+]
+names(cell_states) <- basename(cell_states)
+
+message("📂 Found ", length(cell_states), " cell states with Seurat objects: ",
+        paste(names(cell_states), collapse = ", "))
+
+# ---- Prepare metadata ----
+meta_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RIMOD_BULK/DATA/rimod_ftd_dataset_table_v3.txt"
+
+# Assuming this is a tab-delimited text table with sample IDs in the first column:
+metadata_df <- read.delim(
+  meta_path,
+  header = TRUE,
+  row.names = 1,        # first column = sample ID
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+# Create a cleaned sample ID column to match Seurat metadata later
+metadata_df$Sample_clean <- gsub("^X", "", rownames(metadata_df))
+
+message("✅ Loaded metadata with ", nrow(metadata_df), " samples and ",
+        ncol(metadata_df), " columns.")
+head(metadata_df[, c("Sample_clean")])
+
+# ---- Load eigengenes for all cell states ----
+ME_list <- list()
+
+# Detect grouping column
+group_col <- "DiseaseCode"
+if (is.na(group_col)) stop("❌ Could not find a valid group/condition column in metadata.")
+
+for (cs in names(cell_states)) {
+  message("➡️ Processing ", cs)
+  A <- readRDS(file.path(cell_states[cs], paste0(cs, "_seurat.rds")))
+  
+  # Harmonize metadata
+  A$Sample_clean <- gsub("^X", "", A@meta.data$Sample)
+  meta_joined <- A@meta.data %>%
+    mutate(Sample_clean = gsub("^X", "", Sample)) %>%
+    left_join(metadata_df, by = "Sample_clean")
+  A@meta.data <- meta_joined
+  
+  # Debug info
+  message("   Columns in metadata after join: ", paste(colnames(A@meta.data), collapse = ", "))
+  message("   Unique condition values: ",
+          paste(unique(na.omit(A@meta.data[[group_col]])), collapse = ", "))
+  
+  # Extract module eigengenes
+  MEs <- hdWGCNA::GetMEs(A)
+  sample_order <- rownames(MEs)
+  
+  group_vector <- A@meta.data[match(sample_order, A@meta.data$Sample), group_col]
+  group_vector <- as.factor(group_vector)
+  
+  df_long <- as_tibble(MEs, rownames = "Sample") %>%
+    pivot_longer(-Sample, names_to = "Module", values_to = "MEvalue") %>%
+    mutate(CellState = cs,
+           Condition = group_vector[match(Sample, sample_order)])
+  
+  ME_list[[cs]] <- df_long
+  rm(A)
+}
+
+ME_all <- bind_rows(ME_list)
+ME_all <- ME_all %>% drop_na(Condition)
+
+# ---- Create interactive boxplots ----
+fig <- plot_ly(type = "box")
+
+# Each combination of CellState × Module becomes a separate trace
+unique_pairs <- ME_all %>% distinct(CellState, Module)
+
+for (i in seq_len(nrow(unique_pairs))) {
+  cs  <- unique_pairs$CellState[i]
+  mod <- unique_pairs$Module[i]
+  df  <- ME_all %>% filter(CellState == cs, Module == mod)
+  
+  fig <- fig %>% add_boxplot(
+    data = df,
+    x = ~Condition,
+    y = ~MEvalue,
+    name = paste(cs, mod),
+    boxpoints = "all",
+    jitter = 0.4,
+    marker = list(opacity = 0.6, size = 4),
+    line = list(width = 1),
+    visible = ifelse(i == 1, TRUE, FALSE)
+  )
+}
+
+# ---- Dropdown menus ----
+cells  <- unique(ME_all$CellState)
+mods   <- unique(ME_all$Module)
+n_combo <- nrow(unique_pairs)
+
+# visibility control function
+make_vis <- function(cell_idx, mod_idx) {
+  vis <- rep(FALSE, n_combo)
+  # which trace corresponds to this combination
+  idx <- which(unique_pairs$CellState == cells[cell_idx] &
+               unique_pairs$Module    == mods[mod_idx])
+  if (length(idx) == 1) vis[idx] <- TRUE
+  vis
+}
+
+buttons_cell <- lapply(seq_along(cells), function(i) {
+  list(
+    method = "update",
+    args = list(list(visible = make_vis(i, 1)),
+                list(title = paste0("Cell state: ", cells[i]))),
+    label = cells[i]
+  )
+})
+
+buttons_mod <- lapply(seq_along(mods), function(j) {
+  list(
+    method = "update",
+    args = list(list(visible = make_vis(1, j)),
+                list(title = paste0("Module: ", mods[j]))),
+    label = mods[j]
+  )
+})
+
+# ---- Layout ----
+fig <- fig %>%
+  layout(
+    title = paste0("Module eigengenes — ", cells[1], " / ", mods[1]),
+    yaxis = list(title = "Module eigengene value", autorange = TRUE),
+    xaxis = list(title = "Condition"),
+    updatemenus = list(
+      list(
+        y = 1.15, x = 0,
+        buttons = buttons_cell,
+        direction = "down",
+        showactive = TRUE,
+        pad = list(r = 10, t = 10),
+        xanchor = "left", yanchor = "top",
+        name = "CellState", title = list(text = "Cell state")
+      ),
+      list(
+        y = 1.15, x = 0.35,
+        buttons = buttons_mod,
+        direction = "down",
+        showactive = TRUE,
+        pad = list(r = 10, t = 10),
+        xanchor = "left", yanchor = "top",
+        name = "Module", title = list(text = "Module")
+      )
+    ),
+    showlegend = FALSE
+  )
+
+fig
 ```
 
 ## TDP
 
+For the FTLD-TDP data, the co-expression network analysis identified distinct modular organizations within 19 of the 44 individual cell states analyzed, revealing a spectrum of transcriptional complexities across vascular, neural, and immune populations. Among these, differences between FTLD-TDP cases and healthy controls were observed in multiple cell states, reflecting widespread disease-associated transcriptional alterations. CLMP/PDGFRA cells exhibited the highest modular complexity with 44 discrete gene co-expression modules, indicating diverse stromal or vascular regulatory programs.
+
+Arterial and capillary endothelial cells displayed 38 modules each, consistent with specialized vascular functions. CDH4/SCGN cells contained 40 modules, suggesting potential transitional or hybrid endothelial-neuroendocrine roles. Microglia, as central innate immune cells, exhibited 40 modules, underscoring dynamic transcriptional responsiveness in FTLD-TDP.
+
+Neural lineage populations showed variable modular organization. GFAP - glial cells contained 37 modules, whereas GFAP + glial cells had 26 modules, suggesting differential regulatory states based on GFAP expression. CUX2/RASGRF2 modules numbered 33, and LAMP5/PMEPA1 modules 20. Oligodendrocytes and OPCs showed lower modular complexity, with 6 and 18 modules respectively, reflecting restricted developmental programs.
+
+Among RORB-expressing cells, modularity varied by transcriptional context: RORB/FOXO1 had 38 modules, RORB/POU3F2 35, RORB/ADGRL4 22, and RORB/LRRK1 19 modules, indicating context-dependent RORB regulatory networks. Smooth muscle cells (SMC) and T cells exhibited intermediate complexity with 34 and 36 modules respectively, while TLE4/CCBE1 had 27 modules, reflecting moderate regulatory intricacy.
+
 ### Sant Pau
 
-### 
-
 ```{r}
+library(readxl)
+library(readODS)
+library(dplyr)
+library(tibble)
+library(DT)
 
+# ============================================================
+# AUTO-DETECT FILE TYPE (ODS vs XLSX)
+# ============================================================
+
+file_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/8. DIFFERENCES IN MODULES/FTLD-TDP-Modules.xlsx"
+
+file_type <- tryCatch({
+  readxl::excel_sheets(file_path)
+  "xlsx"
+}, error = function(e) "ods")
+
+message("Detected file type: ", file_type)
+
+# ============================================================
+# FUNCTION TO READ ONE SHEET + ADD CELL COLUMN
+# ============================================================
+
+read_one_sheet <- function(path, sheet, type) {
+  
+  df <- tryCatch({
+    if (type == "xlsx") readxl::read_excel(path, sheet = sheet)
+    else readODS::read_ods(path, sheet = sheet)
+  }, error = function(e) data.frame())
+  
+  if (nrow(df) == 0) df <- data.frame()
+  
+  df %>%
+    tibble::as_tibble() %>%
+    mutate(cell = sheet, .before = 1)
+}
+
+# ============================================================
+# READ ALL SHEETS
+# ============================================================
+
+sheets <- if (file_type == "xlsx") {
+  readxl::excel_sheets(file_path)
+} else {
+  readODS::ods_sheets(file_path)
+}
+
+all_tables <- lapply(sheets, function(s) read_one_sheet(file_path, s, file_type))
+names(all_tables) <- sheets
+
+merged <- bind_rows(all_tables)
+
+# ============================================================
+# FILTERABLE HTML TABLE (DT)
+# ============================================================
+
+datatable(
+  merged,
+  filter = "top",          # <-- FILTER ROWS
+  extensions = c("Buttons"),
+  options = list(
+    scrollX = TRUE,
+    pageLength = 25,
+    dom = "Bfrtip"
+  )
+)
+```
+
+```{r fig_8_differences_in_modules_3, echo=FALSE}
+library(plotly)
+library(tidyverse)
+library(Seurat)
+library(hdWGCNA)
+
+# ---- Base directory containing cell-state folders ----
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_bo_ambhubs/"
+
+# ---- Detect folders that contain a Seurat object ----
+cell_states <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+cell_states <- cell_states[file.exists(file.path(cell_states,
+                                                 paste0(basename(cell_states), "_seurat.rds")))]
+names(cell_states) <- basename(cell_states)
+
+# ---- Prepare metadata ----
+meta_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+metadata <- xlsx::read.xlsx(meta_path, row.names = 1, sheetIndex = 1)
+metadata_df <- as.data.frame(metadata)
+metadata_df$Sample_clean <- rownames(metadata_df)
+
+# ---- Load eigengenes for all cell states ----
+ME_list <- list()
+
+for (cs in names(cell_states)) {
+  A <- readRDS(file.path(cell_states[cs], paste0(cs, "_seurat.rds")))
+  
+  # Harmonize metadata
+  A$Sample_clean <- gsub("^X", "", A@meta.data$Sample)
+  meta_joined <- A@meta.data %>%
+    mutate(Sample_clean = gsub("^X", "", Sample)) %>%
+    left_join(metadata_df, by = "Sample_clean")
+  A@meta.data <- meta_joined
+  
+  MEs <- hdWGCNA::GetMEs(A)
+  sample_order <- rownames(MEs)
+  group_vector <- factor(
+    A@meta.data[match(sample_order, A@meta.data$Sample), "group.ID"],
+    levels = c("Healthy", "TDP")
+  )
+  
+  df_long <- as_tibble(MEs, rownames = "Sample") %>%
+    pivot_longer(-Sample, names_to = "Module", values_to = "MEvalue") %>%
+    mutate(CellState = cs,
+           Condition = group_vector[match(Sample, sample_order)])
+  
+  ME_list[[cs]] <- df_long
+  rm(A)
+}
+
+ME_all <- bind_rows(ME_list)
+ME_all <- ME_all %>% drop_na(Condition)
+
+# ---- Create interactive boxplots ----
+fig <- plot_ly(type = "box")
+
+# Each combination of CellState × Module becomes a separate trace
+unique_pairs <- ME_all %>% distinct(CellState, Module)
+
+for (i in seq_len(nrow(unique_pairs))) {
+  cs  <- unique_pairs$CellState[i]
+  mod <- unique_pairs$Module[i]
+  df  <- ME_all %>% filter(CellState == cs, Module == mod)
+  
+  fig <- fig %>% add_boxplot(
+    data = df,
+    x = ~Condition,
+    y = ~MEvalue,
+    name = paste(cs, mod),
+    boxpoints = "all",
+    jitter = 0.4,
+    marker = list(opacity = 0.6, size = 4),
+    line = list(width = 1),
+    visible = ifelse(i == 1, TRUE, FALSE)
+  )
+}
+
+# ---- Dropdown menus ----
+cells  <- unique(ME_all$CellState)
+mods   <- unique(ME_all$Module)
+n_combo <- nrow(unique_pairs)
+
+# visibility control function
+make_vis <- function(cell_idx, mod_idx) {
+  vis <- rep(FALSE, n_combo)
+  # which trace corresponds to this combination
+  idx <- which(unique_pairs$CellState == cells[cell_idx] &
+               unique_pairs$Module    == mods[mod_idx])
+  if (length(idx) == 1) vis[idx] <- TRUE
+  vis
+}
+
+buttons_cell <- lapply(seq_along(cells), function(i) {
+  list(
+    method = "update",
+    args = list(list(visible = make_vis(i, 1)),
+                list(title = paste0("Cell state: ", cells[i]))),
+    label = cells[i]
+  )
+})
+
+buttons_mod <- lapply(seq_along(mods), function(j) {
+  list(
+    method = "update",
+    args = list(list(visible = make_vis(1, j)),
+                list(title = paste0("Module: ", mods[j]))),
+    label = mods[j]
+  )
+})
+
+# ---- Layout ----
+fig <- fig %>%
+  layout(
+    title = paste0("Module eigengenes — ", cells[1], " / ", mods[1]),
+    yaxis = list(title = "Module eigengene value", autorange = TRUE),
+    xaxis = list(title = "Condition"),
+    updatemenus = list(
+      list(
+        y = 1.15, x = 0,
+        buttons = buttons_cell,
+        direction = "down",
+        showactive = TRUE,
+        pad = list(r = 10, t = 10),
+        xanchor = "left", yanchor = "top",
+        name = "CellState", title = list(text = "Cell state")
+      ),
+      list(
+        y = 1.15, x = 0.35,
+        buttons = buttons_mod,
+        direction = "down",
+        showactive = TRUE,
+        pad = list(r = 10, t = 10),
+        xanchor = "left", yanchor = "top",
+        name = "Module", title = list(text = "Module")
+      )
+    ),
+    showlegend = FALSE
+  )
+
+fig
 ```
 
 ### Pottier
 
 ```{r}
+library(readxl)
+library(readODS)
+library(dplyr)
+library(tibble)
+library(DT)
 
-```
+# ============================================================
+# AUTO-DETECT FILE TYPE (ODS vs XLSX)
+# ============================================================
 
-```{r module-diff-data, eval=FALSE}
-module_diff <- load_or_placeholder(
-  option_name = "results_vis.module_diff",
-  pattern = "module.*(difference|activity).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
-  generator = function() {
-    tibble::tibble(
-      Module = paste0("Module", seq_len(12)),
-      Group = rep(c("Control", "FTLD"), each = 12),
-      Score = rnorm(24, mean = rep(c(0, 1), each = 12), sd = 0.5)
-    )
-  }
+file_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/8. DIFFERENCES IN MODULES/Pottier-Modules.xlsx"
+
+file_type <- tryCatch({
+  readxl::excel_sheets(file_path)
+  "xlsx"
+}, error = function(e) "ods")
+
+message("Detected file type: ", file_type)
+
+# ============================================================
+# FUNCTION TO READ ONE SHEET + ADD CELL COLUMN
+# ============================================================
+
+read_one_sheet <- function(path, sheet, type) {
+  
+  df <- tryCatch({
+    if (type == "xlsx") readxl::read_excel(path, sheet = sheet)
+    else readODS::read_ods(path, sheet = sheet)
+  }, error = function(e) data.frame())
+  
+  if (nrow(df) == 0) df <- data.frame()
+  
+  df %>%
+    tibble::as_tibble() %>%
+    mutate(cell = sheet, .before = 1)
+}
+
+# ============================================================
+# READ ALL SHEETS
+# ============================================================
+
+sheets <- if (file_type == "xlsx") {
+  readxl::excel_sheets(file_path)
+} else {
+  readODS::ods_sheets(file_path)
+}
+
+all_tables <- lapply(sheets, function(s) read_one_sheet(file_path, s, file_type))
+names(all_tables) <- sheets
+
+merged <- bind_rows(all_tables)
+
+# ============================================================
+# FILTERABLE HTML TABLE (DT)
+# ============================================================
+
+datatable(
+  merged,
+  filter = "top",          # <-- FILTER ROWS
+  extensions = c("Buttons"),
+  options = list(
+    scrollX = TRUE,
+    pageLength = 25,
+    dom = "Bfrtip"
+  )
 )
 ```
 
-```{r module-diff-plot, eval=FALSE}
-render_source_note(module_diff, "module differences")
-plot_ly(
-  module_diff,
-  x = ~Module,
-  y = ~Score,
-  color = ~Group,
-  type = "bar"
-) %>%
-  layout(barmode = "group",
-         title = "Module Activity Differences",
-         xaxis = list(title = "Module"),
-         yaxis = list(title = "Score")) %>%
-  annotate_placeholder(module_diff)
+```{r fig_8_differences_in_modules_4, echo=FALSE}
+# ============================================================
+# INTERACTIVE BOXPLOTS OF MODULE EIGENGENES (NEW DATASET)
+# ============================================================
+
+library(plotly)
+library(tidyverse)
+library(Seurat)
+library(hdWGCNA)
+
+# ============================================================
+# ---- Base directory containing cell-state folders ----------
+# ============================================================
+
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/NEW/CS_bo/"
+cell_states <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+cell_states <- cell_states[
+  file.exists(file.path(cell_states, paste0(basename(cell_states), "_seurat.rds")))
+]
+names(cell_states) <- basename(cell_states)
+
+message("📂 Found ", length(cell_states), " cell states with Seurat objects: ",
+        paste(names(cell_states), collapse = ", "))
+
+# ============================================================
+# ---- Load metadata -----------------------------------------
+# ============================================================
+
+meta_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/METADATA/Sample_info.txt"
+
+metadata_df <- read.delim(meta_path, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE)
+
+metadata_df <- metadata_df %>%
+  mutate(
+    FCX_clean = gsub("^X", "", FCX_ID),
+    GROUP = case_when(
+      GROUP == "Control" ~ "Healthy",
+      GROUP %in% c("FTLD-TDP-A", "FTLD-TDP-B") ~ "FTLD",
+      GROUP == "FTLD-TDP-C" ~ NA_character_,
+      TRUE ~ GROUP
+    )
+  ) %>%
+  drop_na(GROUP) %>%
+  mutate(GROUP = factor(GROUP, levels = c("Healthy", "FTLD")))
+
+message("✅ Metadata filtered: ", nrow(metadata_df), " samples remaining after removing FTLD-TDP-C.")
+print(table(metadata_df$GROUP))
+
+# ============================================================
+# ---- Load eigengenes for all cell states -------------------
+# ============================================================
+
+ME_list <- list()
+
+for (cs in names(cell_states)) {
+  message("➡️ Processing ", cs)
+  seurat_path <- file.path(cell_states[cs], paste0(cs, "_seurat.rds"))
+  A <- readRDS(seurat_path)
+  
+  # Normalize sample IDs
+  A@meta.data$Sample_clean <- gsub("\\.", "-", A@meta.data$Sample)
+  
+  # Join metadata
+  meta_joined <- A@meta.data %>%
+    left_join(metadata_df, by = c("Sample_clean" = "FCX_clean"))
+  A@meta.data <- meta_joined
+  
+  message("   ✅ Groups found: ", paste(unique(na.omit(A@meta.data$GROUP)), collapse = ", "))
+  
+  # Extract module eigengenes
+  MEs <- hdWGCNA::GetMEs(A)
+  MEs <- as.data.frame(MEs)
+  
+  # Add identifiers
+  MEs$Sample_clean <- A@meta.data$Sample_clean[match(gsub("\\.", "-",rownames(MEs)), A@meta.data$FCX_ID)]
+  MEs$Condition <- A@meta.data$GROUP[match(gsub("\\.", "-",rownames(MEs)), A@meta.data$FCX_ID)]
+  MEs <- MEs %>% drop_na(Sample_clean, Condition)
+  
+  # Detect numeric module columns automatically
+  mod_cols <- names(MEs)[sapply(MEs, is.numeric)]
+  mod_cols <- setdiff(mod_cols, c("Sample_clean", "Condition"))
+  
+  if (length(mod_cols) == 0) {
+    message("⚠️  No module columns detected for ", cs, " — skipping.")
+    next
+  }
+  
+  # Aggregate per sample (in case multiple cells per sample exist)
+  MEs_sample <- MEs %>%
+    group_by(Sample_clean, Condition) %>%
+    summarise(across(all_of(mod_cols), \(x) mean(x, na.rm = TRUE)), .groups = "drop")
+  
+  # Convert to long format
+  df_long <- MEs_sample %>%
+    pivot_longer(
+      cols = all_of(mod_cols),
+      names_to = "Module",
+      values_to = "MEvalue"
+    ) %>%
+    mutate(CellState = cs)
+  
+  ME_list[[cs]] <- df_long
+  rm(A)
+}
+
+# Combine all cell states
+ME_all <- bind_rows(ME_list) %>% drop_na(Condition)
+
+# ============================================================
+# ---- Create interactive boxplots ---------------------------
+# ============================================================
+
+fig <- plot_ly(type = "box")
+
+unique_pairs <- ME_all %>% distinct(CellState, Module)
+cells <- unique(ME_all$CellState)
+mods  <- unique(ME_all$Module)
+n_combo <- nrow(unique_pairs)
+
+for (i in seq_len(n_combo)) {
+  cs  <- unique_pairs$CellState[i]
+  mod <- unique_pairs$Module[i]
+  df  <- ME_all %>% filter(CellState == cs, Module == mod)
+  
+  fig <- fig %>% add_boxplot(
+    data = df,
+    x = ~Condition,
+    y = ~MEvalue,
+    name = paste(cs, mod),
+    boxpoints = "all",
+    jitter = 0.4,
+    marker = list(opacity = 0.6, size = 4),
+    line = list(width = 1),
+    visible = ifelse(i == 1, TRUE, FALSE)
+  )
+}
+
+# ============================================================
+# ---- Dropdown menus ----------------------------------------
+# ============================================================
+
+make_vis <- function(cell_idx, mod_idx) {
+  vis <- rep(FALSE, n_combo)
+  idx <- which(unique_pairs$CellState == cells[cell_idx] &
+               unique_pairs$Module == mods[mod_idx])
+  if (length(idx) == 1) vis[idx] <- TRUE
+  vis
+}
+
+buttons_cell <- lapply(seq_along(cells), function(i) {
+  list(
+    method = "update",
+    args = list(list(visible = make_vis(i, 1)),
+                list(title = paste("Cell state:", cells[i]))),
+    label = cells[i]
+  )
+})
+
+buttons_mod <- lapply(seq_along(mods), function(j) {
+  list(
+    method = "update",
+    args = list(list(visible = make_vis(1, j)),
+                list(title = paste("Module:", mods[j]))),
+    label = mods[j]
+  )
+})
+
+# ============================================================
+# ---- Final layout ------------------------------------------
+# ============================================================
+
+fig <- fig %>%
+  layout(
+    title = paste("Module eigengenes —", cells[1], "/", mods[1]),
+    yaxis = list(title = "Module eigengene value", autorange = TRUE),
+    xaxis = list(title = "Condition"),
+    updatemenus = list(
+      list(
+        y = 1.15, x = 0,
+        buttons = buttons_cell,
+        direction = "down",
+        showactive = TRUE,
+        pad = list(r = 10, t = 10),
+        xanchor = "left", yanchor = "top",
+        name = "CellState", title = list(text = "Cell state")
+      ),
+      list(
+        y = 1.15, x = 0.35,
+        buttons = buttons_mod,
+        direction = "down",
+        showactive = TRUE,
+        pad = list(r = 10, t = 10),
+        xanchor = "left", yanchor = "top",
+        name = "Module", title = list(text = "Module")
+      )
+    ),
+    showlegend = FALSE
+  )
+
+fig
+
+
 ```

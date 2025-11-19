@@ -2,18 +2,55 @@
 title: "Validation: Single cell analysis"
 ---
 
-## C9
+## Cell composition
 
-### Single cell dea
+On the validation dataset 16 cell types exhibited significative compositon proportions differences in FTLD-C9 compared wihth Healthy controls . This results remark the findings comented before by showing 5 previously identyfied cell types . T cell is not found on the verification dataset as a cell type with significative changes due to the C9 effects. For TDP, in Pottier validation dataset, we found 21 cell proportions with significative changes compared with healthy controls. Among those we find GFAP +, PVALV/PTHLH, LAMP5/PMEPA1, PVALB/CEMIP which are identifyed on Sant Pau’s FTLD-TDP cell compositon analysis.
 
+## Single cell dea
+
+To validate our FTLD-C9 findings, differentially expressed genes (DEGs) from the Sant Pau FTLD-TDP dataset were compared with the Rimod dataset at single-cell resolution. Overlap between datasets was evaluated using both the Jaccard index and GeneOverlap statistics to assess reproducibility. Several populations showed notable transcriptional activity. Smooth muscle cells (SMCs) exhibited 79 upregulated and 191 downregulated genes in FTLD-C9, compared to 106 upregulated and 25 downregulated genes in Rimod. 
+
+Despite a small number of overlapping genes (3 down), these changes were statistically significant, with Jaccard indice 0.014 and GeneOverlap p-value of 2.88 e-3 , indicating a modest but meaningful transcriptional concordance. GFAP - astrocytes displayed 51 upregulated and 115 downregulated genes in FTLD-C9, with 3 downregulated genes overlapping with Rimod. This produced a low Jaccard indice 0.025 and GeneOverlap p-value of 6.42e-6 suggesting a reproducible signal in this glial subtype. 
+
+Excitatory neurons, particularly, were among the most transcriptionally active. CUX2/RASGRF2 (36 up, 87 down) and RORB/LRRK1 (81 up, 182 down), showed moderate overlap with Rimod downregulated genes, with Jaccard indices 0.01 for RORB/LRRK1 and 0.028 for CUX2/RASGRF2 and GeneOverlap p-values suggesting a mix of significant (CUX2/RASGRF2 up: p = 0.00014) and less robust overlaps (RORB/LRRK1 down: p = 0.02). Other neuron-enriched populations, such as RORB/POU3F2 with 147 upregulated and 286 downregulated genes in FTLD-C9, overlapping with 2 downregulated genes in Rimod. Jaccard indice of 0.0065 , along with almost significant GeneOverlap p-value 0,054. Oligodendrocytes displayed 122 upregulated and 226 downregulated genes, overlapping with 1 downregulated genes in Rimod. The Jaccard indice was low 0,004 and the GeneOverlap p-value for downregulated genes 0,10 suggests strong reproducibility for this lineage but is not significative. 
+
+Smaller populations like T cells, had limited overlap with a jaccard index of 0,033 but showed significant GeneOverlap (p = 0.009 for T cells downregulation), reflecting discrete but consistent transcriptional shifts. Many rare or transcriptionally quiet populations—including arterial (jaccard = 0,038 p = 0,0004), capillary (jaccard = 0,0178,p= 0,02), and various interneurons—showed negligible overlap, consistent with their low baseline activity. In summary, while global transcriptomic concordance between FTLD-C9 and Rimod datasets is modest, SMCs, GFAP - astrocytes, and excitatory neurons (especially CUX2/RASGRF2) show reproducible transcriptional signatures, highlighting specific cell types with robust and conserved gene expression alterations in FTLD-C9. 
+
+To investigate the robustness of our FTLD-TDP findings, we compared the differentially expressed genes (DEGs) identified in the Sant Pau FTLD-TDP dataset with an independent dataset from Pottier et al. Differential expression analyses were performed at the single-cell level, and overlap between datasets was systematically evaluated using the Jaccard index and GeneOverlap statistics. 
+
+Across the validation dataset, transcriptional activity was generally low in most populations, with only a few cell types exhibiting any significant changes. Among the most transcriptionally responsive populations, smooth muscle cells (SMCs) displayed a modest number of validated genes (n = 5), with 3 upregulated and 3 downregulated transcripts in Sant Pau compared to 1,468 upregulated and 1,535 downregulated genes in Pottier. The small overlap of 3 upregulated and 2 downregulated genes yielded low Jaccard indices (0.002 for upregulated and 0.0013 for downregulated) and significant GeneOverlap values (p = 0,0007 for upregulated; p = 0.024 for downregulated), indicating a limited but statistically meaningful concordance between datasets. GFAP - astrocytes also showed minimal validated transcriptional changes (n = 2), with a single upregulated and downregulated gene overlapping between datasets. 
+
+The Jaccard indices were very low (0.0009 for upregulated; 0.0007 for downregulated), but the GeneOverlap p-values (0.065 and 0.085, respectively) are not significant, only suggesting these changes may reflect a reproducible transcriptional signal in this glial subset. Excitatory neuron populations such as RORB/POU3F2 showed slightly higher transcriptional overlap, with 1 common upregulated and 3 downregulated genes, resulting in Jaccard indices of 0.0035 and 0.0057, respectively. GeneOverlap analyses confirmed the significance for both up- and downregulated transcripts (p = 0.049 and p = 0,00029), pointing to subtle but conserved transcriptional alterations in this excitatory lineage. Other cell populations—including RORB/LRRK1, oligodendrocytes, and microglia—showed no overlap, with zero shared DEGs and consequently Jaccard indices of 0. 
+
+Overall, this analysis highlights that while global transcriptional concordance between the Sant Pau and Pottier datasets is limited, certain populations—SMCs, GFAP - astrocytes, and RORB/POU3F2 neurons—exhibit reproducible signals. These results underscore the challenges of cross-cohort validation in FTLD-TDP, especially for rare or transcriptionally quiet cell types, but also pinpoint discrete cell types with robust, conserved gene expression changes.
+
+
+### C9
 ```{r}
+library("DT")
+data <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/10. VALIDATION/C9_NEW/CS/C9_Validation_results_cs.csv")
 
+datatable(
+data,
+filter = "top",
+options = list(
+pageLength = 25,
+scrollX = TRUE
+)
+)
 ```
 
-## TDP
-
-### Single cell dea
+### TDP
 
 ```{r}
-1 + 1
+data <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/10. VALIDATION/C9_NEW/CS/C9_Validation_results_cs.csv")
+
+datatable(
+data,
+filter = "top",
+options = list(
+pageLength = 25,
+scrollX = TRUE
+)
+)
 ```

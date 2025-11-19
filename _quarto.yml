@@ -40,8 +40,10 @@ website:
             text: Cell Composition Differences
           - file: Results/Cell_correlation.qmd
             text: Cell Composition × Neuropathology
-          - file: Results/Sc_dea_results.qmd
-            text: Single-Cell Differential Expression
+          - file: Results/Sc_dea_results_C9.qmd
+            text: Single-Cell Differential Expression (C9)
+          - file: Results/Sc_dea_results_TDP.qmd
+            text: Single-Cell Differential Expression (TDP)
           - file: Results/Sc_gene_correlation.qmd
             text: Single-Cell Gene Correlation
           - file: Results/Hdwgcna_differences.qmd
@@ -73,3 +75,11 @@ format:
     theme: cosmo
     toc: true
     toc-depth: 3
+    code-fold: true
+    code-summary: "Code"
+editor: visual
+execute:
+  warning: false
+  message: false
+bibliography: references.bib
+link-citations: true

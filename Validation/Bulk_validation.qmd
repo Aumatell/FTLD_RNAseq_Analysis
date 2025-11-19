@@ -2,18 +2,36 @@
 title: "Validation: Bulk analysis"
 ---
 
+# Jaccard validation
+
 ## C9
 
-### Differencial expression
-
 ```{r}
+library("DT")
+data <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/10. VALIDATION/C9_Validation_results_bulk.csv")
 
+datatable(
+data,
+filter = "top",
+options = list(
+pageLength = 25,
+scrollX = TRUE
+)
+)
 ```
 
 ## TDP
 
-### Differencial expression
-
 ```{r}
+library("DT")
+data <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/10. VALIDATION/TDP43_Validation_results_bulk.csv")
 
+datatable(
+data,
+filter = "top",
+options = list(
+pageLength = 25,
+scrollX = TRUE
+)
+)
 ```

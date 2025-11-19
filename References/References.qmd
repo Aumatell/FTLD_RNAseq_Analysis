@@ -1,9 +1,66 @@
 ---
 title: "References"
+format: html
+bibliography: ../references.bib
+link-citations: true
 ---
 
-About this site
+# Primary Literature
+
+The following references are used throughout this website.\
+You can cite them from any page using, for example, `[@pottier2018]`.\
+Clicking a citation opens the linked DOI or PubMed page.
+
+## Key FTLD-TDP Literature
+
+1.  Pottier et al. (2018) [@pottier2018]
+2.  Menden et al. (2023) — multi-omics dataset for genetic FTLD subtypes (RiMod-FTD) [@Menden2023_SciData_RiModFTD]
+3.  Pineda et al. — single-cell atlas of motor and prefrontal cortex in ALS and FTLD (Synapse ID: syn51105515) [@Pineda2024_Cell_ALS_FTLD_snRNA]\
+4.  Sirkis et al. (2019) [@sirkis2019]\
+5.  Grossman et al. (2023) [@grossman2023]\
+6.  Pasquini et al. (2024) [@pasquini2024]\
+7.  Brown et al. — STMN2 regulation [@brownSTMN2]\
+8.  Starr & Sattler (2018) — synaptic dysfunction and altered excitability in C9 ALS/FTD [@Starr2018_BrainRes_C9Synaptic]
+9.  Wang et al. (2021) — C9orf72 regulation of mitochondrial complex I and energy homeostasis [@Wang2021_CellMetab_C9orf72Mito]
+10. Lall & Baloh (2017) — C9orf72, microglia and neuroinflammation in ALS/FTD [@Lall2017_JCI_C9orf72Microglia]
+11. Aragón-González et al. (2024) — C9ORF72 patient-derived endothelial cells and BBB disruption [@AragonGonzalez2024_FluidsBarriersCNS_BBB]
+12. Baughn et al. (2023) — mechanism and rescue of STMN2 cryptic splice-polyadenylation in TDP-43 proteinopathies [@Baughn2023_Science_STMN2]
+13. Cheemala et al. (2025) — ALS/FTD mutation, endothelial TDP-43 loss and blood–brain barrier defects [@Cheemala2025_SciAdv_EndothelialTDP43]
+14. Sirkis et al. (2019) — immunological signatures in frontotemporal lobar degeneration [@Sirkis2019_CurrOpinNeurol_Immunology]
+15. Arribas et al. (2024) — endothelial TDP-43 in sprouting angiogenesis, barrier integrity and neuroinflammation [@Arribas2024_JCIInsight_EndothelialTDP43]
+
+------------------------------------------------------------------------
+
+# Gene → Reference Table
+
+## Table 1: Main Genes and Supporting References
 
 ```{r}
-1 + 1
+library(knitr)
+library(kableExtra)
+
+gene_refs1 <- data.frame(
+  Gene = c("C9orf72","CHI3L1","SPP1","NPTX2","HBA1","HBA2","HBB","SV2C",
+           "CXCL10","CX3CR1","CHI3L2","SERPINA5","CXCL11","CBLN2","TTBK1"),
+  Reference = c(
+    "PMCID: PMC3430713",
+    "PMID: 32344399",
+    "PMCID: PMC9720732",
+    "PMCID: PMC7279197",
+    "PMCID: PMC5786544",
+    "PMCID: PMC5786544",
+    "PMCID: PMC5786544",
+    "PMCID: PMC11224618",
+    '<a href="https://www.frontiersin.org/journals/cellular-neuroscience/articles/10.3389/fncel.2023.1179796/full" target="_blank">Frontiers 2023</a>',
+    '<a href="https://www.frontiersin.org/journals/cellular-neuroscience/articles/10.3389/fncel.2023.1179796/full" target="_blank">Frontiers 2023</a>',
+    "PMCID: PMC7267218",
+    "PMCID: PMC7267218",
+    "PMCID: PMC7267218",
+    '<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10635220/" target="_blank">PMC 2023</a>',
+    '<a href="https://journals.plos.org/plosgenetics/article?id=10.1371%2Fjournal.pgen.1004803" target="_blank">PLOS Genetics</a>'
+  )
+)
+
+kable(gene_refs1, escape = FALSE) %>%
+  kable_styling(full_width = FALSE)
 ```

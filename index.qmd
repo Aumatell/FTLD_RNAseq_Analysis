@@ -1,7 +1,39 @@
 ---
-title: "FTLD_RNAseq_Analysis"
+title: "FTLD RNAseq Analysis"
+format: html
 ---
 
-This Project studies the effects of Frontotemporal lobule degeneration (FTLD) on it's C9orf72 and sporadic TDP subtypes on transcriptomics.
+# FTLD 
 
+This page contains the complete analysis of FTLD transcriptomics performed for the paper _______________ . 
+
+
+## Abstract
+
+Frontotemporal lobar degeneration (FTLD) encompasses molecularly and clinically heterogeneous entities, most frequently associated with TDP-43 pathology and C9orf72 repeat expansions.
+
+Although shared pathological hallmarks suggest convergent mechanisms, the cell-type-specific transcriptional differences between FTLD-C9 and FTLD-TDP remain incompletely defined.
+
+We performed a multi-level transcriptomic analysis of bulk RNA-seq from the Sant Pau FTLD cohort, integrating Bayesian single-cell deconvolution (BayesPrism), cell-state differential expression, and high-dimensional co-expression network analysis (hdWGCNA).
+
+Results were validated using two independent bulk RNA-seq datasets from the Rimod-FTLD and Pottier et al. cohorts.
+A merged human cortical single-cell reference served as the prior for deconvolution.
+
+Statistical analyses were performed using edgeR (LRT) for differential expression, non-parametric tests for cell composition, and Spearman correlations to link transcriptional and neuropathological markers.
+Bulk analyses identified 424 differentially expressed genes (DEGs) in FTLD-C9 and 14 in FTLD-TDP (FDR < 0.05).
+
+FTLD-C9 showed broad immune, complement, and extracellular matrix activation, whereas FTLD-TDP displayed astroglial stress and proteostasis imbalance.
+
+Bayesian deconvolution revealed increased GFAP⁺ astrocytes and T-cell fractions, with reductions in RORB- and PVALB-defined neurons, indicating coordinated glial expansion and neuronal loss.
+
+Cell-state-specific differential expression confirmed upregulation of CHI3L1, CHI3L2, and SPP1, and repression of STMN2 and synaptic genes.
+hdWGCNA uncovered anti-correlated neuronal and glial modules conserved across subtypes and cohorts, linking neuronal downregulation with astrocytic and vascular activation.
+
+Validation analyses demonstrated reproducible DEGs and module preservation (module Z > 6, directional concordance > 60%).
+
+Both FTLD-C9 and FTLD-TDP converge on a shared network architecture characterized by astroglial–neuronal anticorrelation, synaptic repression, and inflammatory activation, despite distinct genetic triggers.
+
+These results highlight STMN2 loss and CHI3L1/CHI3L2 upregulation as central molecular signatures linking RNA dysregulation, glial reactivity, and network failure in FTLD.
+
+The dataset integration and open analytical pipeline provide a reproducible framework for cell-type-resolved transcriptomic analysis in neurodegeneration.
 

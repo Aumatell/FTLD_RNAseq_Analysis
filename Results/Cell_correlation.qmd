@@ -4,88 +4,508 @@ title: "Cell composition correlation with neuropathology"
 
 ## C9 Sant Pau
 
+The neurpopathology markers identifyed in C9orf72 cases were ACSL3 FociANTI, FociSENSE, lncRNA, PolyGA, PolyGP, PolyGR, STMN2 and burden TDP43 and for the TDP43 cases STMN2 and burden TDP43 only.
+
+In FTLD-C9orf72 cell composition association with neuropathology we find the following correlations on each marker. Changes in ACSL3 levels point to altered lipid metabolism seen in C9orf72-associated FTLD.
+
+Several cell types exhibited significant correlations with ACSL3 pathology. OPC cell type is found to be the most correlated cell type(ρ = 0.78, p = 0.007), showing an increase in their proportion with ACSL3 density. Notably, RORB/ADGRL4 (ρ = –0.65, p = 0.03) and RORB/LRRK1 (ρ = –0.63, p = 0.04), excitatory neurons showed a strong negative correlation, suggesting a reduction in this subtypes in cases with greater aggregate burden.
+
+In contrast, GFAP - astrocytes exhibited a positive correlation with ACSL3 load (ρ = 0.64, p = 0.03), indicating an expansion of this glial population in more affected individuals. Antisense RNA foci from the repeat expansion similarly disrupt RNA metabolism in FTLD. One cell type exhibited significant correlation with fociANTI pathology. The non transformed PCP4/NXPH2 cell type showed a negative correlation with fociANTI load (ρ = –0.69, p = 0.019), suggesting a reduction in this population in more affected individuals. Non transformed fociSENSE RNA from the expanded C9orf72 repeat sequester RNA-binding proteins, contributing to FTLD pathology.
+
+Several cell types exhibited significant correlations with fociSENSE pathology. PCP4/NXPH2 exhibited a strong negative correlation (ρ = –0.70, p = 0.01), while PVALB/MYBPC1 showed a similarly strong positive correlation (ρ = 0.70, p = 0.01). Pericyte cells were also negatively correlated (ρ = –0.70, p = 0.02), indicating a decrease in their proportion with increased pathology. Conversely, VIP/LAMA3 (ρ = 0.65, p = 0.03) and capillary cells (ρ = 0.65, p = 0.03) showed positive correlations, suggesting their expansion in higher pathology cases.
+
+Additionally, RORB/LRRK1 (ρ = –0.63, p = 0.04) and PVALB/CEMIP (ρ = 0.62, p = 0.04) were significantly associated, indicating subtype-specific vulnerability. Dysregulation of specific long non-coding RNAs is linked to RNA toxicity from C9orf72 repeat expansions in FTLD. Several cell types exhibited significant correlations with lncRNA pathology. RORB/FOXO1 displayed a very strong positive correlation (ρ = 0.93, p = 0.00), suggesting a marked increase in this subtype with higher pathology.
+
+In contrast, Oligodendrocytes showed a negative correlation (ρ = –0.68, p = 0.02), as did THEMIS/NR4A2 neurons (ρ = –0.63, p = 0.04), indicating a decrease in these populations in more affected individuals. THEMIS/TMEM233 neurons were significantly positively correlated with polyGA pathology (ρ = 0.63, p = 0.04), suggesting an expansion of this subtype in individuals with greater aggregate burden.
+
+Two cell types exhibited significant correlations with polyGP pathology. THEMIS/TMEM233 (ρ = 0.66, p = 0.03) and TLE4/CCBE1 (ρ = 0.63, p = 0.04) both demonstrated positive correlations, indicating an increased presence of these excitatory neuron subtypes in relation to pathology load. Reduced STMN2 expression reflects TDP-43–related cryptic splicing, a hallmark of FTLD with C9orf72 expansion. Several cell types exhibited significant correlations with STMN2 pathology. GFAP- astrocytes showed a very strong positive correlation (ρ = 0.87, p = 0.0009), suggesting marked gliosis in response to pathology.
+
+RORB/LRRK1 neurons were negatively correlated (ρ = –0.84, p = 0.002), indicating vulnerability of this excitatory subtype. THEMIS/TMEM233 also showed a negative correlation (ρ = –0.69, p = 0.02), while TLE4/SEMA3D exhibited a positive correlation (ρ = 0.63, p = 0.04), highlighting diverse cell-type-specific responses to STMN2 pathology.
+
+Notably, some neuropathologies did not exhibit any significant correlations with cell type proportions. Specifically, no cell type showed a statistically significant association with PolyGR or pTDP43 pathology, suggesting that these pathological features may not be strongly linked to changes in the relative abundance of specific cellular populations within the analyzed dataset.
+
+```{r}
+library(readr)
+library(dplyr)
+library(DT)
+library(janitor)
+
+data <- read_csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/4. CELL PROP CORRELATIONS/C9_spearman_results.csv")
+
+data_clean <- data %>% janitor::clean_names()
+
+datatable(
+  data_clean,
+  options = list(pageLength = 15, scrollX = TRUE),
+  rownames = FALSE
+)
+```
+
+```{r}
+library(plotly)
+library(tidyverse)
+library(readxl)
+
+# ---------------- Load Data ----------------
+metadata <- read_xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx")
+colnames(metadata)[1] <- "X"
+samples <- metadata$X[metadata$group.ID == "C9orf72"]
+
+CRscores <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/FTD_C9_neuropath_SOM.csv")
+CRscores$X <- gsub("^X", "", CRscores$X)
+CRscores <- CRscores[CRscores$X %in% samples, ]
+
+proportions <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/FTLD/C9/theta.state_cellstate.csv", row.names = 1)
+rownames(proportions) <- gsub("^X", "", rownames(proportions))
+
+# ---- Match samples ----
+common_samples <- intersect(rownames(proportions), CRscores$X)
+proportions <- proportions[common_samples, , drop=FALSE]
+CRscores <- CRscores[match(common_samples, CRscores$X), ]
+
+cell_states <- colnames(proportions)
+covariates  <- setdiff(colnames(CRscores), "X")
+
+# ---- Generate all combinations ----
+traces <- list()
+meta <- tibble(trace_id = integer(), cell_state = character(), covariate = character())
+
+for (i in seq_along(cell_states)) {
+  for (j in seq_along(covariates)) {
+    cs <- cell_states[i]
+    cv <- covariates[j]
+    df <- tibble(
+      sample = common_samples,
+      x = CRscores[[cv]],
+      y = proportions[[cs]]
+    ) %>% drop_na()
+
+    if (nrow(df) < 3) next  # skip insufficient points
+
+    rho <- suppressWarnings(cor(df$x, df$y, method="spearman"))
+    pval <- suppressWarnings(cor.test(df$x, df$y, method="spearman")$p.value)
+    fit <- lm(y ~ x, data=df)
+    line_df <- tibble(x = seq(min(df$x), max(df$x), length.out=100))
+    line_df$y <- predict(fit, newdata=line_df)
+
+    # Scatter trace
+    traces <- append(traces, list(
+      list(
+        type = "scatter",
+        mode = "markers",
+        x = df$x,
+        y = df$y,
+        name = paste(cs, cv),
+        text = paste0("<b>", cs, " vs ", cv, "</b><br>",
+                      "ρ = ", round(rho, 3), "<br>p = ", signif(pval, 3)),
+        hoverinfo = "text",
+        marker = list(size = 8, opacity = 0.7),
+        visible = (i == 1 && j == 1)
+      )
+    ))
+
+    # Regression line trace
+    traces <- append(traces, list(
+      list(
+        type = "scatter",
+        mode = "lines",
+        x = line_df$x,
+        y = line_df$y,
+        line = list(color = "firebrick", width = 2),
+        showlegend = FALSE,
+        hoverinfo = "none",
+        visible = (i == 1 && j == 1)
+      )
+    ))
+
+    meta <- add_row(meta,
+                    trace_id = length(traces) - 1,
+                    cell_state = cs,
+                    covariate = cv)
+  }
+}
+
+# ---- Helper: compute which traces to show ----
+make_visibility <- function(cs, cv) {
+  vis <- rep(FALSE, length(traces))
+  idx <- which(meta$cell_state == cs & meta$covariate == cv)
+  if (length(idx) == 1) {
+    # each combination has 2 traces (points + line)
+    start <- (idx - 1) * 2 + 1
+    vis[start:(start + 1)] <- TRUE
+  }
+  vis
+}
+
+# ---- Create dropdown menus ----
+buttons <- list()
+k <- 1
+for (i in seq_along(cell_states)) {
+  for (j in seq_along(covariates)) {
+    cs <- cell_states[i]
+    cv <- covariates[j]
+    buttons[[k]] <- list(
+      method = "update",
+      args = list(list(visible = make_visibility(cs, cv)),
+                  list(title = paste("Cell state:", cs, " | Covariate:", cv))),
+      label = paste(cs, cv)
+    )
+    k <- k + 1
+  }
+}
+
+# ---- Build Plot ----
+fig <- plot_ly()
+
+for (tr in traces) {
+  fig <- fig %>% add_trace(
+    type = tr$type,
+    mode = tr$mode,
+    x = tr$x,
+    y = tr$y,
+    name = tr$name,
+    text = tr$text,
+    hoverinfo = tr$hoverinfo,
+    marker = tr$marker,
+    line = tr$line,
+    visible = tr$visible
+  )
+}
+
+fig <- fig %>%
+  layout(
+    title = "Spearman correlation: Cell-state proportions vs pathology markers",
+    xaxis = list(title = "Covariate value"),
+    yaxis = list(title = "Cell-state proportion"),
+    updatemenus = list(
+      list(
+        y = 1.1,
+        x = 0,
+        buttons = buttons,
+        direction = "down",
+        showactive = TRUE,
+        xanchor = "left",
+        yanchor = "top",
+        title = list(text = "Select cell state + covariate")
+      )
+    )
+  )
+
+fig
+
+```
+
 ### pTDP43
 
 ```{r}
+make_plot_for_covariate <- function(cv){
+
+  metadata <- read_xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx")
+  colnames(metadata)[1] <- "X"
+  samples <- metadata$X[metadata$group.ID == "C9orf72"]
+
+  CRscores <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/FTD_C9_neuropath_SOM.csv")
+  CRscores$X <- gsub("^X", "", CRscores$X)
+  CRscores <- CRscores[CRscores$X %in% samples, ]
+
+  proportions <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/FTLD/C9/theta.state_cellstate.csv",
+                          row.names = 1)
+  rownames(proportions) <- gsub("^X", "", rownames(proportions))
+
+  # Match samples
+  common_samples <- intersect(rownames(proportions), CRscores$X)
+  proportions <- proportions[common_samples, , drop=FALSE]
+  CRscores <- CRscores[match(common_samples, CRscores$X), ]
+
+  cell_states <- colnames(proportions)
+
+  # Store actual trace indices for each selectable cell state
+  trace_map <- list()
+  fig <- plot_ly()
+  trace_index <- 0   # count of traces added
+
+  for (cs in cell_states) {
+
+    df <- tibble(
+      x = CRscores[[cv]],
+      y = proportions[[cs]]
+    ) %>% drop_na()
+
+    if (nrow(df) < 3) next
+
+    # regression line
+    fit <- lm(y ~ x, data=df)
+    line_df <- tibble(
+      x = seq(min(df$x), max(df$x), length.out=100),
+      y = predict(fit, newdata=list(x = seq(min(df$x), max(df$x), length.out=100)))
+    )
+
+    # ---- ADD POINTS ----
+    fig <- fig %>% add_markers(
+      data = df,
+      x = ~x, y = ~y,
+      name = cs,
+      visible = (length(trace_map) == 0),
+      marker = list(size=9, opacity=0.7)
+    )
+    trace_index <- trace_index + 1
+    points_trace <- trace_index
+
+    # ---- ADD LINE ----
+    fig <- fig %>% add_lines(
+      data = line_df,
+      x = ~x, y = ~y,
+      showlegend = FALSE,
+      visible = (length(trace_map) == 0),
+      line = list(color="firebrick")
+    )
+    trace_index <- trace_index + 1
+    line_trace <- trace_index
+
+    # Store mapping for dropdown
+    trace_map[[cs]] <- c(points_trace, line_trace)
+  }
+
+  # ---- BUILD DROPDOWN ----
+  buttons <- list()
+  total_traces <- trace_index
+
+  for (i in seq_along(trace_map)) {
+    cs <- names(trace_map)[i]
+
+    vis <- rep(FALSE, total_traces)
+    vis[trace_map[[cs]]] <- TRUE
+
+    buttons[[i]] <- list(
+      method = "update",
+      label = cs,
+      args = list(
+        list(visible = vis),
+        list(title = paste(cv, "—", cs))
+      )
+    )
+  }
+
+  # ---- FINAL PLOT ----
+  fig %>% layout(
+    title = paste("Correlation of", cv, "with cell-state proportions"),
+    xaxis = list(title=cv),
+    yaxis = list(title="Cell-state proportion"),
+    updatemenus = list(
+      list(
+        type="dropdown",
+        buttons=buttons,
+        x=0, y=1.15,
+        showactive=TRUE
+      )
+    )
+  )
+}
+
+
+
+```
+
+```{r}
+make_plot_for_covariate("pTDP43")
+
 ```
 
 ### STMN2
 
 ```{r}
+make_plot_for_covariate("STMN2")
+
+```
+
+### ACSL3
+
+```{r}
+make_plot_for_covariate("ACSL3")
+
+```
+
+###lncRNA
+
+```{r}
+make_plot_for_covariate("lncRNA")
+
 ```
 
 ### fociSENSE
 
 ```{r}
+make_plot_for_covariate("fociSENSE")
+
 ```
 
 ### fociANTI
 
 ```{r}
+make_plot_for_covariate("fociANTI")
+
 ```
 
 ### PolyGP
 
 ```{r}
+make_plot_for_covariate("polyGP")
+
 ```
 
 ### PolyGA
 
 ```{r}
+make_plot_for_covariate("polyGA")
+
 ```
 
-```         
+### PolyGR
+
+```{r}
+make_plot_for_covariate("polyGR")
+
 ```
 
 ## TDP Sant Pau
 
+In the case of FTLD-TDP cell type proportions associations with neuropathology markers. FTLD-TDP cell types correlation with STMN2 density it is seen a significative negative correlation with different neuronal cell types. TLE4/CCBE1(p = 0.031, ρ = -0.73), CUX2/RORB (p = 0.043, ρ = -0.7), DISC1/RELN (p = 0.043, ρ = -0.7 ).
+
+\
+Several cell types exhibited significant correlations with pTDP-43 pathology. Notably, RORB_LRRK1 excitatory neurons showed a strong negative correlation (ρ = –0.766, p = 0.021), suggesting a reduction in this subtype in cases with greater aggregate burden.
+
+Similarly, LAMP5_PMEPA1 interneurons were also negatively correlated (ρ = –0.700, p = 0.043). In contrast, GFAP + astrocytes exhibited a positive correlation with pTDP-43 load (ρ = 0.733, p = 0.031), indicating an expansion of this glial population in more affected individuals.
+
+Other cell types showed nominal correlations but did not reach statistical significance, including RORB_ADGRL4, PVALB_MYBPC1, and Venous endothelial cells. These trends may warrant further investigation in larger cohorts.
+
+```{r}
+library(readr)
+library(dplyr)
+library(DT)
+library(janitor)
+
+data <- read_csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/4. CELL PROP CORRELATIONS/TDP_spearman_results_2.csv")
+
+data_clean <- data %>% janitor::clean_names()
+
+datatable(
+  data_clean,
+  options = list(pageLength = 15, scrollX = TRUE),
+  rownames = FALSE
+)
+```
+
 ### pTDP43
 
 ```{r}
+make_plot_for_covariate <- function(cv){
 
+  metadata <- read_xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx")
+  colnames(metadata)[1] <- "X"
+  samples <- metadata$X[metadata$group.ID == "TDP"]
+
+  CRscores <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/FTD_TDP_neuropath_SOM.csv")
+  CRscores$X <- gsub("^long", "", CRscores$X)
+  CRscores <- CRscores[CRscores$X %in% samples, ]
+
+  proportions <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/FTLD/TDP/theta.state_original.csv",
+                          row.names = 1)
+  rownames(proportions) <- gsub("^X", "", rownames(proportions))
+
+  # Match samples
+  common_samples <- intersect(rownames(proportions), CRscores$X)
+  proportions <- proportions[common_samples, , drop=FALSE]
+  CRscores <- CRscores[match(common_samples, CRscores$X), ]
+
+  cell_states <- colnames(proportions)
+
+  # Store actual trace indices for each selectable cell state
+  trace_map <- list()
+  fig <- plot_ly()
+  trace_index <- 0   # count of traces added
+
+  for (cs in cell_states) {
+
+    df <- tibble(
+      x = CRscores[[cv]],
+      y = proportions[[cs]]
+    ) %>% drop_na()
+
+    if (nrow(df) < 3) next
+
+    # regression line
+    fit <- lm(y ~ x, data=df)
+    line_df <- tibble(
+      x = seq(min(df$x), max(df$x), length.out=100),
+      y = predict(fit, newdata=list(x = seq(min(df$x), max(df$x), length.out=100)))
+    )
+
+    # ---- ADD POINTS ----
+    fig <- fig %>% add_markers(
+      data = df,
+      x = ~x, y = ~y,
+      name = cs,
+      visible = (length(trace_map) == 0),
+      marker = list(size=9, opacity=0.7)
+    )
+    trace_index <- trace_index + 1
+    points_trace <- trace_index
+
+    # ---- ADD LINE ----
+    fig <- fig %>% add_lines(
+      data = line_df,
+      x = ~x, y = ~y,
+      showlegend = FALSE,
+      visible = (length(trace_map) == 0),
+      line = list(color="firebrick")
+    )
+    trace_index <- trace_index + 1
+    line_trace <- trace_index
+
+    # Store mapping for dropdown
+    trace_map[[cs]] <- c(points_trace, line_trace)
+  }
+
+  # ---- BUILD DROPDOWN ----
+  buttons <- list()
+  total_traces <- trace_index
+
+  for (i in seq_along(trace_map)) {
+    cs <- names(trace_map)[i]
+
+    vis <- rep(FALSE, total_traces)
+    vis[trace_map[[cs]]] <- TRUE
+
+    buttons[[i]] <- list(
+      method = "update",
+      label = cs,
+      args = list(
+        list(visible = vis),
+        list(title = paste(cv, "—", cs))
+      )
+    )
+  }
+
+  # ---- FINAL PLOT ----
+  fig %>% layout(
+    title = paste("Correlation of", cv, "with cell-state proportions"),
+    xaxis = list(title=cv),
+    yaxis = list(title="Cell-state proportion"),
+    updatemenus = list(
+      list(
+        type="dropdown",
+        buttons=buttons,
+        x=0, y=1.15,
+        showactive=TRUE
+      )
+    )
+  )
+}
+make_plot_for_covariate("TDP43b")
 ```
 
 ### STMN2
 
 ```{r}
-
-```
-
-```{r cell-prop-corr-data, eval=FALSE}
-cell_prop_corr <- load_or_placeholder(
-  option_name = "results_vis.cell_prop_corr",
-  pattern = "cell.*prop.*(corr|correlation).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
-  generator = function() {
-    cell_types <- c("Astrocyte", "Neuron", "Microglia", "Oligodendrocyte", "Endothelial")
-    metrics <- c("Age", "DiseaseDuration", "MMSE", "Module1", "Module2")
-    expand_grid(CellType = cell_types, Metric = metrics) %>%
-      mutate(Correlation = runif(n(), min = -1, max = 1))
-  }
-)
-```
-
-```{r cell-prop-corr-plot, eval=FALSE}
-render_source_note(cell_prop_corr, "cell proportion correlations")
-cell_prop_corr_wide <- cell_prop_corr %>%
-  tidyr::pivot_wider(names_from = Metric, values_from = Correlation)
-cell_prop_corr_matrix <- cell_prop_corr_wide %>%
-  column_to_rownames("CellType") %>%
-  as.matrix()
-cell_prop_corr_hover <- cell_prop_corr %>%
-  mutate(label = glue::glue("{CellType} vs {Metric}<br>Correlation: {round(Correlation, 2)}")) %>%
-  tidyr::pivot_wider(names_from = Metric, values_from = label) %>%
-  column_to_rownames("CellType") %>%
-  as.matrix()
-plot_ly(
-  x = colnames(cell_prop_corr_matrix),
-  y = rownames(cell_prop_corr_matrix),
-  z = cell_prop_corr_matrix,
-  type = "heatmap",
-  colors = "RdBu",
-  reversescale = TRUE,
-  text = cell_prop_corr_hover,
-  hoverinfo = "text"
-) %>%
-  layout(title = "Correlation of Cell Proportions with Metadata") %>%
-  annotate_placeholder(cell_prop_corr)
+make_plot_for_covariate("STMN2")
 ```

@@ -4,56 +4,959 @@ title: "Differences in cell composition"
 
 ## C9
 
+Analysis revealed significant shifts in arcsin transformed cell type proportions between healthy controls and FTLD-C9 cases, reflecting disease-associated alterations in cortical cellular composition. VAT1L/EYA4 (p = 0.013, FC= 0.066) and GFAP + (p = 0.026, FC= 202,85) cells displayed a striking increase in FTLD-C9 indicative of astrocytic activation.  T Cell (p = 0.033, FC= 1.24) proportion is also found increased. Additional significative proportion decreases were observed in PVALB/MYBPC1(p = 0.009, FC= 1.49), and RORB/POU3F2 (p = 0.042, FC= 0.87) populations  (Fig.1). Overall, there was an enrichment of cell types associated with immune responses and inflammation, whereas neuronal populations were generally reduced in FTLD-C9.
+
 ### Sant Pau
 
 ```{r}
+library(openxlsx)
+library(dplyr)
+library(DT)
+library(janitor)
 
+# Load sheets
+sheets <- openxlsx::getSheetNames("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx")
+
+data <- xlsx::read.xlsx(
+  "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx",
+  sheetName = sheets[1]
+)
+
+data2 <- xlsx::read.xlsx(
+  "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx",
+  sheetName = sheets[12]
+)
+
+# ───────────────────────────────────────────────
+# 1. Remove group.sv
+# ───────────────────────────────────────────────
+data <- data %>% select(-group.sv)
+
+# ───────────────────────────────────────────────
+# 2. Replace "group" using data2$group matched by "cell"
+# ───────────────────────────────────────────────
+
+data <- data %>%
+  left_join(
+    data2 %>% select(cell, group) %>% rename(new_group = group),
+    by = "cell"
+  ) %>%
+  mutate(group = new_group) %>%
+  select(-new_group)
+
+# ───────────────────────────────────────────────
+# 3. Rename "group" to "p.value"
+# ───────────────────────────────────────────────
+data <- data %>% rename(p.value = group)
+
+# Clean column names (HTML safe)
+data <- data %>% clean_names()
+
+# ───────────────────────────────────────────────
+# 4. Output for HTML Quarto
+# ───────────────────────────────────────────────
+datatable(
+  data,
+  options = list(
+    pageLength = 25,
+    scrollX = TRUE,
+    autoWidth = TRUE,
+    searchHighlight = TRUE
+  ),
+  class = "display compact",
+  rownames = FALSE
+)
+
+```
+
+
+```{r}
+# ---- Libraries ----
+
+library(tidyverse)
+library(openxlsx)
+library(plotly)
+
+# ---- File paths ----
+frequency_file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/FTLD/C9/theta.state_cellstate.csv"
+metadata_file  <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+output_path    <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/CELL_PROP/FTLD/c9/"
+
+if (!dir.exists(output_path)) dir.create(output_path, recursive = TRUE)
+if (!dir.exists(file.path(output_path, "Significative"))) dir.create(file.path(output_path, "Significative"))
+
+# ---- Load data ----
+meta <- openxlsx::read.xlsx(metadata_file, sheet = 1)
+freq <- read.csv(frequency_file)
+
+# ---- Harmonize IDs ----
+freq$X <- gsub("long", "", freq$X)
+freq$X <- gsub("^X", "", freq$X)
+meta$sample.ID <- gsub("-", "_", meta$sample.ID)
+
+# ---- Merge ----
+merged <- merge(meta, freq, by.x = "sample.ID", by.y = "X")
+merged[merged == 0] <- NA
+
+# ---- Define groups ----
+merged <- merged[merged$group.ID %in% c("Healthy", "C9orf72"), ]
+merged$GROUP <- factor(ifelse(merged$group.ID == "Healthy", "Control", "FTLD"),
+                       levels = c("Control", "FTLD"))
+
+# ---- Extract cell states ----
+cell_states <- colnames(freq)[-1]
+
+# ---- Transform proportions (arcsin sqrt) ----
+merged_arcsin <- merged
+merged_arcsin[cell_states] <- asin(sqrt(merged[cell_states]))
+
+# ---- Robust Kruskal–Wallis loop ----
+signif_list <- lapply(cell_states, function(cs) {
+  subd <- merged_arcsin %>% select(GROUP, all_of(cs))
+  # Ensure both groups have enough samples
+  if (any(table(subd$GROUP) < 2, na.rm = TRUE)) return(NULL)
+  
+  kw <- tryCatch(kruskal.test(subd[[cs]] ~ subd$GROUP), error = function(e) NULL)
+  if (is.null(kw)) return(NULL)
+  
+  pval <- kw$p.value
+  mean_ctrl <- mean(merged[[cs]][merged$GROUP == "Control"], na.rm = TRUE)
+  mean_ftld <- mean(merged[[cs]][merged$GROUP == "FTLD"], na.rm = TRUE)
+  fc <- ifelse(mean_ctrl == 0, NA, mean_ftld / mean_ctrl)
+  log2fc <- log2(fc)
+  
+  data.frame(
+    cell = cs,
+    p = pval,
+    mean_ctrl = mean_ctrl,
+    mean_ftld = mean_ftld,
+    fold_change = fc,
+    log2FC = log2fc,
+    stringsAsFactors = FALSE
+  )
+})
+
+# ---- Bind cleanly into one table ----
+signif_tbl <- bind_rows(signif_list)   # use bind_rows instead of rbind for safety
+
+# ---- Multiple testing correction ----
+signif_tbl <- signif_tbl %>%
+  mutate(
+    FDR = p.adjust(p, method = "BH"),
+    signif = case_when(
+      FDR < 0.001 ~ "***",
+      FDR < 0.01  ~ "**",
+      FDR < 0.05  ~ "*",
+      TRUE ~ "ns"
+    )
+  )
+
+# ---- Convert p to numeric safely ----
+signif_tbl$p <- as.numeric(unlist(signif_tbl$p))
+signif_tbl$mean_ctrl <- as.numeric(unlist(signif_tbl$mean_ctrl))
+signif_tbl$mean_ftld <- as.numeric(unlist(signif_tbl$mean_ftld))
+signif_tbl$fold_change <- as.numeric(unlist(signif_tbl$fold_change))
+signif_tbl$log2FC <- as.numeric(unlist(signif_tbl$log2FC))
+
+# ---- Multiple testing correction ----
+library(dplyr)
+signif_tbl <- signif_tbl %>%
+  mutate(
+    FDR = p.adjust(p, method = "BH"),
+    signif = case_when(
+      FDR < 0.001 ~ "***",
+      FDR < 0.01  ~ "**",
+      FDR < 0.05  ~ "*",
+      TRUE ~ "ns"
+    )
+  )
+# ---- Interactive boxplot (fixed) ----
+all_traces <- list()
+for (i in seq_along(cell_states)) {
+  cs <- cell_states[i]
+  df <- merged %>%
+    select(GROUP, all_of(cs)) %>%
+    rename(Proportion = all_of(cs)) %>%
+    filter(!is.na(Proportion))        # remove NA rows before plotting
+  
+  # make sure both groups are present
+  missing_groups <- setdiff(levels(merged$GROUP), unique(df$GROUP))
+  if (length(missing_groups) > 0) {
+    for (mg in missing_groups) {
+      df <- rbind(df, data.frame(GROUP = mg, Proportion = NA))
+    }
+  }
+
+  pval <- signif_tbl$p[signif_tbl$cell == cs]
+  fdr  <- signif_tbl$FDR[signif_tbl$cell == cs]
+  signif_label <- signif_tbl$signif[signif_tbl$cell == cs]
+
+  # Create one trace per group (Control, FTLD)
+  for (grp in levels(merged$GROUP)) {
+    grp_data <- df %>% filter(GROUP == grp)
+    tr <- list(
+      type = "box",
+      x = rep(grp, nrow(grp_data)),
+      y = grp_data$Proportion,
+      name = grp,
+      boxpoints = "all",
+      jitter = 0.4,
+      marker = list(opacity = 0.6, size = 4),
+      line = list(width = 1),
+      visible = ifelse(i == 1, TRUE, FALSE),
+      text = paste0(
+        "Cell state: ", cs,
+        "<br>Group: ", grp,
+        "<br>p=", signif(pval, 3),
+        " (FDR=", signif(fdr, 3), ")"
+      ),
+      hoverinfo = "text"
+    )
+    all_traces <- append(all_traces, list(tr))
+  }
+}
+
+# ---- Dropdown menu ----
+buttons <- lapply(seq_along(cell_states), function(i) {
+  vis <- rep(FALSE, length(all_traces))
+  vis[((i - 1) * 2 + 1):(i * 2)] <- TRUE
+  list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(
+        title = paste0(
+          cell_states[i],
+          " — Kruskal p=", signif(signif_tbl$p[i], 3),
+          ", FDR=", signif(signif_tbl$FDR[i], 3),
+          " ", signif_tbl$signif[i]
+        ),
+        yaxis = list(autorange = TRUE)
+      )
+    ),
+    label = cell_states[i]
+  )
+})
+
+# ---- Build figure ----
+fig <- plot_ly()
+for (tr in all_traces) {
+  fig <- fig %>% add_trace(
+    type = tr$type, x = tr$x, y = tr$y,
+    name = tr$name, boxpoints = tr$boxpoints, jitter = tr$jitter,
+    marker = tr$marker, line = tr$line,
+    text = tr$text, hoverinfo = tr$hoverinfo,
+    visible = tr$visible
+  )
+}
+
+fig <- fig %>%
+  layout(
+    updatemenus = list(list(
+      y = 1.1, buttons = buttons,
+      direction = "down", showactive = TRUE
+    )),
+    boxmode = "group",
+    showlegend = TRUE,
+    legend = list(title = list(text = "<b>Group</b>")),
+    yaxis = list(title = "Proportion", autorange = TRUE),
+    xaxis = list(title = ""),
+    title = list(
+      text = paste0("FTLD-C9 Cell-State Proportion Comparison (", length(cell_states), " total)"),
+      x = 0.05
+    )
+  )
+
+fig
 ```
 
 ### Rimmod
 
 ```{r}
 
+data <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx", sheetName = sheets[4])
+
+data2 <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx", sheetName = sheets[20])
+
+# ───────────────────────────────────────────────
+# 1. Remove group.sv
+# ───────────────────────────────────────────────
+data <- data %>% select(-group.sv)
+
+# ───────────────────────────────────────────────
+# 2. Replace "group" using data2$group matched by "cell"
+# ───────────────────────────────────────────────
+
+data <- data %>%
+  left_join(
+    data2 %>% select(cell, group) %>% rename(new_group = group),
+    by = "cell"
+  ) %>%
+  mutate(group = new_group) %>%
+  select(-new_group)
+
+# ───────────────────────────────────────────────
+# 3. Rename "group" to "p.value"
+# ───────────────────────────────────────────────
+data <- data %>% rename(p.value = group)
+
+# Clean column names (HTML safe)
+data <- data %>% clean_names()
+
+# ───────────────────────────────────────────────
+# 4. Output for HTML Quarto
+# ───────────────────────────────────────────────
+datatable(
+  data,
+  options = list(
+    pageLength = 25,
+    scrollX = TRUE,
+    autoWidth = TRUE,
+    searchHighlight = TRUE
+  ),
+  class = "display compact",
+  rownames = FALSE
+)
+
 ```
 
+
+```{r}
+###############################################################
+# PREPROCESSING FOR RIMOD — CONTROL VS C9 ONLY
+###############################################################
+
+library(dplyr)
+library(readr)
+library(openxlsx)
+
+# -------------------------------------------------------------
+# 1. Paths
+# -------------------------------------------------------------
+frequency_file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/RIMOD/theta.state_cellstate.csv"
+metadata_file  <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RIMOD_BULK/DATA/rimod_ftd_dataset_table_v3.txt"
+
+# -------------------------------------------------------------
+# 2. Load metadata
+# -------------------------------------------------------------
+meta <- read_tsv(metadata_file, show_col_types = FALSE)
+
+# -------------------------------------------------------------
+# 3. Load proportions
+# -------------------------------------------------------------
+freq <- read.csv(frequency_file, check.names = FALSE)
+
+# First column contains RimodID → rename it
+colnames(freq)[1] <- "RimodID"
+
+# -------------------------------------------------------------
+# 4. Merge metadata + BayesPrism proportions
+# -------------------------------------------------------------
+merged <- merge(meta, freq, by = "RimodID")
+
+# -------------------------------------------------------------
+# 5. Keep ONLY Control and C9 samples
+# -------------------------------------------------------------
+merged <- merged %>%
+  filter(DiseaseCode %in% c("control", "FTD-C9"))
+
+# If no C9 samples exist, stop early
+if (!any(merged$DiseaseCode == "FTD-C9")) {
+  stop("❌ No C9 samples found in metadata. Check 'DiseaseCode' field.")
+}
+
+# -------------------------------------------------------------
+# 6. Define two-group factor for the plot
+# -------------------------------------------------------------
+merged$GROUP <- factor(
+  ifelse(merged$DiseaseCode == "control", "Control", "C9"),
+  levels = c("Control", "C9")
+)
+
+# -------------------------------------------------------------
+# 7. Extract cell-state names
+# -------------------------------------------------------------
+cell_states <- colnames(freq)[-1]
+
+# -------------------------------------------------------------
+# 8. arcsin-sqrt transform
+# -------------------------------------------------------------
+merged_arcsin <- merged
+merged_arcsin[cell_states] <- asin(sqrt(merged[cell_states]))
+
+# -------------------------------------------------------------
+# 9. Kruskal–Wallis per cell state
+# -------------------------------------------------------------
+signif_list <- lapply(cell_states, function(cs) {
+
+  subd <- merged_arcsin %>% select(GROUP, all_of(cs))
+  if (any(table(subd$GROUP) < 2, na.rm=TRUE))
+    return(NULL)
+
+  kw <- tryCatch(kruskal.test(subd[[cs]] ~ subd$GROUP),
+                 error = function(e) NULL)
+  if (is.null(kw)) return(NULL)
+
+  pval <- kw$p.value
+  mean_ctrl <- mean(merged[[cs]][merged$GROUP == "Control"], na.rm=TRUE)
+  mean_c9   <- mean(merged[[cs]][merged$GROUP == "C9"], na.rm=TRUE)
+
+  fc <- ifelse(mean_ctrl == 0, NA, mean_c9 / mean_ctrl)
+
+  data.frame(
+    cell = cs,
+    p = pval,
+    mean_ctrl = mean_ctrl,
+    mean_c9 = mean_c9,
+    fold_change = fc,
+    log2FC = log2(fc)
+  )
+})
+
+signif_tbl <- bind_rows(signif_list)
+
+# -------------------------------------------------------------
+# 10. Adjust FDR
+# -------------------------------------------------------------
+signif_tbl <- signif_tbl %>%
+  mutate(
+    FDR = p.adjust(p, method = "BH"),
+    signif = case_when(
+      FDR < 0.001 ~ "***",
+      FDR < 0.01  ~ "**",
+      FDR < 0.05  ~ "*",
+      TRUE        ~ "ns"
+    )
+  )
+
+###############################################################
+# These objects are now ready and compatible with your boxplot:
+# - merged
+# - merged_arcsin
+# - cell_states
+# - signif_tbl
+###############################################################
+# ===============================================================
+# Interactive boxplot
+# ===============================================================
+all_traces <- list()
+for (i in seq_along(cell_states)) {
+  cs <- cell_states[i]
+  df <- merged %>%
+    select(GROUP, all_of(cs)) %>%
+    rename(Proportion = all_of(cs)) %>%
+    filter(!is.na(Proportion))
+
+  # guarantee both groups appear even if one is all-NA
+  missing_groups <- setdiff(levels(merged$GROUP), unique(df$GROUP))
+  if (length(missing_groups) > 0) {
+    df <- rbind(df, data.frame(GROUP = missing_groups, Proportion = NA))
+  }
+  df$GROUP <- factor(df$GROUP, levels = levels(merged$GROUP))
+
+  pval <- signif_tbl$p[signif_tbl$cell == cs]
+  fdr  <- signif_tbl$FDR[signif_tbl$cell == cs]
+  signif_label <- signif_tbl$signif[signif_tbl$cell == cs]
+
+  for (grp in levels(df$GROUP)) {
+    grp_data <- df %>% filter(GROUP == grp)
+    tr <- list(
+      type = "box",
+      name = grp,
+      x = rep(grp, nrow(grp_data)),
+      y = grp_data$Proportion,
+      boxpoints = "all",
+      jitter = 0.4,
+      marker = list(opacity = 0.6, size = 4),
+      line = list(width = 1),
+      visible = ifelse(i == 1, TRUE, FALSE),
+      text = paste0(
+        "Cell state: ", cs,
+        "<br>Group: ", grp,
+        "<br>p=", signif(pval, 3),
+        " (FDR=", signif(fdr, 3), ")"
+      ),
+      hoverinfo = "text"
+    )
+    all_traces <- append(all_traces, list(tr))
+  }
+}
+
+# ---- Dropdown ----
+buttons <- lapply(seq_along(cell_states), function(i) {
+  vis <- rep(FALSE, length(all_traces))
+  vis[((i - 1) * length(levels(merged$GROUP)) + 1):(i * length(levels(merged$GROUP)))] <- TRUE
+  list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(
+        title = paste0(
+          cell_states[i],
+          " — Kruskal p=", signif(signif_tbl$p[i], 3),
+          ", FDR=", signif(signif_tbl$FDR[i], 3),
+          " ", signif_tbl$signif[i]
+        ),
+        yaxis = list(autorange = TRUE)
+      )
+    ),
+    label = cell_states[i]
+  )
+})
+
+# ---- Plot ----
+fig <- plot_ly()
+for (tr in all_traces) {
+  fig <- fig %>% add_trace(
+    type = tr$type, x = tr$x, y = tr$y,
+    name = tr$name,
+    boxpoints = tr$boxpoints, jitter = tr$jitter,
+    marker = tr$marker, line = tr$line,
+    text = tr$text, hoverinfo = tr$hoverinfo,
+    visible = tr$visible
+  )
+}
+
+fig <- fig %>%
+  layout(
+    updatemenus = list(list(
+      y = 1.1, buttons = buttons,
+      direction = "down", showactive = TRUE
+    )),
+    boxmode = "group",
+    showlegend = TRUE,
+    legend = list(title = list(text = "<b>Group</b>")),
+    yaxis = list(title = "Proportion (original scale)", autorange = TRUE),
+    xaxis = list(title = ""),
+    title = list(
+      text = paste0("FTLD-TDP Cell-State Proportion Comparison (", length(cell_states), " total)"),
+      x = 0.05
+    )
+  )
+
+fig
+```
+
+
+
 ## TDP
+
+Cell type composition analysis revealed pronounced differences between healthy individuals and FTLD-TDP casesusing arcsin transformation, highlighting disease-related cellular remodeling. GFAP + astrocytes were significantly increased in FTLD-TDP, with a fold change of 7.62 and a p value of 0.003 compared to controls, suggesting astrocytic activation. In contrast, several inhibitory interneuron subtypes—including PVALB_PTHLH (p = 0.017, FC = 0.72), LAMP5_PMEPA1(p = 0.023 FC = 0.59), and PVALB_CEMIP(p = 0.030,FC= 0.62)—were diminished in the disease group  (Fig.2). These alterations in cell state proportions emphasize potential cellular mechanisms . 
+
 
 ### Sant Pau
 
 ```{r}
 
+data <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx", sheetName = sheets[2])
+
+data2 <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx", sheetName = sheets[8])
+
+# ───────────────────────────────────────────────
+# 1. Remove group.sv
+# ───────────────────────────────────────────────
+data <- data %>% select(-group.sv)
+
+# ───────────────────────────────────────────────
+# 2. Replace "group" using data2$group matched by "cell"
+# ───────────────────────────────────────────────
+
+data <- data %>%
+  left_join(
+    data2 %>% select(cell, group) %>% rename(new_group = group),
+    by = "cell"
+  ) %>%
+  mutate(group = new_group) %>%
+  select(-new_group)
+
+# ───────────────────────────────────────────────
+# 3. Rename "group" to "p.value"
+# ───────────────────────────────────────────────
+data <- data %>% rename(p.value = group)
+
+# Clean column names (HTML safe)
+data <- data %>% clean_names()
+
+# ───────────────────────────────────────────────
+# 4. Output for HTML Quarto
+# ───────────────────────────────────────────────
+datatable(
+  data,
+  options = list(
+    pageLength = 25,
+    scrollX = TRUE,
+    autoWidth = TRUE,
+    searchHighlight = TRUE
+  ),
+  class = "display compact",
+  rownames = FALSE
+)
+
+```
+
+
+```{r}
+
+frequency_file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/FTLD/TDP/theta.state_original.csv"
+metadata_file  <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+output_path    <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/CELL_PROP/FTLD/TDP/"
+
+if (!dir.exists(output_path)) dir.create(output_path, recursive = TRUE)
+if (!dir.exists(file.path(output_path, "Significative"))) dir.create(file.path(output_path, "Significative"))
+
+# ---- Load data ----
+meta <- openxlsx::read.xlsx(metadata_file, sheet =1)
+freq <- read.csv(frequency_file)
+
+# ---- Harmonize IDs ----
+freq$X <- gsub("long", "", freq$X)
+freq$X <- gsub("^X", "", freq$X)
+meta$sample.ID <- gsub("-", "_", meta$sample.ID)
+
+# ---- Merge ----
+merged <- merge(meta, freq, by.x = "sample.ID", by.y = "X")
+merged[merged == 0] <- NA
+
+# ---- Define groups ----
+merged <- merged[merged$group.ID %in% c("Healthy", "TDP"), ]
+merged$GROUP <- factor(ifelse(merged$group.ID == "Healthy", "Control", "FTLD"),
+                       levels = c("Control", "FTLD"))
+
+# ---- Extract cell states ----
+cell_states <- colnames(freq)[-1]
+
+# ---- Transform proportions (arcsin sqrt) ----
+merged_arcsin <- merged
+merged_arcsin[cell_states] <- asin(sqrt(merged[cell_states]))
+
+# ---- Kruskal–Wallis tests ----
+signif_list <- lapply(cell_states, function(cs) {
+  subd <- merged_arcsin %>% select(GROUP, all_of(cs))
+  if (any(table(subd$GROUP) < 2, na.rm = TRUE)) return(NULL)
+
+  kw <- tryCatch(kruskal.test(subd[[cs]] ~ subd$GROUP), error = function(e) NULL)
+  if (is.null(kw)) return(NULL)
+
+  pval <- kw$p.value
+  mean_ctrl <- mean(merged[[cs]][merged$GROUP == "Control"], na.rm = TRUE)
+  mean_ftld <- mean(merged[[cs]][merged$GROUP == "FTLD"], na.rm = TRUE)
+  fc <- ifelse(mean_ctrl == 0, NA, mean_ftld / mean_ctrl)
+  log2fc <- log2(fc)
+
+  data.frame(
+    cell = cs,
+    p = pval,
+    mean_ctrl = mean_ctrl,
+    mean_ftld = mean_ftld,
+    fold_change = fc,
+    log2FC = log2fc,
+    stringsAsFactors = FALSE
+  )
+})
+
+# ---- Combine cleanly ----
+signif_tbl <- bind_rows(signif_list)
+
+# ---- FDR correction ----
+signif_tbl <- signif_tbl %>%
+  mutate(
+    FDR = p.adjust(p, method = "BH"),
+    signif = case_when(
+      FDR < 0.001 ~ "***",
+      FDR < 0.01  ~ "**",
+      FDR < 0.05  ~ "*",
+      TRUE ~ "ns"
+    )
+  )
+# ===============================================================
+# Interactive boxplot
+# ===============================================================
+all_traces <- list()
+for (i in seq_along(cell_states)) {
+  cs <- cell_states[i]
+  df <- merged %>%
+    select(GROUP, all_of(cs)) %>%
+    rename(Proportion = all_of(cs)) %>%
+    filter(!is.na(Proportion))
+
+  # guarantee both groups appear even if one is all-NA
+  missing_groups <- setdiff(levels(merged$GROUP), unique(df$GROUP))
+  if (length(missing_groups) > 0) {
+    df <- rbind(df, data.frame(GROUP = missing_groups, Proportion = NA))
+  }
+  df$GROUP <- factor(df$GROUP, levels = levels(merged$GROUP))
+
+  pval <- signif_tbl$p[signif_tbl$cell == cs]
+  fdr  <- signif_tbl$FDR[signif_tbl$cell == cs]
+  signif_label <- signif_tbl$signif[signif_tbl$cell == cs]
+
+  for (grp in levels(df$GROUP)) {
+    grp_data <- df %>% filter(GROUP == grp)
+    tr <- list(
+      type = "box",
+      name = grp,
+      x = rep(grp, nrow(grp_data)),
+      y = grp_data$Proportion,
+      boxpoints = "all",
+      jitter = 0.4,
+      marker = list(opacity = 0.6, size = 4),
+      line = list(width = 1),
+      visible = ifelse(i == 1, TRUE, FALSE),
+      text = paste0(
+        "Cell state: ", cs,
+        "<br>Group: ", grp,
+        "<br>p=", signif(pval, 3),
+        " (FDR=", signif(fdr, 3), ")"
+      ),
+      hoverinfo = "text"
+    )
+    all_traces <- append(all_traces, list(tr))
+  }
+}
+
+# ---- Dropdown ----
+buttons <- lapply(seq_along(cell_states), function(i) {
+  vis <- rep(FALSE, length(all_traces))
+  vis[((i - 1) * length(levels(merged$GROUP)) + 1):(i * length(levels(merged$GROUP)))] <- TRUE
+  list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(
+        title = paste0(
+          cell_states[i],
+          " — Kruskal p=", signif(signif_tbl$p[i], 3),
+          ", FDR=", signif(signif_tbl$FDR[i], 3),
+          " ", signif_tbl$signif[i]
+        ),
+        yaxis = list(autorange = TRUE)
+      )
+    ),
+    label = cell_states[i]
+  )
+})
+
+# ---- Plot ----
+fig <- plot_ly()
+for (tr in all_traces) {
+  fig <- fig %>% add_trace(
+    type = tr$type, x = tr$x, y = tr$y,
+    name = tr$name,
+    boxpoints = tr$boxpoints, jitter = tr$jitter,
+    marker = tr$marker, line = tr$line,
+    text = tr$text, hoverinfo = tr$hoverinfo,
+    visible = tr$visible
+  )
+}
+
+fig <- fig %>%
+  layout(
+    updatemenus = list(list(
+      y = 1.1, buttons = buttons,
+      direction = "down", showactive = TRUE
+    )),
+    boxmode = "group",
+    showlegend = TRUE,
+    legend = list(title = list(text = "<b>Group</b>")),
+    yaxis = list(title = "Proportion (original scale)", autorange = TRUE),
+    xaxis = list(title = ""),
+    title = list(
+      text = paste0("FTLD-TDP Cell-State Proportion Comparison (", length(cell_states), " total)"),
+      x = 0.05
+    )
+  )
+
+fig
 ```
 
 ### Pottier
 
 ```{r}
 
-```
+data <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx", sheetName = sheets[3])
 
-```{r cell-prop-diff-data, eval=FALSE}
-cell_prop_diff <- load_or_placeholder(
-  option_name = "results_vis.cell_prop_diff",
-  pattern = "cell.*prop.*(diff|difference).*\\.(csv|tsv|txt|rds|rda|RData|xlsx)$",
-  generator = function() {
-    tibble::tibble(
-      Group = rep(c("Control", "FTLD"), each = 50),
-      CellType = rep(c("Astrocyte", "Neuron", "Microglia", "Oligodendrocyte", "Endothelial"), each = 20),
-      Proportion = rbeta(100, shape1 = 2, shape2 = 5)
-    )
-  }
+data2 <- xlsx::read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/3. CELL PROP DIFFERENCES/ALL_CELL_PROP_DIFFERENCES.xlsx", sheetName = sheets[16])
+
+
+# ───────────────────────────────────────────────
+# 1. Remove group.sv
+# ───────────────────────────────────────────────
+data <- data %>% select(-group.sv)
+
+# ───────────────────────────────────────────────
+# 2. Replace "group" using data2$group matched by "cell"
+# ───────────────────────────────────────────────
+
+data <- data %>%
+  left_join(
+    data2 %>% select(cell, group) %>% rename(new_group = group),
+    by = "cell"
+  ) %>%
+  mutate(group = new_group) %>%
+  select(-new_group)
+
+# ───────────────────────────────────────────────
+# 3. Rename "group" to "p.value"
+# ───────────────────────────────────────────────
+data <- data %>% rename(p.value = group)
+
+# Clean column names (HTML safe)
+data <- data %>% clean_names()
+
+# ───────────────────────────────────────────────
+# 4. Output for HTML Quarto
+# ───────────────────────────────────────────────
+datatable(
+  data,
+  options = list(
+    pageLength = 25,
+    scrollX = TRUE,
+    autoWidth = TRUE,
+    searchHighlight = TRUE
+  ),
+  class = "display compact",
+  rownames = FALSE
 )
+
 ```
 
-```{r cell-prop-diff-plot, eval=FALSE}
-render_source_note(cell_prop_diff, "cell proportion differences")
-plot_ly(
-  cell_prop_diff,
-  x = ~Group,
-  y = ~Proportion,
-  color = ~CellType,
-  type = "box"
-) %>%
-  layout(title = "Cell Proportion Differences by Group",
-         yaxis = list(title = "Estimated Proportion")) %>%
-  annotate_placeholder(cell_prop_diff)
+
+```{r}
+library(tidyverse)
+library(plotly)
+library(coin)
+# ---- Load and preprocess ----
+frequency_file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/NEW/theta.state_cellstate.csv"
+metadata_file  <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/METADATA/Sample_info.txt"
+
+data <- read.delim(metadata_file)
+freq <- read.csv(frequency_file)
+
+# Harmonize sample IDs
+freq$X <- gsub("\\.", "_", freq$X)
+data$FCX_ID <- gsub("-", "_", data$FCX_ID)
+
+# Merge and clean
+merged <- merge(data, freq, by.x = "FCX_ID", by.y = "X")
+merged[merged == 0] <- 1e-10
+merged <- merged[merged$GROUP != "FTLD-TDP-C", ]
+merged$GROUP[merged$GROUP != "Control"] <- "FTLD"
+merged$GROUP <- factor(merged$GROUP, levels = c("Control", "FTLD"))
+
+# ---- Identify variables ----
+cell_states <- colnames(freq)[-1]
+
+# ---- Run Kruskal–Wallis tests ----
+signif_tbl <- map_dfr(cell_states, function(cs){
+  subd <- merged %>% select(GROUP, all_of(cs))
+  kw <- tryCatch(kruskal.test(subd[[cs]] ~ subd$GROUP), error=function(e) NULL)
+  if (is.null(kw)) return(NULL)
+  pval <- kw$p.value
+  mean_ctrl <- mean(subd[[cs]][subd$GROUP=="Control"], na.rm=TRUE)
+  mean_ftld <- mean(subd[[cs]][subd$GROUP=="FTLD"], na.rm=TRUE)
+  fc <- ifelse(mean_ctrl==0, NA, mean_ftld/mean_ctrl)
+  tibble(
+    cell = cs,
+    p = pval,
+    log2FC = log2(fc),
+    mean_ctrl = mean_ctrl,
+    mean_ftld = mean_ftld,
+    signif = case_when(
+      p < 0.001 ~ "***",
+      p < 0.01  ~ "**",
+      p < 0.05  ~ "*",
+      TRUE ~ "ns"
+    )
+  )
+})
+
+# ---- Create all traces (two boxes per cell state) ----
+all_traces <- list()
+for (i in seq_along(cell_states)) {
+  cs <- cell_states[i]
+  df <- merged %>% select(GROUP, all_of(cs)) %>% rename(Proportion = all_of(cs))
+  pval <- signif_tbl$p[signif_tbl$cell==cs][1]
+  signif_label <- signif_tbl$signif[signif_tbl$cell==cs][1]
+
+  # Create two box traces: Control + FTLD
+  for (grp in levels(df$GROUP)) {
+    grp_data <- df[df$GROUP == grp, ]
+    tr <- list(
+      type = "box",
+      x = rep(grp, nrow(grp_data)),
+      y = grp_data$Proportion,
+      name = grp,
+      boxpoints = "all",
+      jitter = 0.4,
+      marker = list(opacity = 0.6, size = 4),
+      line = list(width = 1),
+      visible = ifelse(i == 1, TRUE, FALSE),
+      text = paste0(
+        "Cell state: ", cs,
+        "<br>Group: ", grp,
+        "<br>Proportion: ", signif(grp_data$Proportion,3)
+      ),
+      hoverinfo = "text"
+    )
+    all_traces <- append(all_traces, list(tr))
+  }
+}
+
+# ---- Dropdown buttons ----
+buttons <- lapply(seq_along(cell_states), function(i){
+  vis <- rep(FALSE, length(all_traces))
+  vis[((i - 1) * 2 + 1):(i * 2)] <- TRUE  # only show 2 boxes per cell state
+  list(
+    method = "update",
+    args = list(list(visible = vis),
+                list(title = paste0(cell_states[i],
+                                    " — Kruskal p=",
+                                    signif(signif_tbl$p[i], 3), " ",
+                                    signif_tbl$signif[i]),
+                     yaxis = list(autorange = TRUE))),
+    label = cell_states[i]
+  )
+})
+
+# ---- Combine all into one Plotly figure ----
+fig <- plot_ly()
+for (tr in all_traces) {
+  fig <- fig %>% add_trace(
+    type = tr$type,
+    x = tr$x,
+    y = tr$y,
+    name = tr$name,
+    boxpoints = tr$boxpoints,
+    jitter = tr$jitter,
+    marker = tr$marker,
+    line = tr$line,
+    text = tr$text,
+    hoverinfo = tr$hoverinfo,
+    visible = tr$visible
+  )
+}
+
+fig <- fig %>%
+  layout(
+    updatemenus = list(list(
+      y = 1.1,
+      buttons = buttons,
+      direction = "down",
+      showactive = TRUE
+    )),
+    boxmode = "group",
+    showlegend = TRUE,
+    legend = list(title = list(text = "<b>Group</b>")),
+    yaxis = list(title = "Proportion", autorange = TRUE),
+    xaxis = list(title = ""),
+    title = list(
+      text = paste0("Rimmod-C9 Cell-State Boxplots (", length(cell_states), " total)"),
+      x = 0.05
+    )
+  )
+
+fig
+
 ```
+
+

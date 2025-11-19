@@ -8,7 +8,7 @@ title: "Gene modules"
 
 While differential expression identifies gene-level changes associated with FTLD, it does not capture the higher-order organization of transcriptional programs or the coordinated dysregulation of functional gene networks. Neurodegenerative diseases—including FTLD-C9 and FTLD-TDP—are characterized by complex regulatory alterations affecting synaptic systems, glial and immune reactivity, metabolic rewiring, and RNA-processing machinery. These processes are best understood at the **module** (network) level rather than through isolated transcripts.
 
-To resolve network-level biology at **cell-state resolution**, we applied **hdWGCNA**, a scalable adaptation of weighted gene co-expression network analysis (WGCNA) optimized for single-cell and pseudobulk data. By applying hdWGCNA to BayesPrism-derived expression matrices, we reconstructed **cell-state–specific co-expression networks**, enabling detection of modules associated with disease status, neuropathological markers, and lineage-specific vulnerability.
+To resolve network-level biology at **cell-state resolution**, we applied **hdWGCNA** [@morabito2023_hdwgcna], a scalable adaptation of weighted gene co-expression network analysis (WGCNA) optimized for single-cell and pseudobulk data. By applying hdWGCNA to BayesPrism-derived expression matrices, we reconstructed **cell-state–specific co-expression networks**, enabling detection of modules associated with disease status, neuropathological markers, and lineage-specific vulnerability.
 
 ## **Analytical Strategy**
 
@@ -42,23 +42,7 @@ Following standard WGCNA principles, hdWGCNA constructs networks that approximat
 
 2.  An **unsigned network** was used for all analyses, allowing detection of both positively and negatively co-expressed gene relationships.
 
-### **3. Topological Overlap Matrix (TOM) and Module Detection**
-
-For each cell state:
-
--   A **topological overlap matrix** quantified shared connectivity between genes.
-
--   Hierarchical clustering of TOM dissimilarity produced dendrograms representing gene trees.
-
--   Modules were identified using **dynamic tree cutting** with a merge height threshold of **0.15**, enabling detection of:
-
-    -   fine-grained modules in highly heterogeneous states,
-
-    -   large modules in transcriptionally stable lineages.
-
-Each module received a unique color annotation.
-
-### **4. Module Eigengenes and Association With Disease**
+### **3. Module Eigengenes and Association With Disease**
 
 A **module eigengene (ME)**—the first principal component summarizing module expression—was computed for each module.
 
@@ -88,7 +72,7 @@ Modules were ranked by:
 
 -   number of hub genes.
 
-### **5. Hub Gene Identification**
+### **4. Hub Gene Identification**
 
 Hub genes for each module were identified using:
 
@@ -99,7 +83,7 @@ Hub genes for each module were identified using:
 Genes with **kME ≥ 0.90** were classified as high-confidence hub genes.\
 These anchors define the regulatory core of each transcriptional module.
 
-### **6. Functional Enrichment Analysis**
+### **5. Functional Enrichment Analysis**
 
 For each significantly disease-associated module:
 
@@ -133,7 +117,7 @@ Enrichment pinpointed:
 
 -   glial activation states.
 
-### **7. Cross-Cohort Module Validation**
+### **6. Cross-Cohort Module Validation**
 
 For module validation:
 
@@ -790,4 +774,511 @@ for (CS in list.dirs("/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9
     })
   }
 }
+```
+
+```{r fig_7_hdwgcna_1, echo=FALSE, eval=FALSE}
+library(plotly)
+library(tidyverse)
+
+# ---- Base directory ----
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/7. HDWGCNA/FTLD/c9/CS_0.25_npcs2"
+
+# ---- Detect cell states with MODULES folders ----
+cell_states <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+cell_states <- as.character(cell_states)
+cell_states <- cell_states[file.info(cell_states)$isdir]
+
+# Flexible search for any folder named like "modules" (case insensitive)
+is_valid <- sapply(cell_states, function(cs_path) {
+  modules_path <- list.dirs(cs_path, full.names = TRUE, recursive = FALSE)
+  modules_path <- modules_path[grepl("modules", basename(modules_path), ignore.case = TRUE)]
+  if (length(modules_path) == 0) return(FALSE)
+  csvs <- list.files(modules_path[1], pattern = "\\.csv$|\\.CSV$", full.names = TRUE)
+  valid_csvs <- csvs[!grepl("cor_summary|hubs", csvs, ignore.case = TRUE)]
+  length(valid_csvs) > 0
+})
+
+valid_states <- cell_states[is_valid]
+names(valid_states) <- basename(valid_states)
+message("✅ Found ", length(valid_states), " valid cell states with MODULES: ",
+        paste(names(valid_states), collapse = ", "))
+
+# ---- Read module gene counts ----
+module_summary <- list()
+
+for (cs in names(valid_states)) {
+  # Find the correct MODULES folder (case-insensitive)
+  modules_path <- list.dirs(valid_states[cs], full.names = TRUE, recursive = FALSE)
+  modules_path <- modules_path[grepl("modules", basename(modules_path), ignore.case = TRUE)][1]
+  if (is.na(modules_path)) next
+  
+  module_files <- list.files(modules_path, pattern = "\\.csv$|\\.CSV$", full.names = TRUE)
+  module_files <- module_files[!grepl("cor_summary|hubs", module_files, ignore.case = TRUE)]
+  if (length(module_files) == 0) {
+    message("⚠️  No module CSVs in ", cs)
+    next
+  }
+  
+  # Count genes per module
+  module_counts <- map_dfr(module_files, function(f) {
+    df <- tryCatch(read.csv(f), error = function(e) NULL)
+    if (is.null(df)) return(NULL)
+    col_gene <- grep("^x$|gene", tolower(colnames(df)), value = TRUE)[1]
+    if (is.na(col_gene)) return(NULL)
+    tibble(
+      Module = tools::file_path_sans_ext(basename(f)),
+      GeneCount = nrow(df)
+    )
+  })
+  
+  if (nrow(module_counts) > 0) {
+    module_summary[[cs]] <- module_counts
+    message("📦 ", cs, " — ", nrow(module_counts), " modules loaded.")
+  } else {
+    message("⚠️  ", cs, " — no valid modules found.")
+  }
+}
+
+if (length(module_summary) == 0) stop("No valid MODULES folders found with readable modules.")
+
+# ---- Create interactive pies ----
+fig <- NULL
+trace_counter <- 0
+
+for (i in seq_along(module_summary)) {
+  cs <- names(module_summary)[i]
+  df <- module_summary[[i]]
+  
+  if (is.null(fig)) {
+    fig <- plot_ly(
+      data = df,
+      labels = ~Module,
+      values = ~GeneCount,
+      type = "pie",
+      textinfo = "label+percent",
+      hoverinfo = "label+value+percent",
+      name = cs,
+      visible = TRUE
+    )
+  } else {
+    fig <- fig %>%
+      add_trace(
+        data = df,
+        labels = ~Module,
+        values = ~GeneCount,
+        type = "pie",
+        textinfo = "label+percent",
+        hoverinfo = "label+value+percent",
+        name = cs,
+        visible = FALSE
+      )
+  }
+  trace_counter <- trace_counter + 1
+}
+
+# ---- Dropdown ----
+buttons <- lapply(seq_along(module_summary), function(i) {
+  vis <- rep(FALSE, trace_counter)
+  vis[i] <- TRUE
+  list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(title = paste0("Modules — ", names(module_summary)[i]))
+    ),
+    label = names(module_summary)[i]
+  )
+})
+
+fig <- fig %>%
+  layout(
+    title = paste0("Modules — ", names(module_summary)[1]),
+    updatemenus = list(list(
+      y = 1.1,
+      buttons = buttons,
+      direction = "down",
+      showactive = TRUE
+    )),
+    showlegend = TRUE
+  )
+
+fig
+
+
+```
+
+```{r fig_7_hdwgcna_2, echo=FALSE, eval=FALSE}
+library(plotly)
+library(tidyverse)
+
+# ---- Base directory ----
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/7. HDWGCNA/Rimod/CS/"
+
+# ---- Detect cell states with MODULES folders ----
+cell_states <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+cell_states <- as.character(cell_states)
+cell_states <- cell_states[file.info(cell_states)$isdir]
+
+# Flexible search for any folder named like "modules" (case insensitive)
+is_valid <- sapply(cell_states, function(cs_path) {
+  modules_path <- list.dirs(cs_path, full.names = TRUE, recursive = FALSE)
+  modules_path <- modules_path[grepl("modules", basename(modules_path), ignore.case = TRUE)]
+  if (length(modules_path) == 0) return(FALSE)
+  csvs <- list.files(modules_path[1], pattern = "\\.csv$|\\.CSV$", full.names = TRUE)
+  valid_csvs <- csvs[!grepl("cor_summary|hubs", csvs, ignore.case = TRUE)]
+  length(valid_csvs) > 0
+})
+
+valid_states <- cell_states[is_valid]
+names(valid_states) <- basename(valid_states)
+message("✅ Found ", length(valid_states), " valid cell states with MODULES: ",
+        paste(names(valid_states), collapse = ", "))
+
+# ---- Read module gene counts ----
+module_summary <- list()
+
+for (cs in names(valid_states)) {
+  # Find the correct MODULES folder (case-insensitive)
+  modules_path <- list.dirs(valid_states[cs], full.names = TRUE, recursive = FALSE)
+  modules_path <- modules_path[grepl("modules", basename(modules_path), ignore.case = TRUE)][1]
+  if (is.na(modules_path)) next
+  
+  module_files <- list.files(modules_path, pattern = "\\.csv$|\\.CSV$", full.names = TRUE)
+  module_files <- module_files[!grepl("cor_summary|hubs", module_files, ignore.case = TRUE)]
+  if (length(module_files) == 0) {
+    message("⚠️  No module CSVs in ", cs)
+    next
+  }
+  
+  # Count genes per module
+  module_counts <- map_dfr(module_files, function(f) {
+    df <- tryCatch(read.csv(f), error = function(e) NULL)
+    if (is.null(df)) return(NULL)
+    col_gene <- grep("^x$|gene", tolower(colnames(df)), value = TRUE)[1]
+    if (is.na(col_gene)) return(NULL)
+    tibble(
+      Module = tools::file_path_sans_ext(basename(f)),
+      GeneCount = nrow(df)
+    )
+  })
+  
+  if (nrow(module_counts) > 0) {
+    module_summary[[cs]] <- module_counts
+    message("📦 ", cs, " — ", nrow(module_counts), " modules loaded.")
+  } else {
+    message("⚠️  ", cs, " — no valid modules found.")
+  }
+}
+
+if (length(module_summary) == 0) stop("No valid MODULES folders found with readable modules.")
+
+# ---- Create interactive pies ----
+fig <- NULL
+trace_counter <- 0
+
+for (i in seq_along(module_summary)) {
+  cs <- names(module_summary)[i]
+  df <- module_summary[[i]]
+  
+  if (is.null(fig)) {
+    fig <- plot_ly(
+      data = df,
+      labels = ~Module,
+      values = ~GeneCount,
+      type = "pie",
+      textinfo = "label+percent",
+      hoverinfo = "label+value+percent",
+      name = cs,
+      visible = TRUE
+    )
+  } else {
+    fig <- fig %>%
+      add_trace(
+        data = df,
+        labels = ~Module,
+        values = ~GeneCount,
+        type = "pie",
+        textinfo = "label+percent",
+        hoverinfo = "label+value+percent",
+        name = cs,
+        visible = FALSE
+      )
+  }
+  trace_counter <- trace_counter + 1
+}
+
+# ---- Dropdown ----
+buttons <- lapply(seq_along(module_summary), function(i) {
+  vis <- rep(FALSE, trace_counter)
+  vis[i] <- TRUE
+  list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(title = paste0("Modules — ", names(module_summary)[i]))
+    ),
+    label = names(module_summary)[i]
+  )
+})
+
+fig <- fig %>%
+  layout(
+    title = paste0("Modules — ", names(module_summary)[1]),
+    updatemenus = list(list(
+      y = 1.1,
+      buttons = buttons,
+      direction = "down",
+      showactive = TRUE
+    )),
+    showlegend = TRUE
+  )
+
+fig
+
+```
+
+```{r fig_7_hdwgcna_3, echo=FALSE, eval=FALSE}
+library(plotly)
+library(tidyverse)
+
+# ============================================================
+# LOAD MODULE SUMMARY (same as your script up to module_df)
+# ============================================================
+
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/7. HDWGCNA/FTLD/TDP/CS_bo_ambhubs"
+
+cell_states <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+cell_states <- cell_states[file.info(cell_states)$isdir]
+names(cell_states) <- basename(cell_states)
+
+module_summary <- list()
+
+for (cs in names(cell_states)) {
+  cs_path <- cell_states[cs]
+  modules_dirs <- list.dirs(cs_path, full.names = TRUE, recursive = TRUE)
+  modules_dirs <- modules_dirs[grepl("module", basename(modules_dirs), ignore.case = TRUE)]
+  if (length(modules_dirs) == 0) next
+  
+  modules_path <- modules_dirs[1]
+  module_files <- list.files(modules_path, pattern = "\\.csv$", full.names = TRUE, ignore.case = TRUE)
+  module_files <- module_files[!grepl("cor_summary|hubs", basename(module_files), ignore.case = TRUE)]
+  if (length(module_files) == 0) next
+  
+  module_counts <- purrr::map_dfr(module_files, function(f) {
+    df <- tryCatch(read.csv(f), error = function(e) NULL)
+    if (is.null(df)) return(NULL)
+    col_gene <- grep("^x$|gene", tolower(colnames(df)), value = TRUE)[1]
+    if (is.na(col_gene)) return(NULL)
+    tibble(Module = tools::file_path_sans_ext(basename(f)),
+           GeneCount = nrow(df))
+  })
+  
+  if (nrow(module_counts) > 0)
+    module_summary[[cs]] <- module_counts %>% mutate(CellState = cs)
+}
+
+if (length(module_summary) == 0)
+  stop("❌ No valid MODULES folders with readable module CSVs were found.")
+
+module_df <- bind_rows(module_summary)
+
+# ============================================================
+# PLOTLY PIE WITH DROPDOWN
+# ============================================================
+
+cell_states <- unique(module_df$CellState)
+
+# 1️⃣ Create traces (each one is a visible/invisible pie)
+traces <- lapply(seq_along(cell_states), function(i) {
+  cs <- cell_states[i]
+  df <- module_df %>% filter(CellState == cs)
+  
+  plot_ly(
+    data = df,
+    type = "pie",
+    labels = ~Module,
+    values = ~GeneCount,
+    textinfo = "label+percent",
+    hoverinfo = "label+value+percent",
+    name = cs,
+    title = paste("Modules in", cs),
+    visible = ifelse(i == 1, TRUE, FALSE)  # show first only
+  )
+})
+
+# Combine all traces into one figure
+fig <- traces[[1]]
+if (length(traces) > 1) {
+  for (i in 2:length(traces)) {
+    fig <- fig %>% add_trace(
+      type = "pie",
+      labels = traces[[i]]$x$attrs[[1]]$labels,
+      values = traces[[i]]$x$attrs[[1]]$values,
+      textinfo = "label+percent",
+      hoverinfo = "label+value+percent",
+      name = cell_states[i],
+      visible = FALSE
+    )
+  }
+}
+
+# 2️⃣ Build dropdown buttons
+buttons <- lapply(seq_along(cell_states), function(i) {
+  list(
+    method = "update",
+    args = list(list(visible = sapply(seq_along(cell_states), function(j) j == i))),
+    label = cell_states[i]
+  )
+})
+
+# 3️⃣ Layout
+fig <- fig %>%
+  layout(
+    title = list(text = "Module composition per cell state", x = 0.5),
+    showlegend = TRUE,
+    updatemenus = list(list(
+      type = "dropdown",
+      y = 1.15, x = 0.1,
+      buttons = buttons,
+      direction = "down",
+      showactive = TRUE,
+      xanchor = "left", yanchor = "top",
+      title = list(text = "Select Cell State")
+    )),
+    # 🟢 Ensure the pie is drawn properly
+    grid = list(rows = 1, columns = 1)
+  )
+
+fig
+
+
+```
+
+```{r fig_7_hdwgcna_4, echo=FALSE, eval=FALSE}
+library(plotly)
+library(tidyverse)
+
+# ---- Base directory ----
+base_dir <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/7. HDWGCNA/NEW/CS_bo"
+
+# ---- Detect cell states with MODULES folders ----
+cell_states <- list.dirs(base_dir, full.names = TRUE, recursive = FALSE)
+cell_states <- as.character(cell_states)
+cell_states <- cell_states[file.info(cell_states)$isdir]
+
+# Flexible search for any folder named like "modules" (case insensitive)
+is_valid <- sapply(cell_states, function(cs_path) {
+  modules_path <- list.dirs(cs_path, full.names = TRUE, recursive = FALSE)
+  modules_path <- modules_path[grepl("modules", basename(modules_path), ignore.case = TRUE)]
+  if (length(modules_path) == 0) return(FALSE)
+  csvs <- list.files(modules_path[1], pattern = "\\.csv$|\\.CSV$", full.names = TRUE)
+  valid_csvs <- csvs[!grepl("cor_summary|hubs", csvs, ignore.case = TRUE)]
+  length(valid_csvs) > 0
+})
+
+valid_states <- cell_states[is_valid]
+names(valid_states) <- basename(valid_states)
+message("✅ Found ", length(valid_states), " valid cell states with MODULES: ",
+        paste(names(valid_states), collapse = ", "))
+
+# ---- Read module gene counts ----
+module_summary <- list()
+
+for (cs in names(valid_states)) {
+  # Find the correct MODULES folder (case-insensitive)
+  modules_path <- list.dirs(valid_states[cs], full.names = TRUE, recursive = FALSE)
+  modules_path <- modules_path[grepl("modules", basename(modules_path), ignore.case = TRUE)][1]
+  if (is.na(modules_path)) next
+  
+  module_files <- list.files(modules_path, pattern = "\\.csv$|\\.CSV$", full.names = TRUE)
+  module_files <- module_files[!grepl("cor_summary|hubs", module_files, ignore.case = TRUE)]
+  if (length(module_files) == 0) {
+    message("⚠️  No module CSVs in ", cs)
+    next
+  }
+  
+  # Count genes per module
+  module_counts <- map_dfr(module_files, function(f) {
+    df <- tryCatch(read.csv(f), error = function(e) NULL)
+    if (is.null(df)) return(NULL)
+    col_gene <- grep("^x$|gene", tolower(colnames(df)), value = TRUE)[1]
+    if (is.na(col_gene)) return(NULL)
+    tibble(
+      Module = tools::file_path_sans_ext(basename(f)),
+      GeneCount = nrow(df)
+    )
+  })
+  
+  if (nrow(module_counts) > 0) {
+    module_summary[[cs]] <- module_counts
+    message("📦 ", cs, " — ", nrow(module_counts), " modules loaded.")
+  } else {
+    message("⚠️  ", cs, " — no valid modules found.")
+  }
+}
+
+if (length(module_summary) == 0) stop("No valid MODULES folders found with readable modules.")
+
+# ---- Create interactive pies ----
+fig <- NULL
+trace_counter <- 0
+
+for (i in seq_along(module_summary)) {
+  cs <- names(module_summary)[i]
+  df <- module_summary[[i]]
+  
+  if (is.null(fig)) {
+    fig <- plot_ly(
+      data = df,
+      labels = ~Module,
+      values = ~GeneCount,
+      type = "pie",
+      textinfo = "label+percent",
+      hoverinfo = "label+value+percent",
+      name = cs,
+      visible = TRUE
+    )
+  } else {
+    fig <- fig %>%
+      add_trace(
+        data = df,
+        labels = ~Module,
+        values = ~GeneCount,
+        type = "pie",
+        textinfo = "label+percent",
+        hoverinfo = "label+value+percent",
+        name = cs,
+        visible = FALSE
+      )
+  }
+  trace_counter <- trace_counter + 1
+}
+
+# ---- Dropdown ----
+buttons <- lapply(seq_along(module_summary), function(i) {
+  vis <- rep(FALSE, trace_counter)
+  vis[i] <- TRUE
+  list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(title = paste0("Modules — ", names(module_summary)[i]))
+    ),
+    label = names(module_summary)[i]
+  )
+})
+
+fig <- fig %>%
+  layout(
+    title = paste0("Modules — ", names(module_summary)[1]),
+    updatemenus = list(list(
+      y = 1.1,
+      buttons = buttons,
+      direction = "down",
+      showactive = TRUE
+    )),
+    showlegend = TRUE
+  )
+
+fig
 ```

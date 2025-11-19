@@ -9,6 +9,164 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```
 
+
+
+```{r}
+library(plotly)
+library(tidyverse)
+library(readxl)
+
+# ---------------- Load Data ----------------
+metadata <- read_xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx")
+colnames(metadata)[1] <- "X"
+samples <- metadata$X[metadata$group.ID == "TDP"]
+
+CRscores <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/FTD_TDP_neuropath_SOM.csv")
+CRscores$X <- gsub("^long", "", CRscores$X)
+CRscores <- CRscores[CRscores$X %in% samples, ]
+
+proportions <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/FTLD/TDP/theta.state_original.csv", row.names = 1)
+rownames(proportions) <- gsub("^X", "", rownames(proportions))
+
+# ---- Match samples ----
+common_samples <- intersect(rownames(proportions), CRscores$X)
+proportions <- proportions[common_samples, , drop=FALSE]
+CRscores <- CRscores[match(common_samples, CRscores$X), ]
+
+cell_states <- colnames(proportions)
+covariates  <- setdiff(colnames(CRscores), "X")
+
+# ---- Generate all combinations ----
+traces <- list()
+meta <- tibble(trace_id = integer(), cell_state = character(), covariate = character())
+
+for (i in seq_along(cell_states)) {
+  for (j in seq_along(covariates)) {
+    cs <- cell_states[i]
+    cv <- covariates[j]
+    df <- tibble(
+      sample = common_samples,
+      x = CRscores[[cv]],
+      y = proportions[[cs]]
+    ) %>% drop_na()
+
+    if (nrow(df) < 3) next  # skip insufficient points
+
+    rho <- suppressWarnings(cor(df$x, df$y, method="spearman"))
+    pval <- suppressWarnings(cor.test(df$x, df$y, method="spearman")$p.value)
+    fit <- lm(y ~ x, data=df)
+    line_df <- tibble(x = seq(min(df$x), max(df$x), length.out=100))
+    line_df$y <- predict(fit, newdata=line_df)
+
+    # Scatter trace
+    traces <- append(traces, list(
+      list(
+        type = "scatter",
+        mode = "markers",
+        x = df$x,
+        y = df$y,
+        name = paste(cs, cv),
+        text = paste0("<b>", cs, " vs ", cv, "</b><br>",
+                      "ρ = ", round(rho, 3), "<br>p = ", signif(pval, 3)),
+        hoverinfo = "text",
+        marker = list(size = 8, opacity = 0.7),
+        visible = (i == 1 && j == 1)
+      )
+    ))
+
+    # Regression line trace
+    traces <- append(traces, list(
+      list(
+        type = "scatter",
+        mode = "lines",
+        x = line_df$x,
+        y = line_df$y,
+        line = list(color = "firebrick", width = 2),
+        showlegend = FALSE,
+        hoverinfo = "none",
+        visible = (i == 1 && j == 1)
+      )
+    ))
+
+    meta <- add_row(meta,
+                    trace_id = length(traces) - 1,
+                    cell_state = cs,
+                    covariate = cv)
+  }
+}
+
+# ---- Helper: compute which traces to show ----
+make_visibility <- function(cs, cv) {
+  vis <- rep(FALSE, length(traces))
+  idx <- which(meta$cell_state == cs & meta$covariate == cv)
+  if (length(idx) == 1) {
+    # each combination has 2 traces (points + line)
+    start <- (idx - 1) * 2 + 1
+    vis[start:(start + 1)] <- TRUE
+  }
+  vis
+}
+
+# ---- Create dropdown menus ----
+buttons <- list()
+k <- 1
+for (i in seq_along(cell_states)) {
+  for (j in seq_along(covariates)) {
+    cs <- cell_states[i]
+    cv <- covariates[j]
+    buttons[[k]] <- list(
+      method = "update",
+      args = list(list(visible = make_visibility(cs, cv)),
+                  list(title = paste("Cell state:", cs, " | Covariate:", cv))),
+      label = paste(cs, cv)
+    )
+    k <- k + 1
+  }
+}
+
+# ---- Build Plot ----
+fig <- plot_ly()
+
+for (tr in traces) {
+  fig <- fig %>% add_trace(
+    type = tr$type,
+    mode = tr$mode,
+    x = tr$x,
+    y = tr$y,
+    name = tr$name,
+    text = tr$text,
+    hoverinfo = tr$hoverinfo,
+    marker = tr$marker,
+    line = tr$line,
+    visible = tr$visible
+  )
+}
+
+fig <- fig %>%
+  layout(
+    title = "Spearman correlation: Cell-state proportions vs pathology markers",
+    xaxis = list(title = "Covariate value"),
+    yaxis = list(title = "Cell-state proportion"),
+    updatemenus = list(
+      list(
+        y = 1.1,
+        x = 0,
+        buttons = buttons,
+        direction = "down",
+        showactive = TRUE,
+        xanchor = "left",
+        yanchor = "top",
+        title = list(text = "Select cell state + covariate")
+      )
+    )
+  )
+
+fig
+```
+
+
+
+
 ```{r libraries}
 library(dplyr)
 library(tidyr)

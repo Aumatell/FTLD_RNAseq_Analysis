@@ -2,6 +2,10 @@
 title: "Cohorts and Reference Dataset"
 ---
 
+```{r include=FALSE}
+library("xlsx")
+```
+
 # Cohorts
 
 Our analysis integrated transcriptomic data from **four independent bulk RNA-sequencing cohorts**, comprising two newly generated datasets from Hospital de la Santa Creu i Sant Pau and two publicly available external datasets used for validation. All datasets consisted of post-mortem frontal cortex samples from individuals diagnosed with FTLD and cognitively healthy controls. Collectively, these cohorts enabled robust, cross-cohort evaluation of cell-type–resolved transcriptional alterations and disease-associated gene expression programs.
@@ -11,7 +15,14 @@ Our analysis integrated transcriptomic data from **four independent bulk RNA-seq
 The first primary dataset was generated at **Hospital de la Santa Creu i Sant Pau** and included **11 individuals with FTLD due to a C9orf72 hexanucleotide repeat expansion (FTLD-C9)** and **7 cognitively healthy controls**. Diagnoses were neuropathologically verified, and all samples were sequenced from the frontal cortex. This cohort served as the discovery dataset for identifying disease-associated transcriptional changes, alterations in inferred cell-state composition, and correlations with C9orf72-specific neuropathological markers, including RNA foci, dipeptide repeat proteins (polyGA, polyGP, polyGR), and TDP-43–related measures.
 
 ```{r}
+data<-read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx", sheetIndex = 1)
+data <- data[data$group.ID %in% c("Healthy", "C9orf72"),]
+table(data$group.ID)
+```
 
+```{r}
+data<-read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/DATA/C9orf72.csv")
+dim(data)[1]
 ```
 
 ## **Sant Pau FTLD-TDP**
@@ -19,30 +30,64 @@ The first primary dataset was generated at **Hospital de la Santa Creu i Sant Pa
 A second independent dataset from Sant Pau included **9 individuals with sporadic FTLD-TDP** and **7 controls** from the same anatomical region and processed using equivalent library preparation and sequencing pipelines. This cohort provided complementary transcriptomic profiling for FTLD-TDP, enabling direct comparison between genetic (C9orf72-associated) and sporadic TDP-43 proteinopathies within a harmonized experimental framework. Neuropathological quantification of **pTDP-43** and **STMN2** levels allowed integration of transcriptional changes with molecular markers of TDP-43 dysfunction.
 
 ```{r}
+data<-read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx", sheetIndex = 1)
+data <- data[data$group.ID %in% c("Healthy", "TDP"),]
+table(data$group.ID)
+```
 
+```{r}
+data<-read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/FTLD_BULK/DATA/TDP.csv")
+dim(data)[1]
 ```
 
 ## **Menden et al. Validation Cohort (EGA)**
 
-To evaluate the reproducibility of FTLD-C9 transcriptional signatures, we used the bulk RNA-seq dataset published by **Menden et al. (2023)** and available through the **European Genome-Phenome Archive (EGAC00001001879)**. From this study, we selected **13 C9orf72-expansion FTLD cases** and **16 controls**, restricting analyses to neuropathologically confirmed FTLD-C9 samples. This dataset served as an external validation cohort for differential expression, Bayesian deconvolution, and co-expression network findings from the Sant Pau FTLD-C9 dataset.
+To evaluate the reproducibility of FTLD-C9 transcriptional signatures, we used the bulk RNA-seq dataset published by **Menden et al. (2023)** [@Menden2023_SciData_RiModFTD] and available through the **European Genome-Phenome Archive (EGAC00001001879)**. From this study, we selected **13 C9orf72-expansion FTLD cases** and **16 controls**, restricting analyses to neuropathologically confirmed FTLD-C9 samples. This dataset served as an external validation cohort for differential expression, Bayesian deconvolution, and co-expression network findings from the Sant Pau FTLD-C9 dataset.
 
 ```{r}
+data<-read.delim("/media/jaumatell/datos/URI/BAYESPRISM_12_3/RIMOD_BULK/DATA/rimod_ftd_dataset_table_v3.txt")
+data <- data[data$DiseaseCode %in% c("control", "FTD-C9"),]
+table(data$DiseaseCode)
+
+```
+
+```{r}
+data<-read.delim("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/RiMod/rnaseq_salmon_results/counts.csv")
+dim(data)[1]
 
 ```
 
 ## **Pottier et al. Validation Cohort**
 
-Validation of FTLD-TDP results was performed using the dataset published by **Pottier et al.** \[1\], which includes frontal cortex RNA-sequencing data from **44 FTLD-TDP cases** and **24 controls**. Only individuals with neuropathologically verified **FTLD-TDP type A or B** pathology were retained for analysis. This dataset provided an independent, high-powered external resource to assess the robustness of the Sant Pau FTLD-TDP differential expression, cell-state–specific transcriptional shifts, and co-expression modules.
+Validation of FTLD-TDP results was performed using the dataset published by **Pottier et al.** [@pottier2018], which includes frontal cortex RNA-sequencing data from **44 FTLD-TDP cases** and **24 controls**. Only individuals with neuropathologically verified **FTLD-TDP type A or B** pathology were retained for analysis. This dataset provided an independent, high-powered external resource to assess the robustness of the Sant Pau FTLD-TDP differential expression, cell-state–specific transcriptional shifts, and co-expression modules.
 
 ```{r}
+data<-read.delim("/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/METADATA/Sample_info.txt")
+data <- data[!data$GROUP %in% c("FTLD-TDP-C"),]
+data[!data$GROUP %in% c("Control"),]<- "TDP"
+table(data$GROUP)
+```
 
+```{r}
+data<-read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/NEW_BULK/DATA/merged_gene_count_FCX.csv")
+dim(data)[1]
 ```
 
 # **Single-Cell Reference: Pineda et al. snRNA-seq Atlas**
 
-All deconvolution analyses were performed using a high-resolution single-nucleus RNA-sequencing (snRNA-seq) reference published by **Pineda et al.** (Synapse ID: **syn51105515**). This dataset was generated from frontal cortex tissue of both healthy individuals and FTLD-C9 cases, providing **19 major cell types and 44 transcriptionally distinct cell states**. The atlas includes excitatory and inhibitory neuronal subclasses, astrocyte and microglial populations, oligodendrocytes and OPCs, and diverse vascular and immune-associated cell populations.
+All deconvolution analyses were performed using a high-resolution single-nucleus RNA-sequencing (snRNA-seq) reference published by **Pineda et al.** (Synapse ID: **syn51105515**) [@Pineda2024_Cell_ALS_FTLD_snRNA]. This dataset was generated from frontal cortex tissue of both healthy individuals and FTLD-C9 cases, providing 360881 cells from **19 major cell types and 44 transcriptionally distinct cell states**. The atlas includes excitatory and inhibitory neuronal subclasses, astrocyte and microglial populations, oligodendrocytes and OPCs, and diverse vascular and immune-associated cell populations.
 
 The Pineda et al. reference was processed to remove low-quality nuclei, mitochondrial transcripts, ribosomal reads, and sex-chromosome genes, and only protein-coding genes expressed in at least five cells were retained. This atlas enabled **Bayesian estimation of cell-type proportions and cell-state–specific gene expression profiles** from each bulk RNA-seq cohort through the BayesPrism framework. Because Pineda et al. provide a disease- and layer-resolved cellular taxonomy of the human frontal cortex, their atlas is well suited to investigate the precise cellular origins of transcriptomic alterations in FTLD (C9 and TDP) at single-cell resolution.
 
-``` r
+```{r}
+data<-read.xlsx("/media/jaumatell/datos/URI/BAYESPRISM_12_3/SINGLE_CELL/METADATA/S01_sample_information(3).xlsx", sheetIndex = 1)
+table(data$Group)
+
+```
+
+```{r}
+
+data<-read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/SINGLE_CELL/METADATA/S03_annotation_mapping.csv")
+data$SubType[data$SubType == "N/A"] <- data$CellType[data$SubType == "N/A"]
+data$SubType
 ```

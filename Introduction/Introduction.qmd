@@ -57,7 +57,3 @@ To test these hypotheses, we pursued the following objectives:
 -   Replicate differential expression, cell-state composition alterations, and module-level changes in the Menden et al. and Pottier et al. cohorts.
 
 -   Assess reproducibility using overlap statistics (Jaccard index, GeneOverlap) and module gene preservation.
-
-```{r}
-1 + 1
-```

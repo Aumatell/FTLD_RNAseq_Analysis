@@ -8,11 +8,11 @@ title: "Bayesprism"
 
 Bulk RNA-sequencing provides a high-throughput snapshot of gene expression in brain tissue but masks the substantial cellular heterogeneity of the human cortex. FTLD pathology affects specific neuronal populations—particularly RORB-expressing excitatory neurons—as well as diverse non-neuronal cell classes including astrocytes, microglia, oligodendrocytes, vascular cells, and infiltrating immune cells. As a result, interpreting bulk transcriptomic changes requires methods capable of **deconvolving mixed-cell signals into cell-type–specific expression profiles and cell-state proportions**.
 
-Bayesian deconvolution methods, such as **BayesPrism**, offer major advantages over traditional regression or matrix factorization approaches by explicitly modeling biological variability and uncertainty. Using a high-resolution single-nucleus RNA-seq reference—such as the dataset from **Pineda et al. (Synapse ID: syn51105515)**—BayesPrism integrates single-cell information with bulk counts to infer, for each sample:
+Bayesian deconvolution methods, such as **BayesPrism** [@chu2022_bayesprism] , offer major advantages over traditional regression or matrix factorization approaches by explicitly modeling biological variability and uncertainty. Using a high-resolution single-nucleus RNA-seq reference—such as the dataset from **Pineda et al. (Synapse ID: syn51105515)**—BayesPrism integrates single-cell information with bulk counts to infer, for each sample:
 
-1.   **Cell-type and cell-state fractions**, representing the estimated proportion of each transcriptional state in the tissue.
+1.  **Cell-type and cell-state fractions**, representing the estimated proportion of each transcriptional state in the tissue.
 
-2.   **Cell-type–specific expression estimates**, reconstructing a matrix of gene expression for each cell state within each patient.
+2.  **Cell-type–specific expression estimates**, reconstructing a matrix of gene expression for each cell state within each patient.
 
 This dual output allows downstream **cell-state–resolved differential expression, co-expression network analysis (hdWGCNA), and correlations with neuropathological markers**.
 
@@ -22,15 +22,15 @@ The Bayesian deconvolution approach consisted of the following steps:
 
 ### **1. Construction of the Single-Cell Reference**
 
-The reference atlas from Pineda et al. contained **19 major cell classes and 44 transcriptionally distinct cell states** derived from human frontal cortex single-nucleus RNA-seq. The reference was preprocessed to:
+The reference atlas from Pineda et al. contained **19 major cell classes and 44 transcriptionally distinct cell states** derived from human frontal cortex single-nucleus RNA-seq containing 36503 genes. The reference was preprocessed to:
 
--    exclude genes with low expression,
+-   exclude genes with low expression,
 
 -   remove mitochondrial, ribosomal, and sex-chromosome transcripts,
 
--    retain only protein-coding genes expressed in ≥5 nuclei.
+-   retain only protein-coding genes expressed in ≥5 nuclei.
 
-This produced a biologically curated transcriptional reference ideal for Bayesian modeling of cortical cell populations.
+After filtration there were 16564 genes keept for the reference dataset. This produced a biologically curated transcriptional reference ideal for Bayesian modeling of cortical cell populations.
 
 ### **2. Alignment of Bulk and Single-Cell Data**
 
@@ -73,13 +73,13 @@ All steps—from reference alignment, through BayesPrism modeling, to extraction
 
 -   **Sant Pau FTLD-TDP**
 
--    **Menden et al. FTLD-C9**
+-   **Menden et al. FTLD-C9**
 
 -   **Pottier et al. FTLD-TDP**
 
 This standardized pipeline enabled robust **cross-cohort comparison** of:
 
--    cell-state proportions,
+-   cell-state proportions,
 
 -   cell-type–specific differential expression.
 
@@ -91,17 +91,19 @@ This standardized pipeline enabled robust **cross-cohort comparison** of:
 
 BayesPrism was employed to achieve the following methodological goals:
 
-1.   **Resolve bulk RNA-seq into cell-type and cell-state contributions** to uncover FTLD-associated alterations hidden in tissue-level averages.
+1.  **Resolve bulk RNA-seq into cell-type and cell-state contributions** to uncover FTLD-associated alterations hidden in tissue-level averages.
 
-2.   **Enable differential expression analysis at single-cell resolution**, identifying the precise neuronal and glial subtypes driving FTLD-C9 and FTLD-TDP transcriptional changes.
+2.  **Enable differential expression analysis at single-cell resolution**, identifying the precise neuronal and glial subtypes driving FTLD-C9 and FTLD-TDP transcriptional changes.
 
-3.   **Quantify disease-related changes in cell-state composition**, including excitatory/inhibitory neuron loss and reactive glial expansion.
+3.  **Quantify disease-related changes in cell-state composition**, including excitatory/inhibitory neuron loss and reactive glial expansion.
 
-4.   **Map neuropathological burden (RNA foci, DPRs, pTDP-43, STMN2)** to transcriptional changes within specific cell states.
+4.  **Map neuropathological burden (RNA foci, DPRs, pTDP-43, STMN2)** to transcriptional changes within specific cell states.
 
-5.   **Generate high-dimensional transcriptional networks (hdWGCNA)** to identify disease-relevant modules that would otherwise be unresolvable in bulk data.
+5.  **Generate high-dimensional transcriptional networks (hdWGCNA)** to identify disease-relevant modules that would otherwise be unresolvable in bulk data.
 
-6.   **Validate findings across independent datasets** using a unified Bayesian framework to ensure reproducibility and generalizability.
+6.  **Validate findings across independent datasets** using a unified Bayesian framework to ensure reproducibility and generalizability.
+
+#### Sant Pau - C9orf72
 
 ```{r code_2_bayesprism_2_baysprism_ftld_c9_r, eval=FALSE}
 library("ggplot2")
@@ -151,8 +153,6 @@ merged@meta.data <- merged@meta.data %>%
 # Cell type and state
 cell.state.labels <- merged@meta.data$cellstate
 cell.type.labels <- merged@meta.data$CellType
-rm(merged)
-gc()
 
 # Pre-processing
 plot.cor.phi (input=sc.dat, 
@@ -200,8 +200,6 @@ sc.dat.filtered <- cleanup.genes (input=sc.dat,
                                   gene.group=c( "Rb","Mrp","other_Rb","chrM","MALAT1","chrX","chrY") ,
                                   exp.cells=5
 )
-rm(sc.dat)
-gc()
 write.csv(sc.dat.filtered, "sc.dat.filtered.csv")
 
 print("bk.stat.filtered")
@@ -213,19 +211,12 @@ plot.bulk.vs.sc (sc.input = sc.dat.filtered,
 print("sc.dat.filtered.pc")
 sc.dat.filtered.pc <- select.gene.type (sc.dat.filtered,
                                         gene.type = "protein_coding")
-rm(sc.dat.filtered)
-gc()
 write.csv(sc.dat.filtered.pc, "sc.dat.filtered.pc.csv")
 
 # SORT bk.dat so the colnames are sorted equaly in both tables. 
 common_columns <- intersect(colnames(bk.dat), colnames(sc.dat.filtered.pc))
 bk.dat <- bk.dat[, common_columns]
 sc.dat.filtered.pc <- sc.dat.filtered.pc[, common_columns]
-
-rm(sc.dat)
-rm(sc.dat.filtered)
-rm(bk.stat)
-rm(sc.stat)
 
 myPrism <- new.prism(
   reference=sc.dat.filtered.pc,
@@ -254,8 +245,6 @@ bp.res.initial <- run.prism(prism = myPrism,
                             n.cores=50, 
                             update.gibbs=FALSE)
 save(bp.res.initial, file = "bp.res.initial.RData")
-#bp.res.update <- update.theta (bp = bp.res.initial)
-#save(bp.res.update, file = "bp.res.update.RData")
 
 theta.state <- get.fraction (bp=bp.res.initial,
                              which.theta="first",
@@ -292,6 +281,8 @@ for (cell_state in levels(as.factor(cell.state.labels))){
   write.csv(exp_type, paste0("CELL STATE ORIGINAL/", cell_state, ".csv"))
 }
 ```
+
+#### Sant Pau - TDP
 
 ```{r code_2_bayesprism_2_baysprism_ftld_tdp_r, eval=FALSE}
 library("ggplot2")
@@ -340,7 +331,6 @@ merged@meta.data <- merged@meta.data %>%
 # Cell type and state
 cell.state.labels <- merged@meta.data$cellstate
 cell.type.labels <- merged@meta.data$CellType
-rm(merged)
 
 # Pre-processing
 plot.cor.phi (input=sc.dat, 
@@ -437,9 +427,6 @@ write.csv(theta.cv, "theta.cv.csv")
 bp.res.initial <- run.prism(prism = myPrism, 
                             n.cores=50, 
                             update.gibbs=FALSE)
-#save(bp.res.initial, file = "bp.res.initial.RData")
-#bp.res.update <- update.theta (bp = bp.res.initial)
-#save(bp.res.update, file = "bp.res.update.RData")
 
 theta.state <- get.fraction (bp=bp.res.initial,
                              which.theta="first",
@@ -476,6 +463,8 @@ for (cell_state in levels(as.factor(cell.state.labels))){
   write.csv(exp_type, paste0("CELL STATE ORIGINAL/", cell_state, ".csv"))
 }
 ```
+
+#### Pottier - TDP
 
 ```{r code_2_bayesprism_2_baysprism_pottier_r, eval=FALSE}
 library("ggplot2")
@@ -530,7 +519,6 @@ merged@meta.data <- merged@meta.data %>%
 # Cell type and state
 cell.state.labels <- merged@meta.data$cellstate
 cell.type.labels <- merged@meta.data$CellType
-rm(merged)
 
 # Pre-processing
 plot.cor.phi (input=sc.dat, 
@@ -595,11 +583,6 @@ write.csv(sc.dat.filtered.pc, "sc.dat.filtered.pc.csv")
 common_columns <- intersect(colnames(bk.dat), colnames(sc.dat.filtered.pc))
 bk.dat <- bk.dat[, common_columns]
 sc.dat.filtered.pc <- sc.dat.filtered.pc[, common_columns]
-
-rm(sc.dat)
-rm(sc.dat.filtered)
-rm(bk.stat)
-rm(sc.stat)
 
 myPrism <- new.prism(
   reference=sc.dat.filtered.pc,
@@ -667,6 +650,8 @@ for (cell_state in levels(as.factor(cell.state.labels))){
 }
 ```
 
+#### Rimmod - C9orf72
+
 ```{r code_2_bayesprism_2_baysprism_rimod_r, eval=FALSE}
 library("ggplot2")
 library("openxlsx")
@@ -686,9 +671,6 @@ library("AnnotationDbi")
 library("org.Hs.eg.db")
 library('EnsDb.Hsapiens.v86')
 library("Seurat")
-
-
-
 
 ################################################################################
 # Single cell data
@@ -716,7 +698,6 @@ merged@meta.data <- merged@meta.data %>%
 # Cell type and state
 cell.state.labels <- merged@meta.data$cellstate
 cell.type.labels <- merged@meta.data$CellType
-rm(merged)
 
 # Pre-processing
 plot.cor.phi (input=sc.dat, 
@@ -782,11 +763,6 @@ common_columns <- intersect(colnames(bk.dat), colnames(sc.dat.filtered.pc))
 bk.dat <- bk.dat[, common_columns]
 sc.dat.filtered.pc <- sc.dat.filtered.pc[, common_columns]
 
-rm(sc.dat)
-rm(sc.dat.filtered)
-rm(bk.stat)
-rm(sc.stat)
-
 myPrism <- new.prism(
   reference=sc.dat.filtered.pc,
   mixture=as.matrix(bk.dat[,2:ncol(bk.dat)]),
@@ -814,8 +790,6 @@ bp.res.initial <- run.prism(prism = myPrism,
                             n.cores=50, 
                             update.gibbs=FALSE)
 save(bp.res.initial, file = "bp.res.initial.RData")
-#bp.res.update <- update.theta (bp = bp.res.initial)
-#save(bp.res.update, file = "bp.res.update.RData")
 
 theta.state <- get.fraction (bp=bp.res.initial,
                              which.theta="first",
