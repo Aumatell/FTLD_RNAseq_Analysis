@@ -91,3 +91,3402 @@ data<-read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/SINGLE_CELL/METADATA/
 data$SubType[data$SubType == "N/A"] <- data$CellType[data$SubType == "N/A"]
 data$SubType
 ```
+
+### Selection of Frontal Cortex data
+
+```{r}
+#| eval: false
+
+# Frontal Cortex
+
+library("Seurat")
+options(Seurat.object.assay.version = "v3")
+
+# 101
+ID <- "210526_ALS_101_snRNA-H5"
+EM_210526_ALS_101_snRNA_H5 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.column = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 102
+ID <- "210526_ALS_102_snRNA-H6"
+EM_210526_ALS_102_snRNA_H6  <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+
+# 103
+ID <- "210526_ALS_103_snRNA-H7"
+EM_210526_ALS_103_snRNA_H7 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+# 104
+
+ID <- "210526_ALS_104_snRNA-H8"
+EM_210526_ALS_104_snRNA_H8 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+
+
+# 106
+ID <- "210526_ALS_106_snRNA-H9"
+EM_210526_ALS_106_snRNA_H9 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 108
+ID <- "210526_ALS_108_snRNA-H10"
+EM_210526_ALS_108_snRNA_H10 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 110
+ID <- "210526_ALS_110_snRNA-H11"
+EM_210526_ALS_110_snRNA_H11 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 111
+ID <- "210526_ALS_111_snRNA-A1"
+EM_210526_ALS_111_snRNA_A1<- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 112
+ID <- "210526_ALS_112_snRNA-A2"
+EM_210526_ALS_112_snRNA_A2 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 113
+ID <- "210526_ALS_113_snRNA-A3"
+EM_210526_ALS_113_snRNA_A3 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 114
+ID <- "210526_ALS_114_snRNA-A4"
+EM_210526_ALS_114_snRNA_A4 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 115
+ID <- "210526_ALS_115_snRNA-A5"
+EM_210526_ALS_115_snRNA_A5 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 116
+ID <- "210526_ALS_116_snRNA-A6"
+EM_210526_ALS_116_snRNA_A6 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 117
+ID <- "210526_ALS_117_snRNA-A7"
+EM_210526_ALS_117_snRNA_A7 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 118
+ID <- "210526_ALS_118_snRNA-A8"
+EM_210526_ALS_118_snRNA_A8 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 120
+ID <- "210526_ALS_120_snRNA-A9"
+EM_210526_ALS_120_snRNA_A9 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 122
+ID <- "210526_ALS_122_snRNA-A10"
+EM_210526_ALS_122_snRNA_A10 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 124
+ID <- "210526_ALS_124_snRNA-A11"
+EM_210526_ALS_124_snRNA_A11 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 126
+ID <- "210526_ALS_126_snRNA-A12"
+EM_210526_ALS_126_snRNA_A12 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 127
+ID <- "210526_ALS_127_snRNA-B1"
+EM_210526_ALS_127_snRNA_B1 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 128
+ID <- "210526_ALS_128_snRNA-F7"
+EM_210526_ALS_128_snRNA_F7 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 129
+ID <- "210526_ALS_129_snRNA-B3"
+EM_210526_ALS_129_snRNA_B3 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 130
+ID <- "210526_ALS_130_snRNA-B4"
+EM_210526_ALS_130_snRNA_B4 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 131
+ID <- "210910_PFC_ALS_131_snRNA-C10"
+EM_210910_PFC_ALS_131_snRNA_C10 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 132
+ID <- "210910_PFC_ALS_132_snRNA-C11"
+EM_210910_PFC_ALS_132_snRNA_C11 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 133
+ID <- "210910_PFC_ALS_133_snRNA-C12"
+EM_210910_PFC_ALS_133_snRNA_C12 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 134
+ID <- "210910_PFC_ALS_134_snRNA-D1"
+EM_210910_PFC_ALS_134_snRNA_D1 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 135
+ID <- "210910_PFC_ALS_135_snRNA-D2"
+EM_210910_PFC_ALS_135_snRNA_D2 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 136
+ID <- "210910_PFC_ALS_136_snRNA-D3"
+EM_210910_PFC_ALS_136_snRNA_D3 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 137
+ID <- "210910_PFC_ALS_137_snRNA-D4"
+EM_210910_PFC_ALS_137_snRNA_D4 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 138
+ID <- "210910_PFC_ALS_138_snRNA-D5"
+EM_210910_PFC_ALS_138_snRNA_D5 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 139
+ID <- "210910_PFC_ALS_139_snRNA-D8"
+EM_210910_PFC_ALS_139_snRNA_D8 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 140
+ID <- "210910_PFC_ALS_140_snRNA-D9"
+EM_210910_PFC_ALS_140_snRNA_D9 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 202
+ID <- "210526_FTLD_202_snRNA-B5"
+EM_210526_FTLD_202_snRNA_B5 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 204
+ID <- "210526_FTLD_204_snRNA-B6"
+EM_210526_FTLD_204_snRNA_B6 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 206
+ID <- "210526_FTLD_206_snRNA-B7"
+EM_210526_FTLD_206_snRNA_B7 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 207
+ID <- "210526_FTLD_207_snRNA-B8"
+EM_210526_FTLD_207_snRNA_B8 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 209
+ID <- "210526_FTLD_209_snRNA-B9"
+EM_210526_FTLD_209_snRNA_B9 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 210
+ID <- "210526_FTLD_210_snRNA-B10"
+EM_210526_FTLD_210_snRNA_B10 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 211
+ID <- "210526_FTLD_211_snRNA-B11"
+EM_210526_FTLD_211_snRNA_B11 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 214
+ID <- "210526_FTLD_214_snRNA-B12"
+EM_210526_FTLD_214_snRNA_B12 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 216
+ID <- "210526_FTLD_216_snRNA-C1"
+EM_210526_FTLD_216_snRNA_C1 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 217
+ID <- "210526_FTLD_217_snRNA-C2"
+EM_210526_FTLD_217_snRNA_C2 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 218
+ID <- "210526_FTLD_218_snRNA-C3"
+EM_210526_FTLD_218_snRNA_C3 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 222
+ID <- "210526_FTLD_222_snRNA-C4"
+EM_210526_FTLD_222_snRNA_C4 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 225
+ID <- "210526_FTLD_225_snRNA-C6"
+EM_210526_FTLD_225_snRNA_C6 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 226
+ID <- "210526_FTLD_226_snRNA-C7"
+EM_210526_FTLD_226_snRNA_C7 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 228
+ID <- "210526_FTLD_228_snRNA-C8"
+EM_210526_FTLD_228_snRNA_C8 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 229
+ID <- "210526_FTLD_229_snRNA-B9"
+EM_210526_FTLD_229_snRNA_B9 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 232
+ID <- "210526_FTLD_232_snRNA-C11"
+EM_210526_FTLD_232_snRNA_C11 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 234
+ID <- "210526_FTLD_234_snRNA-C12"
+EM_210526_FTLD_234_snRNA_C12 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 235
+ID <- "210526_FTLD_235_snRNA-D1"
+EM_210526_FTLD_235_snRNA_D1 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 236
+ID <- "210526_FTLD_236_snRNA-D2"
+EM_210526_FTLD_236_snRNA_D2 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 237
+ID <- "210526_FTLD_237_snRNA-D3"
+EM_210526_FTLD_237_snRNA_D3 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 238
+ID <- "210526_FTLD_238_snRNA-D4"
+EM_210526_FTLD_238_snRNA_D4<- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 239
+ID <- "210526_FTLD_239_snRNA-D5"
+EM_210526_FTLD_239_snRNA_D5 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 240
+ID <- "210526_FTLD_240_snRNA-D6"
+EM_210526_FTLD_240_snRNA_D6 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 301
+ID <- "210526_PN_301_snRNA-D7"
+EM_210526_PN_301_snRNA_D7 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+
+
+# 302
+ID <- "210526_PN_302_snRNA-D8"
+EM_210526_PN_302_snRNA_D8 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 303
+ID <- "210526_PN_303_snRNA-D9"
+EM_210526_PN_303_snRNA_D9 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 304
+ID <- "210526_PN_304_snRNA-D10"
+EM_210526_PN_304_snRNA_D10 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 306
+ID <- "210526_PN_306_snRNA-D11"
+EM_210526_PN_306_snRNA_D11 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 307
+ID <- "210526_PN_307_snRNA-D12"
+EM_210526_PN_307_snRNA_D12 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 309
+ID <- "210526_PN_309_snRNA-E2"
+EM_210526_PN_309_snRNA_E2 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 311
+ID <- "210526_PN_311_snRNA-E3"
+EM_210526_PN_311_snRNA_E3 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 317
+ID <- "210526_PN_317_snRNA-E4"
+EM_210526_PN_317_snRNA_E4 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 318
+ID <- "210526_PN_318_snRNA-H12"
+EM_210526_PN_318_snRNA_H12 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 319
+ID <- "210526_PN_319_snRNA-E5"
+EM_210526_PN_319_snRNA_E5 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 322
+ID <- "210526_PN_322_snRNA-E6"
+EM_210526_PN_322_snRNA_E6 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 323
+ID <- "210526_PN_323_snRNA-B7"
+EM_210526_PN_323_snRNA_B7 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 324
+ID <- "210526_PN_324_snRNA-F4"
+EM_210526_PN_324_snRNA_F4 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 325
+ID <- "210526_PN_325_snRNA-F5"
+EM_210526_PN_325_snRNA_F5 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+# 328
+ID <- "210526_PN_328_snRNA-F6"
+EM_210526_PN_328_snRNA_F6 <- ReadMtx(
+  mtx = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/counts_fil.mtx.gz"),
+  cells = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/col_metadata.tsv.gz"),
+  features = paste0("/media/jaumatell/datos/URI/PROJECTE_SEURAT_BP/syn51105515_gz/",ID,"/row_metadata.tsv.gz"),
+  cell.column = 12,
+  feature.colun = 1,
+  cell.sep = "\t",
+  feature.sep = "\t",
+  skip.cell= 1,
+  skip.feature= 1,
+  mtx.transpose = FALSE,
+  unique.features = TRUE,
+  strip.suffix = FALSE
+)
+
+################################################################################
+#
+
+save(list = ls(), file = "EM_FC.RData")
+
+```
+
+```{r}
+#| eval: false
+library("Seurat")
+options(Seurat.object.assay.version = "v3")
+
+load("EM_FC.RData")
+# 101
+SO_210526_ALS_101_snRNA_H5 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_101_snRNA_H5,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 102
+SO_210526_ALS_102_snRNA_H6 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_102_snRNA_H6,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 103
+SO_210526_ALS_103_snRNA_H7 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_103_snRNA_H7,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+# 104
+
+SO_210526_ALS_104_snRNA_H8 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_104_snRNA_H8,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 106
+
+SO_210526_ALS_106_snRNA_H9 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_106_snRNA_H9,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 108
+
+SO_210526_ALS_108_snRNA_H10 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_108_snRNA_H10,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 110
+
+SO_210526_ALS_110_snRNA_H11 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_110_snRNA_H11,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 111
+
+SO_210526_ALS_111_snRNA_A1 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_111_snRNA_A1,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 112
+
+SO_210526_ALS_112_snRNA_A2 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_112_snRNA_A2,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 113
+
+SO_210526_ALS_113_snRNA_A3 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_113_snRNA_A3,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 114
+
+SO_210526_ALS_114_snRNA_A4 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_114_snRNA_A4,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+# 115
+
+SO_210526_ALS_115_snRNA_A5 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_115_snRNA_A5,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 116
+SO_210526_ALS_116_snRNA_A6 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_116_snRNA_A6,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 117
+SO_210526_ALS_117_snRNA_A7 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_117_snRNA_A7,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 118
+SO_210526_ALS_118_snRNA_A8 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_118_snRNA_A8,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 120
+SO_210526_ALS_120_snRNA_A9 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_120_snRNA_A9,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 122
+
+SO_210526_ALS_122_snRNA_A10 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_122_snRNA_A10,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 124
+
+SO_210526_ALS_124_snRNA_A11 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_124_snRNA_A11,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 126
+SO_210526_ALS_126_snRNA_A12 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_126_snRNA_A12,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+
+# 127
+SO_210526_ALS_127_snRNA_B1 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_127_snRNA_B1,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 128
+SO_210526_ALS_128_snRNA_F7 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_128_snRNA_F7,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 129
+SO_210526_ALS_129_snRNA_B3 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_129_snRNA_B3,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 130
+SO_210526_ALS_130_snRNA_B4 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_ALS_130_snRNA_B4,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 131
+
+SO_210910_ALS_131_snRNA_C10 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_131_snRNA_C10,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 132
+SO_210910_PFC_ALS_132_snRNA_C11 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_132_snRNA_C11,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 133
+SO_210910_PFC_ALS_133_snRNA_C12 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_133_snRNA_C12,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 134
+SO_210910_PFC_ALS_134_snRNA_D1 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_134_snRNA_D1,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 135
+SO_210910_PFC_ALS_135_snRNA_D2 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_135_snRNA_D2,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 136
+SO_210910_PFC_ALS_136_snRNA_D3 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_136_snRNA_D3,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 137
+SO_210910_PFC_ALS_137_snRNA_D4 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_137_snRNA_D4,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 138
+
+SO_210910_PFC_ALS_138_snRNA_D5 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_138_snRNA_D5,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+
+# 139
+SO_210910_PFC_ALS_139_snRNA_D8 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_139_snRNA_D8,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 140
+
+# Motor Cortex
+
+SO_210910_PFC_ALS_140_snRNA_D9 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210910_PFC_ALS_140_snRNA_D9,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 202
+
+SO_210526_FTLD_202_snRNA_B5 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_202_snRNA_B5,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+# 204
+
+SO_210526_FTLD_204_snRNA_B6 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_204_snRNA_B6,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 206
+
+SO_210526_FTLD_206_snRNA_B7 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_206_snRNA_B7,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+
+# 207
+SO_210526_FTLD_207_snRNA_B8 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_207_snRNA_B8,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 209
+SO_210526_FTLD_209_snRNA_B9 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_209_snRNA_B9,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 210
+SO_210526_FTLD_210_snRNA_B10 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_210_snRNA_B10,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 211
+
+SO_210526_FTLD_211_snRNA_B11 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_211_snRNA_B11,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 214
+
+SO_210526_FTLD_214_snRNA_B12 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_214_snRNA_B12,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 216
+
+SO_210526_FTLD_216_snRNA_C1 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_216_snRNA_C1,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 217
+
+SO_210526_FTLD_217_snRNA_C2 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_217_snRNA_C2,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 218
+
+SO_210526_FTLD_218_snRNA_C3 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_218_snRNA_C3,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 222
+SO_210526_FTLD_222_snRNA_C4 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_222_snRNA_C4,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 225
+SO_210526_FTLD_225_snRNA_C6 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_225_snRNA_C6,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 226
+SO_210526_FTLD_226_snRNA_C7 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_226_snRNA_C7,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 228
+SO_210526_FTLD_228_snRNA_C8 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_228_snRNA_C8,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 229
+
+SO_210526_FTLD_229_snRNA_B9 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_229_snRNA_B9,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 232
+SO_210526_FTLD_232_snRNA_C11 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_232_snRNA_C11,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 234
+
+SO_210526_FTLD_234_snRNA_C12 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_234_snRNA_C12,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 235
+
+SO_210526_FTLD_235_snRNA_D1 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_235_snRNA_D1,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+
+# 236
+# Frontal Cortex
+SO_210526_FTLD_236_snRNA_D2 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_236_snRNA_D2,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 237
+
+SO_210526_FTLD_237_snRNA_D3 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_237_snRNA_D3,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 238
+
+SO_210526_FTLD_238_snRNA_D4 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_238_snRNA_D4,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 239
+
+SO_210526_FTLD_239_snRNA_D5 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_239_snRNA_D5,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 240
+
+SO_210526_FTLD_240_snRNA_D6 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_FTLD_240_snRNA_D6,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 301
+
+
+SO_210526_PN_301_snRNA_D7 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_301_snRNA_D7,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 302
+
+SO_210526_PN_302_snRNA_D8 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_302_snRNA_D8,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+
+# 303
+
+SO_210526_PN_303_snRNA_D9 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_303_snRNA_D9,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+
+# 304
+
+SO_210526_PN_304_snRNA_D10 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_304_snRNA_D10,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 306
+
+SO_210526_PN_306_snRNA_D11 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_306_snRNA_D11,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 307
+
+# Motor Cortex
+
+SO_210526_PN_307_snRNA_D12 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_307_snRNA_D12,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+# 309
+
+SO_210526_PN_309_snRNA_E2 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_309_snRNA_E2,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 311
+
+SO_210526_PN_311_snRNA_E3 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_311_snRNA_E3,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+
+# 317
+
+SO_210526_PN_317_snRNA_E4 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_317_snRNA_E4,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 318
+
+SO_210526_PN_318_snRNA_H12 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_318_snRNA_H12,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 319
+
+SO_210526_PN_319_snRNA_E5 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_319_snRNA_E5,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 322
+
+SO_210526_PN_322_snRNA_E6 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_322_snRNA_E6,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 323
+
+SO_210526_PN_323_snRNA_B7 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_323_snRNA_B7,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 324
+
+SO_210526_PN_324_snRNA_F4 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_324_snRNA_F4,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 325
+
+SO_210526_PN_325_snRNA_F5 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_325_snRNA_F5,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+# 328
+
+SO_210526_PN_328_snRNA_F6 <- CreateSeuratObject(
+  #expression matrix
+  counts = EM_210526_PN_328_snRNA_F6,
+  # Name given to the assay
+  assay = "Assay_name",
+  # Position of the part of the name where the cell type is annotated 
+  names.field = 2,
+  # Character that sepatates the diferent name parts
+  names.delim = ".",
+  #dataframe containing additional data for the analysis
+  meta.data = NULL,
+  # # Name given to the project
+  project = "Project_name",
+  # Minimum detected cells to be included
+  min.cells = 0,
+  # Minimum detected features to be included
+  min.features = 0)
+
+################################################################################
+# SAVE OBJECTS
+
+objects <- ls()
+
+# Filter objects starting with "EM_"
+objects_to_remove <- objects[grep("^EM_", objects)]
+
+# Remove filtered objects
+rm(list = objects_to_remove)
+
+save.image("SO_FC.RData")
+
+```
+
+```{r}
+#| eval: false
+# Merge Frontal Cortex
+
+library("Seurat")
+library("tidyr")
+options(Seurat.object.assay.version = "v3")
+
+
+load("SO_FC.RData")
+
+
+
+SO_FC_1 <- c(SO_210526_ALS_101_snRNA_H5, 
+             SO_210526_ALS_102_snRNA_H6,
+             SO_210526_ALS_103_snRNA_H7,
+             SO_210526_ALS_104_snRNA_H8,
+             SO_210526_ALS_106_snRNA_H9,
+             SO_210526_ALS_108_snRNA_H10,
+             SO_210526_ALS_110_snRNA_H11,
+             SO_210526_ALS_111_snRNA_A1,
+             SO_210526_ALS_112_snRNA_A2,
+             SO_210526_ALS_113_snRNA_A3)
+save(SO_FC_1, file = "SO_FC_part1.RData")
+
+SO_FC_2 <- c(SO_210526_ALS_114_snRNA_A4,
+             SO_210526_ALS_115_snRNA_A5,
+             SO_210526_ALS_116_snRNA_A6,
+             SO_210526_ALS_117_snRNA_A7,
+             SO_210526_ALS_118_snRNA_A8,
+             SO_210526_ALS_120_snRNA_A9,
+             SO_210526_ALS_122_snRNA_A10,
+             SO_210526_ALS_124_snRNA_A11,
+             SO_210526_ALS_126_snRNA_A12,
+             SO_210526_ALS_127_snRNA_B1,
+             SO_210526_ALS_128_snRNA_F7,
+             SO_210526_ALS_129_snRNA_B3,
+             SO_210526_ALS_130_snRNA_B4)
+save(SO_FC_2, file = "SO_FC_part2.RData")
+
+SO_FC_3 <- c(SO_210910_ALS_131_snRNA_C10,
+             SO_210910_PFC_ALS_132_snRNA_C11,
+             SO_210910_PFC_ALS_133_snRNA_C12,
+             SO_210910_PFC_ALS_134_snRNA_D1, 
+             SO_210910_PFC_ALS_135_snRNA_D2, 
+             SO_210910_PFC_ALS_136_snRNA_D3, 
+             SO_210910_PFC_ALS_137_snRNA_D4, 
+             SO_210910_PFC_ALS_138_snRNA_D5, 
+             SO_210910_PFC_ALS_139_snRNA_D8, 
+             SO_210910_PFC_ALS_140_snRNA_D9)
+
+save(SO_FC_3, file = "SO_FC_part3.RData")
+
+SO_FC_4 <- c(SO_210526_FTLD_202_snRNA_B5,
+             SO_210526_FTLD_204_snRNA_B6,
+             SO_210526_FTLD_206_snRNA_B7,
+             SO_210526_FTLD_207_snRNA_B8,
+             SO_210526_FTLD_209_snRNA_B9,
+             SO_210526_FTLD_210_snRNA_B10,
+             SO_210526_FTLD_211_snRNA_B11,
+             SO_210526_FTLD_214_snRNA_B12,
+             SO_210526_FTLD_216_snRNA_C1,
+             SO_210526_FTLD_217_snRNA_C2,
+             SO_210526_FTLD_218_snRNA_C3)
+save(SO_FC_4, file = "SO_FC_part4.RData")
+
+SO_FC_5 <- c(SO_210526_FTLD_222_snRNA_C4,
+             SO_210526_FTLD_225_snRNA_C6,
+             SO_210526_FTLD_226_snRNA_C7,
+             SO_210526_FTLD_228_snRNA_C8,
+             SO_210526_FTLD_229_snRNA_B9,
+             SO_210526_FTLD_232_snRNA_C11,
+             SO_210526_FTLD_234_snRNA_C12,
+             SO_210526_FTLD_235_snRNA_D1,
+             SO_210526_FTLD_236_snRNA_D2,
+             SO_210526_FTLD_237_snRNA_D3,
+             SO_210526_FTLD_238_snRNA_D4,
+             SO_210526_FTLD_239_snRNA_D5,
+             SO_210526_FTLD_240_snRNA_D6)
+save(SO_FC_5, file = "SO_FC_part5.RData")
+
+SO_FC_6 <- c(SO_210526_PN_301_snRNA_D7,
+             SO_210526_PN_302_snRNA_D8,
+             SO_210526_PN_303_snRNA_D9,
+             SO_210526_PN_304_snRNA_D10,
+             SO_210526_PN_306_snRNA_D11,
+             SO_210526_PN_307_snRNA_D12,
+             SO_210526_PN_309_snRNA_E2,
+             SO_210526_PN_311_snRNA_E3,
+             SO_210526_PN_317_snRNA_E4,
+             SO_210526_PN_318_snRNA_H12,
+             SO_210526_PN_319_snRNA_E5,
+             SO_210526_PN_322_snRNA_E6,
+             SO_210526_PN_323_snRNA_B7,
+             SO_210526_PN_324_snRNA_F4,
+             SO_210526_PN_325_snRNA_F5,
+             SO_210526_PN_328_snRNA_F6)
+save(SO_FC_6, file = "SO_FC_part6.RData")
+
+rm(list = ls())
+
+# Part 1
+load("SO_FC_part1.RData")
+cell_metadata <- read.csv("S03_annotation_mapping.csv")
+# Access each object individually
+SO_210526_ALS_101_snRNA_H5 <- SO_FC_1[[1]]
+SO_210526_ALS_102_snRNA_H6 <- SO_FC_1[[2]]
+SO_210526_ALS_103_snRNA_H7 <- SO_FC_1[[3]]
+SO_210526_ALS_104_snRNA_H8 <- SO_FC_1[[4]]
+SO_210526_ALS_106_snRNA_H9 <- SO_FC_1[[5]]
+SO_210526_ALS_108_snRNA_H10 <- SO_FC_1[[6]]
+SO_210526_ALS_110_snRNA_H11 <- SO_FC_1[[7]]
+SO_210526_ALS_111_snRNA_A1 <- SO_FC_1[[8]]
+SO_210526_ALS_112_snRNA_A2 <- SO_FC_1[[9]]
+SO_210526_ALS_113_snRNA_A3 <- SO_FC_1[[10]]
+
+seurat_objects <- c(
+  SO_210526_ALS_102_snRNA_H6,
+  SO_210526_ALS_103_snRNA_H7,
+  SO_210526_ALS_104_snRNA_H8,
+  SO_210526_ALS_106_snRNA_H9,
+  SO_210526_ALS_108_snRNA_H10,
+  SO_210526_ALS_110_snRNA_H11,
+  SO_210526_ALS_111_snRNA_A1,
+  SO_210526_ALS_112_snRNA_A2,
+  SO_210526_ALS_113_snRNA_A3)
+
+cell_ids <- c(
+  "210526.ALS.101.snRNA.H5_101_BA9_F_ALS_SALS_0",
+  "210526.ALS.102.snRNA.H6_102_BA9_F_ALS_SALS_0",
+  "210526.ALS.103.snRNA.H7_103_BA9_F_ALS_SALS_0",
+  "210526.ALS.104.snRNA.H8_104_BA9_F_ALS_SALS_0",
+  "210526.ALS.106.snRNA.H9_106_BA9_F_ALS_SALS_0",
+  "210526.ALS.108.snRNA.H10_108_BA9_F_ALS_SALS_0",
+  "210526.ALS.110.snRNA.H11_110_BA9_F_ALS_SALS_0",
+  "210526.ALS.111.snRNA.A1_111_BA9_F_ALS_SALS_0",
+  "210526.ALS.112.snRNA.A2_112_BA9_F_ALS_SALS_0",
+  "210526.ALS.113.snRNA.A3_113_BA9_F_ALS_C9ALS_1")
+
+merged <- merge(
+  x = SO_210526_ALS_101_snRNA_H5,
+  y = seurat_objects,
+  add.cell.ids = cell_ids,
+  collapse = FALSE,
+  merge.data = TRUE,
+  merge.dr = FALSE,
+  project = getOption(x = "Seurat.object.project", default = "SeuratProject")
+)
+
+merged$sample <- rownames(merged@meta.data)
+
+CT <- c()
+CS <- c()
+
+for (element in rownames(merged@meta.data)) {
+  c <- 1
+  for (cell_label in cell_metadata$full_label) {
+    if (grepl(cell_label, element)){
+      CT <- c(CT, cell_metadata[c, 2])
+      CS <- c(CS, cell_metadata[c, 3])
+    }
+    c <- c + 1
+  }
+}
+
+merged$celltype <- CT
+merged$cellstate <- CS
+
+merged@meta.data <- separate(merged@meta.data, col='sample', into= c('ID', 'Donor', 'Region', 'Sex', 'Condition', 'Group', 'C9pos'), sep='_')
+save(merged, file = "Merge_FC_part1.RData")
+rm(list = ls())
+
+
+# PART 2
+load("SO_FC_part2.RData")
+cell_metadata <- read.csv("S03_annotation_mapping.csv")
+
+# Access each object individually
+SO_210526_ALS_114_snRNA_A4 <- SO_FC_2[[1]]
+SO_210526_ALS_115_snRNA_A5 <- SO_FC_2[[2]]
+SO_210526_ALS_116_snRNA_A6 <- SO_FC_2[[3]]
+SO_210526_ALS_117_snRNA_A7 <- SO_FC_2[[4]]
+SO_210526_ALS_118_snRNA_A8 <- SO_FC_2[[5]]
+SO_210526_ALS_120_snRNA_A9 <- SO_FC_2[[6]]
+SO_210526_ALS_122_snRNA_A10 <- SO_FC_2[[7]]
+SO_210526_ALS_124_snRNA_A11 <- SO_FC_2[[8]]
+SO_210526_ALS_126_snRNA_A12 <- SO_FC_2[[9]]
+SO_210526_ALS_127_snRNA_B1 <- SO_FC_2[[10]]
+SO_210526_ALS_128_snRNA_F7 <- SO_FC_2[[11]]
+SO_210526_ALS_129_snRNA_B3 <- SO_FC_2[[12]]
+SO_210526_ALS_130_snRNA_B4 <- SO_FC_2[[13]]
+
+
+seurat_objects <- c(
+  SO_210526_ALS_115_snRNA_A5,
+  SO_210526_ALS_116_snRNA_A6,
+  SO_210526_ALS_117_snRNA_A7,
+  SO_210526_ALS_118_snRNA_A8,
+  SO_210526_ALS_120_snRNA_A9,
+  SO_210526_ALS_122_snRNA_A10,
+  SO_210526_ALS_124_snRNA_A11,
+  SO_210526_ALS_126_snRNA_A12,
+  SO_210526_ALS_127_snRNA_B1,
+  SO_210526_ALS_128_snRNA_F7,
+  SO_210526_ALS_129_snRNA_B3,
+  SO_210526_ALS_130_snRNA_B4)
+
+cell_ids <- c(
+  "210526.ALS.114.snRNA.A4_114_BA9_F_ALS_C9ALS_1",
+  "210526.ALS.115.snRNA.A5_115_BA9_F_ALS_C9ALS_1",
+  "210526.ALS.116.snRNA.A6_116_BA9_M_ALS_SALS_0",
+  "210526.ALS.117.snRNA.A7_117_BA9_M_ALS_SALS_0",
+  "210526.ALS.118.snRNA.A8_118_BA9_M_ALS_SALS_0",
+  "210526.ALS.120.snRNA.A9_120_BA9_M_ALS_SALS_0",
+  "210526.ALS.122.snRNA.A10_122_BA9_M_ALS_SALS_0",
+  "210526.ALS.124.snRNA.A11_124_BA9_M_ALS_SALS_0",
+  "210526.ALS.126.snRNA.A12_126_BA9_M_ALS_SALS_0",
+  "210526.ALS.127.snRNA.B1_127_BA9_M_ALS_SALS_0",
+  "210526.ALS.128.snRNA.F7_128_BA9_M_ALS_C9ALS_1",
+  "210526.ALS.129.snRNA.B3_129_BA9_M_ALS_C9ALS_1",
+  "210526.ALS.130.snRNA.B4_130_BA9_M_ALS_C9ALS_1")
+
+merged <- merge(
+  x = SO_210526_ALS_114_snRNA_A4,
+  y = seurat_objects,
+  add.cell.ids = cell_ids,
+  collapse = FALSE,
+  merge.data = TRUE,
+  merge.dr = FALSE,
+  project = getOption(x = "Seurat.object.project", default = "SeuratProject")
+)
+
+merged$sample <- rownames(merged@meta.data)
+
+CT <- c()
+CS <- c()
+
+for (element in rownames(merged@meta.data)) {
+  c <- 1
+  for (cell_label in cell_metadata$full_label) {
+    if (grepl(cell_label, element)){
+      CT <- c(CT, cell_metadata[c, 2])
+      CS <- c(CS, cell_metadata[c, 3])
+    }
+    c <- c + 1
+  }
+}
+
+merged$celltype <- CT
+merged$cellstate <- CS
+merged@meta.data <- separate(merged@meta.data, col='sample', into= c('ID', 'Donor', 'Region', 'Sex', 'Condition', 'Group', 'C9pos'), sep='_')
+save(merged, file = "Merge_FC_part2.RData")
+rm(list = ls())
+
+
+# PART 3
+load("SO_FC_part3.RData")
+cell_metadata <- read.csv("S03_annotation_mapping.csv")
+
+SO_210910_PFC_ALS_131_snRNA_C10 <- SO_FC_3[[1]]
+SO_210910_PFC_ALS_132_snRNA_C11 <- SO_FC_3[[2]]
+SO_210910_PFC_ALS_133_snRNA_C12 <- SO_FC_3[[3]]
+SO_210910_PFC_ALS_134_snRNA_D1  <- SO_FC_3[[4]]
+SO_210910_PFC_ALS_135_snRNA_D2  <- SO_FC_3[[5]]
+SO_210910_PFC_ALS_136_snRNA_D3  <- SO_FC_3[[6]]
+SO_210910_PFC_ALS_137_snRNA_D4  <- SO_FC_3[[7]]
+SO_210910_PFC_ALS_138_snRNA_D5  <- SO_FC_3[[8]]
+SO_210910_PFC_ALS_139_snRNA_D8  <- SO_FC_3[[9]]
+SO_210910_PFC_ALS_140_snRNA_D9 <- SO_FC_3[[10]]
+
+seurat_objects <- c(
+  SO_210910_PFC_ALS_132_snRNA_C11,
+  SO_210910_PFC_ALS_133_snRNA_C12,
+  SO_210910_PFC_ALS_134_snRNA_D1, 
+  SO_210910_PFC_ALS_135_snRNA_D2, 
+  SO_210910_PFC_ALS_136_snRNA_D3, 
+  SO_210910_PFC_ALS_137_snRNA_D4, 
+  SO_210910_PFC_ALS_138_snRNA_D5, 
+  SO_210910_PFC_ALS_139_snRNA_D8, 
+  SO_210910_PFC_ALS_140_snRNA_D9)
+
+cell_ids <- c(
+  "210910.PFC.ALS.131.snRNA.C10_131_BA9_F_ALS_C9ALS_1",
+  "210910.PFC.ALS.132.snRNA.C11_132_BA9_M_ALS_C9ALS_1",
+  "210910.PFC.ALS.133.snRNA.C12_133_BA9_M_ALS_C9ALS_1",
+  "210910.PFC.ALS.134.snRNA.D1_134_BA9_F_ALS_C9ALS_1",
+  "210910.PFC.ALS.135.snRNA.D2_135_BA9_F_ALS_C9ALS_1",
+  "210910.PFC.ALS.136.snRNA.D3_136_BA9_F_ALS_C9ALS_1",
+  "210910.PFC.ALS.137.snRNA.D4_137_BA9_M_ALS_C9ALS_1",
+  "210910.PFC.ALS.138.snRNA.D5_138_BA9_F_ALS_C9ALS_1",
+  "210910.PFC.ALS.139.snRNA.D8_139_BA9_F_ALS_C9ALS_1",
+  "210910.PFC.ALS.140.snRNA.D9_140_BA9_F_ALS_C9ALS_1")
+
+merged <- merge(
+  x =  SO_210910_PFC_ALS_131_snRNA_C10,
+  y = seurat_objects,
+  add.cell.ids = cell_ids,
+  collapse = FALSE,
+  merge.data = TRUE,
+  merge.dr = FALSE,
+  project = getOption(x = "Seurat.object.project", default = "SeuratProject")
+)
+merged$sample <- rownames(merged@meta.data)
+
+CT <- c()
+CS <- c()
+
+for (element in rownames(merged@meta.data)) {
+  c <- 1
+  for (cell_label in cell_metadata$full_label) {
+    if (grepl(cell_label, element)){
+      CT <- c(CT, cell_metadata[c, 2])
+      CS <- c(CS, cell_metadata[c, 3])
+    }
+    c <- c + 1
+  }
+}
+
+merged$celltype <- CT
+merged$cellstate <- CS
+merged@meta.data <- separate(merged@meta.data, col='sample', into= c('ID', 'Donor', 'Region', 'Sex', 'Condition', 'Group', 'C9pos'), sep='_')
+save(merged, file = "Merge_FC_part3.RData")
+rm(list = ls())
+
+
+# PART 4
+load("SO_FC_part4.RData")
+cell_metadata <- read.csv("S03_annotation_mapping.csv")
+
+SO_210526_FTLD_202_snRNA_B5 <- SO_FC_4[[1]]
+SO_210526_FTLD_204_snRNA_B6 <- SO_FC_4[[2]]
+SO_210526_FTLD_206_snRNA_B7 <- SO_FC_4[[3]]
+SO_210526_FTLD_207_snRNA_B8 <- SO_FC_4[[4]]
+SO_210526_FTLD_209_snRNA_B9 <- SO_FC_4[[5]]
+SO_210526_FTLD_210_snRNA_B10 <- SO_FC_4[[6]]
+SO_210526_FTLD_211_snRNA_B11 <- SO_FC_4[[7]]
+SO_210526_FTLD_214_snRNA_B12 <- SO_FC_4[[8]]
+SO_210526_FTLD_216_snRNA_C1 <- SO_FC_4[[9]]
+SO_210526_FTLD_217_snRNA_C2 <- SO_FC_4[[10]]
+SO_210526_FTLD_218_snRNA_C3 <- SO_FC_4[[11]]
+
+seurat_objects <- c(
+  SO_210526_FTLD_204_snRNA_B6,
+  SO_210526_FTLD_206_snRNA_B7,
+  SO_210526_FTLD_207_snRNA_B8,
+  SO_210526_FTLD_209_snRNA_B9,
+  SO_210526_FTLD_210_snRNA_B10,
+  SO_210526_FTLD_211_snRNA_B11,
+  SO_210526_FTLD_214_snRNA_B12,
+  SO_210526_FTLD_216_snRNA_C1,
+  SO_210526_FTLD_217_snRNA_C2,
+  SO_210526_FTLD_218_snRNA_C3)
+
+cell_ids <- c(
+  "210526.FTLD.202.snRNA.B5_202_BA9_F_FTLD_SFTLD_0",
+  "210526.FTLD.204.snRNA.B6_204_BA9_F_FTLD_SFTLD_0",
+  "210526.FTLD.206.snRNA.B7_206_BA9_F_FTLD_SFTLD_0",
+  "210526.FTLD.207.snRNA.B8_207_BA9_F_FTLD_SFTLD_0",
+  "210526.FTLD.209.snRNA.B9_209_BA9_F_FTLD_SFTLD_0",
+  "210526.FTLD.210.snRNA.B10_210_BA9_F_FTLD_C9FTLD_1",
+  "210526.FTLD.211.snRNA.B11_211_BA9_F_FTLD_SFTLD_0",
+  "210526.FTLD.214.snRNA.B12_214_BA9_F_FTLD_C9FTLD_1",
+  "210526.FTLD.216.snRNA.C1_216_BA9_M_FTLD_SFTLD_0",
+  "210526.FTLD.217.snRNA.C2_217_BA9_M_FTLD_SFTLD_0",
+  "210526.FTLD.218.snRNA.C3_218_BA9_M_FTLD_SFTLD_0")
+
+merged <- merge(
+  x = SO_210526_FTLD_202_snRNA_B5,
+  y = seurat_objects,
+  add.cell.ids = cell_ids,
+  collapse = FALSE,
+  merge.data = TRUE,
+  merge.dr = FALSE,
+  project = getOption(x = "Seurat.object.project", default = "SeuratProject")
+)
+
+merged$sample <- rownames(merged@meta.data)
+
+CT <- c()
+CS <- c()
+
+for (element in rownames(merged@meta.data)) {
+  c <- 1
+  for (cell_label in cell_metadata$full_label) {
+    if (grepl(cell_label, element)){
+      CT <- c(CT, cell_metadata[c, 2])
+      CS <- c(CS, cell_metadata[c, 3])
+    }
+    c <- c + 1
+  }
+}
+
+merged$celltype <- CT
+merged$cellstate <- CS
+merged@meta.data <- separate(merged@meta.data, col='sample', into= c('ID', 'Donor', 'Region', 'Sex', 'Condition', 'Group', 'C9pos'), sep='_')
+save(merged, file = "Merge_FC_part4.RData")
+rm(list = ls())
+
+
+# PART 5
+load("SO_FC_part5.RData")
+cell_metadata <- read.csv("S03_annotation_mapping.csv")
+
+SO_210526_FTLD_222_snRNA_C4 <- SO_FC_5[[1]]
+SO_210526_FTLD_225_snRNA_C6 <- SO_FC_5[[2]]
+SO_210526_FTLD_226_snRNA_C7 <- SO_FC_5[[3]]
+SO_210526_FTLD_228_snRNA_C8 <- SO_FC_5[[4]]
+SO_210526_FTLD_229_snRNA_B9 <- SO_FC_5[[5]]
+SO_210526_FTLD_232_snRNA_C11 <- SO_FC_5[[6]]
+SO_210526_FTLD_234_snRNA_C12 <- SO_FC_5[[7]]
+SO_210526_FTLD_235_snRNA_D1 <- SO_FC_5[[8]]
+SO_210526_FTLD_236_snRNA_D2 <- SO_FC_5[[9]]
+SO_210526_FTLD_237_snRNA_D3 <- SO_FC_5[[10]]
+SO_210526_FTLD_238_snRNA_D4 <- SO_FC_5[[11]]
+SO_210526_FTLD_239_snRNA_D5 <- SO_FC_5[[12]]
+SO_210526_FTLD_240_snRNA_D6 <- SO_FC_5[[13]]
+
+
+seurat_objects <- c(
+  SO_210526_FTLD_225_snRNA_C6,
+  SO_210526_FTLD_226_snRNA_C7,
+  SO_210526_FTLD_228_snRNA_C8,
+  SO_210526_FTLD_229_snRNA_B9,
+  SO_210526_FTLD_232_snRNA_C11,
+  SO_210526_FTLD_234_snRNA_C12,
+  SO_210526_FTLD_235_snRNA_D1,
+  SO_210526_FTLD_236_snRNA_D2,
+  SO_210526_FTLD_237_snRNA_D3,
+  SO_210526_FTLD_238_snRNA_D4,
+  SO_210526_FTLD_239_snRNA_D5,
+  SO_210526_FTLD_240_snRNA_D6)
+
+cell_ids <- c(
+  "210526.FTLD.222.snRNA.C4_222_BA9_M_FTLD_SFTLD_0",
+  "210526.FTLD.225.snRNA.C6_225_BA9_M_FTLD_SFTLD_0",
+  "210526.FTLD.226.snRNA.C7_226_BA9_M_FTLD_SFTLD_0",
+  "210526.FTLD.228.snRNA.C8_228_BA9_M_FTLD_SFTLD_0",
+  "210526.FTLD.229.snRNA.B9_229_BA9_M_FTLD_C9FTLD_1",
+  "210526.FTLD.232.snRNA.C11_232_BA9_F_FTLD_C9FTLD_1",
+  "210526.FTLD.234.snRNA.C12_234_BA9_M_FTLD_C9FTLD_1",
+  "210526.FTLD.235.snRNA.D1_235_BA9_M_FTLD_C9FTLD_1",
+  "210526.FTLD.236.snRNA.D2_236_BA9_M_FTLD_C9FTLD_1",
+  "210526.FTLD.237.snRNA.D3_237_BA9_M_FTLD_C9FTLD_1",
+  "210526.FTLD.238.snRNA.D4_238_BA9_F_FTLD_C9FTLD_1",
+  "210526.FTLD.239.snRNA.D5_239_BA9_M_FTLD_C9FTLD_1",
+  "210526.FTLD.240.snRNA.D6_240_BA9_M_FTLD_C9FTLD_1")
+
+merged <- merge(
+  x = SO_210526_FTLD_222_snRNA_C4,
+  y = seurat_objects,
+  add.cell.ids = cell_ids,
+  collapse = FALSE,
+  merge.data = TRUE,
+  merge.dr = FALSE,
+  project = getOption(x = "Seurat.object.project", default = "SeuratProject")
+)
+merged$sample <- rownames(merged@meta.data)
+
+CT <- c()
+CS <- c()
+
+for (element in rownames(merged@meta.data)) {
+  c <- 1
+  for (cell_label in cell_metadata$full_label) {
+    if (grepl(cell_label, element)){
+      CT <- c(CT, cell_metadata[c, 2])
+      CS <- c(CS, cell_metadata[c, 3])
+    }
+    c <- c + 1
+  }
+}
+
+merged$celltype <- CT
+merged$cellstate <- CS
+merged@meta.data <- separate(merged@meta.data, col='sample', into= c('ID', 'Donor', 'Region', 'Sex', 'Condition', 'Group', 'C9pos'), sep='_')
+save(merged, file = "Merge_FC_part5.RData")
+rm(list = ls())
+
+
+# PART 6
+load("SO_FC_part6.RData")
+cell_metadata <- read.csv("S03_annotation_mapping.csv")
+
+SO_210526_PN_301_snRNA_D7 <- SO_FC_6[[1]]
+SO_210526_PN_302_snRNA_D8 <- SO_FC_6[[2]]
+SO_210526_PN_303_snRNA_D9 <- SO_FC_6[[3]]
+SO_210526_PN_304_snRNA_D10 <- SO_FC_6[[4]]
+SO_210526_PN_306_snRNA_D11 <- SO_FC_6[[5]]
+SO_210526_PN_307_snRNA_D12 <- SO_FC_6[[6]]
+SO_210526_PN_309_snRNA_E2 <- SO_FC_6[[7]]
+SO_210526_PN_311_snRNA_E3 <- SO_FC_6[[8]]
+SO_210526_PN_317_snRNA_E4 <- SO_FC_6[[9]]
+SO_210526_PN_318_snRNA_H12 <- SO_FC_6[[10]]
+SO_210526_PN_319_snRNA_E5 <- SO_FC_6[[11]]
+SO_210526_PN_322_snRNA_E6 <- SO_FC_6[[12]]
+SO_210526_PN_323_snRNA_B7 <- SO_FC_6[[13]]
+SO_210526_PN_324_snRNA_F4 <- SO_FC_6[[14]]
+SO_210526_PN_325_snRNA_F5 <- SO_FC_6[[15]]
+SO_210526_PN_328_snRNA_F6 <- SO_FC_6[[16]]
+
+seurat_objects <- c(
+  SO_210526_PN_302_snRNA_D8,
+  SO_210526_PN_303_snRNA_D9,
+  SO_210526_PN_304_snRNA_D10,
+  SO_210526_PN_306_snRNA_D11,
+  SO_210526_PN_307_snRNA_D12,
+  SO_210526_PN_309_snRNA_E2,
+  SO_210526_PN_311_snRNA_E3,
+  SO_210526_PN_317_snRNA_E4,
+  SO_210526_PN_318_snRNA_H12,
+  SO_210526_PN_319_snRNA_E5,
+  SO_210526_PN_322_snRNA_E6,
+  SO_210526_PN_323_snRNA_B7,
+  SO_210526_PN_324_snRNA_F4,
+  SO_210526_PN_325_snRNA_F5,
+  SO_210526_PN_328_snRNA_F6)
+
+cell_ids <- c(
+  "210526.PN.301.snRNA.D7_301_BA9_F_PN_PN_0",
+  "210526.PN.302.snRNA.D8_302_BA9_F_PN_PN_0",
+  "210526.PN.303.snRNA.D9_303_BA9_F_PN_PN_0",
+  "210526.PN.304.snRNA.D10_304_BA9_F_PN_PN_0",
+  "210526.PN.306.snRNA.D11_306_BA9_F_PN_PN_0",
+  "210526.PN.307.snRNA.D12_307_BA9_F_PN_PN_0",
+  "210526.PN.309.snRNA.E2_309_BA9_F_PN_PN_0",
+  "210526.PN.311.snRNA.E3_311_BA9_F_PN_PN_0",
+  "210526.PN.317.snRNA.E4_317_BA9_M_PN_PN_0",
+  "210526.PN.318.snRNA.H12_318_BA9_M_PN_PN_0",
+  "210526.PN.319.snRNA.E5_319_BA9_M_PN_PN_0",
+  "210526.PN.322.snRNA.E6_322_BA9_M_PN_PN_0",
+  "210526.PN.323.snRNA.B7_323_BA9_M_PN_PN_0",
+  "210526.PN.324.snRNA.F4_324_BA9_M_PN_PN_0",
+  "210526.PN.325.snRNA.F5_325_BA9_M_PN_PN_0",
+  "210526.PN.328.snRNA.F6_328_BA9_M_PN_PN_0")
+
+merged <- merge(
+  x = SO_210526_PN_301_snRNA_D7,
+  y = seurat_objects,
+  add.cell.ids = cell_ids,
+  collapse = FALSE,
+  merge.data = TRUE,
+  merge.dr = FALSE,
+  project = getOption(x = "Seurat.object.project", default = "SeuratProject")
+)
+merged$sample <- rownames(merged@meta.data)
+
+CT <- c()
+CS <- c()
+
+for (element in rownames(merged@meta.data)) {
+  c <- 1
+  for (cell_label in cell_metadata$full_label) {
+    if (grepl(cell_label, element)){
+      CT <- c(CT, cell_metadata[c, 2])
+      CS <- c(CS, cell_metadata[c, 3])
+    }
+    c <- c + 1
+  }
+}
+
+merged$celltype <- CT
+merged$cellstate <- CS
+merged@meta.data <- separate(merged@meta.data, col='sample', into= c('ID', 'Donor', 'Region', 'Sex', 'Condition', 'Group', 'C9pos'), sep='_')
+save(merged, file = "Merge_FC_part6.RData")
+rm(list = ls())
+
+
+load("Merge_FC_part1.RData")
+FC_1 <- merged
+
+load("Merge_FC_part2.RData")
+FC_2 <- merged
+
+load("Merge_FC_part3.RData")
+FC_3 <- merged
+
+load("Merge_FC_part4.RData")
+FC_4 <- merged
+
+load("Merge_FC_part5.RData")
+FC_5 <- merged
+
+load("Merge_FC_part6.RData")
+FC_6 <- merged
+
+merged <- merge(
+  x = FC_1,
+  y = c(FC_2, FC_3, FC_4, FC_5, FC_6),
+  collapse = FALSE,
+  merge.data = TRUE,
+  merge.dr = FALSE,
+  project = getOption(x = "Seurat.object.project", default = "SeuratProject")
+)
+
+save(merged, file = "Merge_FC_complete.RData")
+```
+
+### Single cell background gene extraction
+
+```{r}
+#| eval: false
+# Load required library
+library(Seurat)
+library(Matrix)
+
+load("/media/jaumatell/datos/URI/BAYESPRISM_12_3/BAYESPRISM/FTLD/TDP/seurat_no_XY_M_Rb_MALAT1.Rdata")
+expr_matrix <- GetAssayData(new_seurat, assay = "RNA", slot = "counts")  
+cell_types <- unique(new_seurat$celltype)
+cell_states <- unique(new_seurat$cellstate)
+genes_per_celltype <- list()
+genes_per_cellstate <- list()
+
+## CT
+
+for (ct in cell_types) {
+
+  cells <- colnames(new_seurat)[new_seurat$celltype == ct]
+  sub_matrix <- expr_matrix[, cells]
+  
+  # GENES WHERE 10% OF CASES HAS EXP > 0
+  expressed_genes <- rownames(sub_matrix)[Matrix::rowMeans(sub_matrix > 0) >= 0.1]
+
+  
+  genes_per_celltype[[ct]] <- expressed_genes
+}
+
+str(genes_per_celltype, max.level = 1)
+
+output_dir <- "celltype_gene_lists"
+dir.create(output_dir, showWarnings = FALSE)
+
+for (ct in names(genes_per_celltype)) {
+  safe_name <- gsub("[^a-zA-Z0-9_]", "_", ct)
+  
+  file_path <- file.path(output_dir, paste0(safe_name, "_genes.txt"))
+  
+  write.table(genes_per_celltype[[ct]],
+              file = file_path,
+              quote = FALSE,
+              row.names = FALSE,
+              col.names = FALSE)
+}
+
+## CS
+for (ct in cell_states) {
+
+  cells <- colnames(new_seurat)[new_seurat$cellstate == ct]
+  sub_matrix <- expr_matrix[, cells]
+  
+  # GENES WHERE 10% OF CELLS HAVE EXPRESSION > 0
+  expressed_genes <- rownames(sub_matrix)[Matrix::rowMeans(sub_matrix > 0) >= 0.1]
+  
+  genes_per_cellstate[[ct]] <- expressed_genes
+}
+
+str(genes_per_cellstate, max.level = 1)
+
+output_dir <- "cellstate_gene_lists"
+dir.create(output_dir, showWarnings = FALSE)
+
+for (ct in names(genes_per_cellstate)) {
+  safe_name <- gsub("[^a-zA-Z0-9_]", "_", ct)
+  
+  file_path <- file.path(output_dir, paste0(safe_name, "_genes.txt"))
+  
+  write.table(genes_per_cellstate[[ct]],
+              file = file_path,
+              quote = FALSE,
+              row.names = FALSE,
+              col.names = FALSE)
+}
+
+```

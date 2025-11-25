@@ -67,6 +67,8 @@ for (s in names(tables)) {
 :::
 
 ```{r}
+#| eval: false
+#| include: false
 library(readxl)
 library(plotly)
 library(tidyverse)
@@ -218,9 +220,833 @@ fig <- fig %>%
 fig
 ```
 
+### Arterial
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+counter <- 1
+file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_FTLD_C9.xlsx"
+sheets <- excel_sheets(file)
+
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Capillary
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CDH4_CCK
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CDH4_SCGN
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CLMP_KCNMA1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CLMP_PDGFRA
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CUX2_RASGRF2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CUX2_RORB
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### DISC1_CCK
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### DISC1_RELN
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### GFAP_neg
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### GFAP_pos
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### LAMP5_CA3
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### LAMP5_PMEPA1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Micro
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Oligo
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### OPC
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### PCP4_NXPH2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Pericyte
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### PVALB_CEMIP
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### PVALB_MYBPC1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### PVALB_PTHLH
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### RORB_ADGRL4
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### RORB_FOXO1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### RORB_LRRK1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### RORB_POU3F2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SCN4B_NEFH
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SMC
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SST_ADAMTS19
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SST_BRINP3
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SST_GALNT14
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SST_NPY
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### T_Cell
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### THEMIS_NR4A2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### THEMIS_TMEM233
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### TLE4_CCBE1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### TLE4_MEGF11
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### TLE4_SEMA3D
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### VAT1L_EYA4
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Venous
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### VIP_CLSTN2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### VIP_HTR2C
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### VIP_LAMA3
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+
 ## Rimmod
 
 ```{r}
+#| eval: false
+#| include: false
 library(readxl)
 library(plotly)
 library(tidyverse)
@@ -366,3 +1192,825 @@ fig <- fig %>%
 fig
 
 ```
+
+### Arterial
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+counter <- 1
+file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_Rimmod.xlsx"
+sheets <- excel_sheets(file)
+
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Capillary
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CDH4_CCK
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CDH4_SCGN
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CLMP_KCNMA1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CLMP_PDGFRA
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CUX2_RASGRF2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### CUX2_RORB
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### DISC1_CCK
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### DISC1_RELN
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### GFAP_neg
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### GFAP_pos
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### LAMP5_CA3
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### LAMP5_PMEPA1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Micro
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Oligo
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### OPC
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### PCP4_NXPH2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Pericyte
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### PVALB_CEMIP
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### PVALB_MYBPC1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### PVALB_PTHLH
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### RORB_ADGRL4
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### RORB_FOXO1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### RORB_LRRK1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### RORB_POU3F2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SCN4B_NEFH
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SMC
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SST_ADAMTS19
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SST_BRINP3
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SST_GALNT14
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### SST_NPY
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### T_Cell
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### THEMIS_NR4A2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### THEMIS_TMEM233
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### TLE4_CCBE1
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### TLE4_MEGF11
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### TLE4_SEMA3D
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### VAT1L_EYA4
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### Venous
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### VIP_CLSTN2
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### VIP_HTR2C
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
+### VIP_LAMA3
+::: {.callout-note title="Show table" collapse="true"}
+```{r}
+df <- read_excel(file, sheet = sheets[counter])
+
+# Show filterable interactive table
+datatable(
+  df,
+  filter = "top",      # adds filter boxes on top
+  options = list(
+    pageLength = 25,   # default number of rows per page
+    autoWidth = TRUE,
+    scrollX = TRUE     # horizontal scroll if wide
+  )
+)
+
+counter <- counter+1
+```
+:::
