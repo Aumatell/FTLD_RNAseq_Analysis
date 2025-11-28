@@ -2,69 +2,9 @@
 title: "Single cell difference expression analysis ( C9orf72 )"
 ---
 
-## C9
+# C9
 
-From the 43 deconvolved cells, only 28 had sufficient expression levels for EdgeR to perform differential expression analysis. Among these, 15 distinct cell types showed significant differential gene expression. RORB/POU3F2 characterized excitatory neuron exhibited the highest anount of alterations, with 433 differentially expressed genes (DEGs) and RORB/LRRK1 (263 DEGs) was also notably affected. For the inhibitory neurons we found DEG in the cells characterized by CUX2/RASGRF2 123, LAMP5/PMEPA1 22. Smooth muscle cells (SMC) also shown 270 DEG. Vascular cells such as arterial, and capillary subtypes displayed 52 and 63 deregulated genes respectively. T cells contributed with 33 DEGs. Across all cell types, upregulated genes were more frequent than downregulated ones.
-
-### Excitatory neurons
-
-Differences in excitatory neuron composition reveal key changes in RORB-characterized subtypes. Differential gene expression analysis at cell state resolution identified downregulation of the disease-associated gene C9orf72 in the CUX2/RASGRF2 (adjusted p= 0,016 FC: 0.75), RORB/LRRK1(adjusted p= 0,026; FC: 0.78), and RORB/POU3F2 (adjusted p= 0,033; FC: 0,79) subtypes (PMCID: PMC3430713). Additionally, inflammatory marker genes were upregulated across excitatory neuron subtypes. For example, CHI3L1 was found upregulated in RORB/POU3F2(adjusted p=: 0,036; FC: 2,69) , consistent with its known elevation in cerebrospinal fluid as a biomarker (PMID: 32344399).
-
-Hemoglobin subunits HBA1 in RORB/LRRK1 (adjusted p= 0,041; FC: 0,22) and RORB/POU3F2 (p= -0.04; FC: 0,22) and HBB in RORB/LRRK1 (adjusted p= 0,036; logFC: 0.23) and RORB/POU3F2 (adjusted p= 0,024; logFC: 0,23) also showed decreased expression that has been previously described in the frontal cortex of patents with neurodegenerative diseases (PMCID: PMC5786544). Functionally, downregulated genes in RORB/LRRK1 and RORB/POU3F2-expressing neurons are enriched in postsynaptic components and synaptic transmission. In the CUX2/RASGRF subtype, affected genes relate to postsynapse and transmission regulation. Upregulated genes in the CUX2/RASGRF subtype indicate enrichment in behavior, presinapse, and neuron apoptotic process, while in RORB/LRRK1 and RORB/POU3F2 subtypes, they relate to synaptic organization, behaviour and amyloid-beta response.
-
-### Inhibitory neurons
-
-Inhibitory neurons display vulnerable transcriptional signatures in LAMP5/PMEPA1. Alterations in LAMP5/PMEPA1 expression involve genes without a previously established association with FTLD. Biological functions and pathways enriched among deregulated genes were observed exclusively in LAMP5/PMEPA1 neurons. These include enrichment of upregulated genes in axon and learning or memory, and for the downregulated genes synaptic vessicles, membrane and axon.
-
-### Non-neuronal
-
-Among non-neuronal cell types—astrocytes (GFAP+ and GFAP-), microglia, and oligodendrocytes—a common reduction in HBB expression was observed in GFAP- (adjusted p= 0,043; FC: 0,23) and oligodendrocytes (adjusted p= 0,017; FC:, 0,22) (PMCID: PMC5786544). Functional enrichment analysis of deregulated genes in these cell types highlighted processes such as humoral immune response, axon guidance , memory, glial cell development and intrinsic apoptotic signaling pathway. Conversely, reductions were found in trans-synaptic signaling, social behavior and dendrites.
-
-### Vascular
-
-Arterial, capillary, smooth muscle cells (SMCs), and T cells were grouped as vascular cells. Differential expression analysis showed reduced expression of HBB in SMC (adjusted p= 0,035; FC: 0,23), HBA1 in arterial (adjusted p= 0,032; FC: 0,23), capillary (adjusted p= 0,032; FC: 0,22) and SMCs (adjusted p= 0,013; FC: 0,21) and HBA2 in arterial (adjusted p= 0,042; FC: 0,23), capillary (adjusted p= 0,017; FC: 0,23 ) and SMCs (adjusted p= 1.26e-81; FC: 0.22 ) in FTLD. An additional notable finding points to an upregulation tendency of CXCL11 in SMC (adjusted p= 0,069; FC: 19,66).
-
-Pathway analysis revealed increased activity in processes such as behaviour , regulation of neuron apoptotic process, neuropeptide signaling pathway. Reductions were observed in regulation of biological processes, synaptic vessicle exocytocis, secretion , presynaptic membrane, oxygen carier activity, postsynapse. Genes of interest DE Nominal p-values
-
-Analysis of nominal p-values per gene and cell type in FTLD-C9 revealed a number of genes exhibiting p \< 0.05 in specific cell populations, suggesting restricted transcriptional alterations. TUBA4A showed nominal significance in arterial cells (p = 0.011), capillaries (p = 0.006), CUX2/RASGRF2 neurons (p = 0.007), GFAP - astrocytes (p = 0.008), SST/NPY neurons (p = 0.003), T cells (p = 0.005), and THEMIS/TMEM233 cells (p = 0.006), indicating potential alterations in vascular, glial, and neuronal subtypes. FUS displayed significant nominal p-values in arterial cells (p = 0.002), capillaries (p = 0.005), CUX2/RASGRF2 neurons (p = 0.022), GFAP - astrocytes (p = 0.008), LAMP5/PMEPA1 neurons (p = 0.007), SST/NPY neurons (p = 0.018), T cells (p = 0.008), and THEMIS/TMEM233 cells (p = 0.009), suggesting widespread but cell type-specific transcriptional changes. C9orf72 exhibited striking nominal significance in arterial cells (p = 0.004), capillaries (p = 0.0003), CUX2/RASGRF2 neurons (p = 0.00004), GFAP - astrocytes (p = 0.0005), LAMP5/PMEPA1 neurons (p = 0.003), microglia (p = 0.002), oligodendrocytes (p = 0.008), SST/NPY neurons (p = 0.0002), T cells (p = 0.0005), and THEMIS/TMEM233 cells (p = 0.0004), confirming strong cell type-specific transcriptional effects. VCP showed significant p-values in arterial cells (p = 0.0002), capillaries (p = 0.00004), CUX2/RASGRF2 neurons (p = 0.0004), GFAP- astrocytes (p = 0.0002), microglia (p = 0.015), oligodendrocytes (p = 0.027), SST/NPY neurons (p = 0.0001), T cells (p = 0.00005), and THEMIS/TMEM233 cells (p = 0.0001), reflecting selective transcriptional dysregulation across multiple cell types. MATR3 presented nominal significance in arterial cells (p = 0.086), capillaries (p = 0.046), CUX2/RASGRF2 neurons (p = 0.042), GFAP - astrocytes (p = 0.047), LAMP5/PMEPA1 neurons (p = 0.061), microglia (p = 0.077), oligodendrocytes (p = 0.027), SST/NPY neurons (p = 0.032), and T cells (p = 0.032), suggesting moderate cell type-specific effects. DPP6 exhibited nominal significance in CDH4/SCGN neurons (p = 0.036), CUX2/RASGRF2 neurons (p = 0.003), GFAP + astrocytes (p = 0.003), microglia (p = 0.030), SST/NPY neurons (p = 0.005), and T cells (p = 0.024), indicating restricted but consistent alterations in excitatory neurons, astrocytes, and interneurons. Other genes such as NEFL, OPTN, GRN, TARDBP, HNRNPA1, MAPT, UNC13A, L3MBTL1, and VIPR1 displayed variable nominal significance across a few cell types, whereas many genes including NPTX2, UBQLN2, C19orf52, and ANO9 did not show any nominally significant changes in any cell type.
-
-## Sant Pau
-
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-
-library(readxl)
-library(DT)
-
-# Load Excel
-
-file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_FTLD_C9.xlsx"
-sheets <- excel_sheets(file)
-
-tables <- lapply(sheets, function(s) read_excel(file, sheet = s))
-names(tables) <- sheets
-```
-
-::: panel-tabset
-```{r}
-for (s in names(tables)) {
-  cat("### ", s, "\n\n")  # Tab title
-  
-  print(
-    datatable(
-      tables[[s]],
-      filter = "top",
-      options = list(scrollX = TRUE, pageLength = 20)
-    )
-  )
-  
-  cat("\n\n")
-}
-
-```
-:::
+## Rimmod
 
 ```{r}
 #| eval: false
@@ -72,10 +12,12 @@ for (s in names(tables)) {
 library(readxl)
 library(plotly)
 library(tidyverse)
+library(openxlsx)
+library(DT)
 
 # ---- File and sheets ----
-file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_FTLD_C9.xlsx"
-sheets <- excel_sheets(file)
+file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_Rimmod.xlsx"
+sheets <- readxl::readxl::excel_sheets(file)
 
 # ---- Genes to highlight ----
 genes_highlight <- c("")
@@ -84,24 +26,21 @@ genes_highlight <- c("")
 data_list <- list()
 
 for (sheet in sheets) {
-  df_raw <- read_excel(file, sheet = sheet)
-  
-  # Standardize column names to lower + syntactically valid
+  df_raw <- readxl::read_excel(file, sheet = sheet)
   colnames(df_raw) <- tolower(make.names(colnames(df_raw), unique = TRUE))
   cols <- colnames(df_raw)
-  
-  # Try to find the relevant columns
+
   logfc_col <- intersect(c("logfc", "log2fc"), cols)
   fdr_col   <- intersect(c("adj_pval", "adj.pval", "fdr", "padj"), cols)
-  pval_col  <- intersect(c("pvalue", "p.val", "pvalue", "pval"), cols)
-  
+  pval_col  <- intersect(c("pvalue", "p.val", "pval"), cols)
+
   if (length(logfc_col) == 0 || length(fdr_col) == 0) {
     message("⚠️ Skipping ", sheet, " — missing logFC or FDR/adj_pval column.")
     next
   }
-  
+
   data <- tibble(
-    gene   = df_raw[[1]],  # assume first column is gene name (as in your example)
+    gene   = df_raw[[1]],
     logfc  = as.numeric(df_raw[[logfc_col[1]]]),
     fdr    = as.numeric(df_raw[[fdr_col[1]]]),
     pvalue = if (length(pval_col) > 0) as.numeric(df_raw[[pval_col[1]]]) else NA_real_
@@ -116,44 +55,42 @@ for (sheet in sheets) {
       label = ifelse(gene %in% genes_highlight, gene, NA_character_)
     ) %>%
     drop_na(logfc, fdr)
-  
+
   if (nrow(data) == 0) {
     message("⚠️ Skipping ", sheet, " — no valid rows after cleaning.")
     next
   }
-  
+
   data_list[[sheet]] <- data
 }
 
 valid_sheets <- names(data_list)
 message("✅ Prepared volcano data for: ", paste(valid_sheets, collapse = ", "))
 
-# ---- Build a multi-sheet volcano plot with dropdown ----
-
-# Colors as in your ggplot example
+# ---- Fixed color palette (green for not significant) ----
 col_map <- c(
   "Upregulated"   = "#D55E00",
   "Downregulated" = "#0072B2",
-  "Not significant" = "grey70"
+  "Not significant" = "#009E73"   # green tone (replace with grey70 if preferred)
 )
 
+# ---- Build multi-sheet plot ----
 fig <- plot_ly()
-trace_ranges <- list()  # to remember which traces belong to each sheet
+trace_ranges <- list()
 
 for (i in seq_along(valid_sheets)) {
   sheet <- valid_sheets[i]
   df <- data_list[[sheet]]
-  
+
   start_idx <- length(fig$x$data) + 1
-  
-  # We mimic the ggplot: one layer, but in plotly we'll split by significance
+
   for (sig in c("Upregulated", "Downregulated", "Not significant")) {
     sub <- df %>% filter(significance == sig)
     if (nrow(sub) == 0) next
-    
-    # label only highlighted genes; others are ""
+
+    # Only label highlighted genes
     text_labels <- ifelse(is.na(sub$label), "", sub$label)
-    
+
     fig <- fig %>%
       add_trace(
         type = "scatter",
@@ -161,7 +98,7 @@ for (i in seq_along(valid_sheets)) {
         x = sub$logfc,
         y = sub$neglog10fdr,
         marker = list(
-          color = col_map[sig],
+          color = col_map[[sig]],
           size = 6,
           opacity = 0.8
         ),
@@ -174,21 +111,20 @@ for (i in seq_along(valid_sheets)) {
           "FDR: ", signif(sub$fdr, 3)
         ),
         hoverinfo = "text",
-        name = paste(sig, "-", sheet),
-        showlegend = (i == 1),      # show legend only for first sheet
-        visible = (i == 1)          # only first sheet visible initially
+        name = sig,
+        showlegend = (i == 1),
+        visible = (i == 1)
       )
   }
-  
+
   end_idx <- length(fig$x$data)
   trace_ranges[[i]] <- start_idx:end_idx
 }
 
-# ---- Dropdown buttons ----
+# ---- Dropdown ----
 buttons <- lapply(seq_along(valid_sheets), function(i) {
   vis <- rep(FALSE, length(fig$x$data))
   vis[trace_ranges[[i]]] <- TRUE
-  
   list(
     method = "update",
     args = list(
@@ -218,17 +154,19 @@ fig <- fig %>%
   )
 
 fig
+
 ```
 
 ### Arterial
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
+library(DT)
 counter <- 1
-file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_FTLD_C9.xlsx"
-sheets <- excel_sheets(file)
+file <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/5. CELL TYPE DEA/ALL_Rimmod.xlsx"
+sheets <- readxl::excel_sheets(file)
 
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -249,7 +187,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -270,7 +208,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -291,7 +229,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -312,7 +250,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -333,7 +271,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -354,7 +292,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -375,7 +313,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -396,7 +334,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -417,7 +355,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -438,7 +376,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -459,7 +397,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -480,7 +418,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -501,7 +439,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -522,7 +460,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -543,7 +481,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -564,7 +502,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -585,7 +523,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -606,7 +544,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -627,7 +565,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -648,7 +586,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -669,7 +607,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -690,7 +628,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -711,7 +649,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -732,7 +670,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -753,7 +691,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -774,7 +712,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -795,7 +733,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -816,7 +754,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -837,7 +775,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -858,7 +796,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -879,7 +817,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -900,7 +838,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -921,7 +859,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -942,7 +880,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -963,7 +901,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -984,7 +922,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -1005,7 +943,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -1026,7 +964,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -1047,7 +985,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -1068,7 +1006,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -1089,7 +1027,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(
@@ -1110,7 +1048,7 @@ counter <- counter+1
 
 ::: {.callout-note title="Show table" collapse="true"}
 ```{r}
-df <- read_excel(file, sheet = sheets[counter])
+df <- readxl::read_excel(file, sheet = sheets[counter])
 
 # Show filterable interactive table
 datatable(

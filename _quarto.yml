@@ -43,17 +43,23 @@ website:
           - file: Results/Cell_correlation.qmd
             text: Cell Composition × Neuropathology
           - file: Results/Sc_dea_results_C9.qmd
-            text: Single-Cell Differential Expression (C9)
+            text: Single-Cell Differential Expression (C9) 1
+          - file: Results/Sc_dea_results_C9_2.qmd
+            text: Single-Cell Differential Expression (C9) 2
           - file: Results/Sc_dea_results_TDP.qmd
-            text: Single-Cell Differential Expression (TDP)
+            text: Single-Cell Differential Expression (TDP) 1
+          - file: Results/Sc_dea_results_TDP_2.qmd
+            text: Single-Cell Differential Expression (TDP) 2
           - file: Results/Genes_FTLD_summary.qmd
             text: Single-Cell FTLD-related genes DE
           - file: Results/Sc_gene_correlation.qmd
             text: Single-Cell Gene Correlation
           - file: Results/Hdwgcna_differences.qmd
             text: hdWGCNA Differences
-          - file: Results/Hdwgcna_correlation.qmd
-            text: hdWGCNA Correlation
+          - file: Results/Hdwgcna_C9_correlation.qmd
+            text: C9 hdWGCNA Correlation
+          - file: Results/Hdwgcna_TDP_correlation.qmd
+            text: TDP hdWGCNA Correlation
 
       - text: Validation
         menu:

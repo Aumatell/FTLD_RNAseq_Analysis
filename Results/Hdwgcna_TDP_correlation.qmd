@@ -1,0 +1,708 @@
+---
+title: "Single-cell Gene modules correlation with neuropathology markers"
+---
+
+## TDP
+
+Across the FTLD-TDP dataset, multiple co-expression modules showed significant correlations with STMN2 pathology, revealing convergent alterations in pathways essential for axonal integrity, synaptic architecture, intracellular trafficking, RNA metabolism, and glial–immune activation. While several enriched terms reflected broad cellular processes, many modules captured highly relevant neurobiological dysfunctions that align with the molecular consequences of TDP-43 pathology and STMN2 loss.
+
+Excitatory Neuron–Associated Modules
+
+In the deep-layer excitatory TLE4/CCBE1 population, STMN2-negative correlations highlighted profound impairments in neuronal structural homeostasis. The negatively correlated royalblue module showed enrichment in axon and neuron projection development, microtubule cytoskeleton organization, organelle transport along microtubules, Ras/MAPK signaling, and synaptic structures including both pre- and postsynaptic compartments. These findings indicate that reduced STMN2 expression is tightly linked to defects in axonal transport, microtubule stability, and synaptic connectivity—canonical downstream effects of TDP-43 dysfunction.
+
+A second negatively correlated module (orange) captured complementary features of neuronal vulnerability, including dysregulation of membrane potential, vesicle-mediated transport, and neuronal cell-body homeostasis. Together, these modules suggest that STMN2 loss in TLE4 neurons coincides with convergent collapse of axonal physiology and intracellular trafficking.
+
+In contrast, the positively correlated brown module was enriched for immune receptor signaling, leukocyte activation, and inflammatory effector regulation. Although immunological in nature, such enrichments likely represent neuron-derived stress signals associated with progressive dysfunction, reflecting maladaptive neuron–glia communication in TDP-43-affected cortical circuits.
+
+In RORB_LRRK1 neurons—a population known for vulnerability in FTLD-TDP—the positively correlated blue module revealed enrichment for extrinsic apoptotic signaling, lipid storage regulation, pattern-recognition receptor activity, scavenger receptor signaling, and cytokine-mediated responses. The presence of apoptotic and innate-immune pathways suggests early engagement of programmed cell-death signaling and neuron–immune cross-talk as neuronal STMN2 levels fluctuate. Meanwhile, modules negatively correlated with STMN2 lacked strong enrichment but may reflect transcriptomic attrition in more severely affected neurons.
+
+Similarly, in RORB_ADGRL4 neurons, a positively correlated blue module highlighted high-voltage calcium channel activity, regulation of excitatory synapses, mRNA splicing pathways, chromatin modification, and cAMP/PKA signal transduction—functions central to synaptic plasticity and RNA metabolism. Their positive correlation with STMN2 indicates that these regulatory mechanisms are better preserved in neurons with less severe TDP-43 pathology.
+
+Glial and Oligodendroglial Cell States
+
+In oligodendrocytes, the positively correlated blue module showed strong enrichment for RNA modification, co-transcriptional RNA processing, spliceosomal function, and methyltransferase activity—hallmarks of pathways disrupted by TDP-43 nuclear depletion. These results suggest that oligodendrocytes with preserved STMN2 expression retain more intact RNA-processing machinery, whereas STMN2 loss aligns with collapse of RNA metabolic pathways crucial for myelinating glia.
+
+OPCs displayed a positively correlated module enriched for microtubule motor activity, cation-channel regulation, and amide metabolic processes, pointing to preserved axonal support and intracellular transport capacity in STMN2-maintaining progenitor populations.
+
+These findings reinforce that RNA processing deficits and cytoskeletal disturbances are not limited to neurons; rather, they represent a broader consequence of TDP-43 dysfunction across multiple glial lineages.
+
+Inhibitory Neuron States
+
+In the LAMP5/PMEPA1 inhibitory lineage, several modules negatively correlated with STMN2, enriched for GPCR signaling, calcium-independent cell adhesion, neuromodulatory receptor pathways, and inflammation-associated signaling such as IL-1β regulation and complement activation. These signatures point to a shift from interneuron-specific signaling toward injury-related and neuroimmune phenotypes in STMN2-low individuals.
+
+Conversely, the positively correlated blue module captured functions related to blood vessel morphogenesis, mononuclear cell migration, DNA helicase activity, and immune–synaptic interactions, suggesting compensatory remodeling in interneurons during early or partial preservation of STMN2.
+
+Together, these modules suggest that inhibitory interneurons undergo both synaptic dysregulation and immune-associated remodeling in the context of TDP-43 aggregation and STMN2 loss.
+
+Astroglial and Immune-Related Cell States
+
+GFAP+ astrocytes displayed a module positively correlated with STMN2 that was enriched for immune receptor activity, adaptive immune signaling, leukocyte activation, and inflammatory effector pathways. This pattern indicates that astroglial reactivity tracks closely with STMN2 status—either as a response to neuronal dysfunction or as an active participant in propagating neuroinflammation in FTLD-TDP.
+
+Although some enrichments reflect generic immune functions, several terms (e.g., immune effector regulation, cytokine-mediated communication, mononuclear cell migration) align with the increasingly appreciated role of astrocytes as drivers of local inflammatory microenvironments surrounding degenerating neurons in TDP-43 proteinopathy.
+
+```{r}
+library(readODS)
+library(dplyr)
+library(purrr)
+
+# Path to your file
+path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/9. CORRELATION MODULES/Summary_Moduletraitcorrelations_TDP.ods"
+
+# 1) List all sheets (each sheet = one cell type)
+sheets <- ods_sheets(path)
+
+# 2) Read each sheet safely
+all_data <- map_dfr(sheets, function(sheetname) {
+
+  # read each sheet
+  df <- tryCatch(
+    read_ods(path, sheet = sheetname),
+    error = function(e) NULL
+  )
+
+  # skip empty or NULL sheets
+  if (is.null(df) || nrow(df) == 0)
+    return(NULL)
+
+  # add cell type column
+  df %>%
+    mutate(cell_type = sheetname)
+})
+
+all_data <- all_data[,c(7,5,1,6,2,3,4)]
+
+library(DT)
+
+datatable(
+  all_data,
+  options = list(pageLength = 10, scrollX = TRUE),
+  rownames = FALSE
+)
+
+```
+
+```{r eval=FALSE}
+A <-read.delim("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CELL_PROP/FTLD/TDP/significatives_nonparametric_with_means_cs.tsv")
+
+# Defineix el directori on tens els fitxers
+directori <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/EGG_VS_COV/FTLD/TDP/CS/TDP43"  
+
+# Llista de fitxers (assumint que són .tsv o .csv, adapta segons calgui)
+fitxers <- list.files(path = directori, pattern = "\\.txt$|\\.tsv$|\\.csv$", full.names = TRUE)
+
+# Inicialitza una llista per guardar els resultats
+resultats <- data.frame(
+  fitxer = character(),
+  pvalue_significatius = integer(),
+  total_files = integer(),
+  stringsAsFactors = FALSE
+)
+
+# Itera sobre cada fitxer
+for (fitxer in fitxers) {
+  # Llegeix el fitxer (ajusta el separador si cal)
+  taula <- read.csv(fitxer, header = TRUE)
+  
+  # Compta les files amb p.value < 0.05
+  significatius <- sum(taula$p.value < 0.05, na.rm = TRUE)
+  
+  # Compta el total de files
+  total <- nrow(taula)
+  
+  # Afegeix a la taula de resultats
+  resultats <- rbind(resultats, data.frame(
+    fitxer = basename(fitxer),
+    pvalue_significatius = significatius,
+    total_files = total,
+    stringsAsFactors = FALSE
+  ))
+}
+
+
+# Defineix el directori on hi ha les carpetes de cell states
+directori_base <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS"  # Canvia això per la teva ruta
+
+# Llista de subcarpetes (cell states)
+cell_states <- list.dirs(path = directori_base, recursive = FALSE, full.names = TRUE)
+
+# Inicialitza la taula de resultats
+resultats <- data.frame(
+  cell_state = character(),
+  pvalue_significatius = integer(),
+  total_moduls = integer(),
+  stringsAsFactors = FALSE
+)
+
+# Itera per cada carpeta de cell state
+for (carpeta in cell_states) {
+  fitxer <- file.path(carpeta, "MODULES/cor_summary.csv")
+  
+  if (file.exists(fitxer)) {
+    # Llegeix l’arxiu
+    taula <- read.csv(fitxer, header = TRUE)
+    
+    # Compta mòduls significatius
+    significatius <- sum(taula$p.value < 0.05, na.rm = TRUE)
+    
+    # Compta mòduls totals
+    total <- nrow(taula)
+    
+    # Nom del cell state (nom de la carpeta)
+    cell_state_nom <- basename(carpeta)
+    
+    # Afegeix-ho a la taula de resultats
+    resultats <- rbind(resultats, data.frame(
+      cell_state = cell_state_nom,
+      pvalue_significatius = significatius,
+      total_moduls = total,
+      stringsAsFactors = FALSE
+    ))
+  }
+}
+
+# Defineix el directori base amb les carpetes de tipus cel·lular
+directori_base <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/NEW/CS"  # Substitueix amb la ruta correcta
+
+# Llista de subcarpetes (tipus cel·lular)
+carpetes <- list.dirs(path = directori_base, recursive = FALSE, full.names = TRUE)
+
+# Inicialitza la taula de resultats
+resultats <- data.frame(
+  tipus_cellular = character(),
+  n_positius = integer(),
+  n_negatius = integer(),
+  stringsAsFactors = FALSE
+)
+
+# Itera per cada carpeta
+for (carpeta in carpetes) {
+  fitxer <- file.path(carpeta, "FTLD/results_adj_h.csv")
+  
+  if (file.exists(fitxer)) {
+    # Llegeix el fitxer
+    taula <- read.csv(fitxer, header = TRUE)
+    
+    # Compta valors 1 i -1 en la columna "X1.FTLD..1.Control"
+    positius <- sum(taula$X1.FTLD..1.Control == 1, na.rm = TRUE)
+    negatius <- sum(taula$X1.FTLD..1.Control == -1, na.rm = TRUE)
+    
+    # Nom del tipus cel·lular (nom de la carpeta)
+    nom_cell <- basename(carpeta)
+    
+    # Afegeix a la taula de resultats
+    resultats <- rbind(resultats, data.frame(
+      tipus_cellular = nom_cell,
+      n_positius = positius,
+      n_negatius = negatius,
+      stringsAsFactors = FALSE
+    ))
+  }
+}
+
+
+
+```
+
+### STMN2
+
+```{r}
+# ============================================================
+# INTERACTIVE SCATTERPLOTS – MODULE EIGENGENES vs COVARIABLE
+# ============================================================
+
+library(dplyr)
+library(tidyverse)
+library(Seurat)
+library(plotly)
+
+# ---- Safe Spearman correlation ----
+safe_cor <- function(x, y){
+  tryCatch({
+    if(all(is.na(x)) | all(is.na(y))) return(list(estimate = NA, p.value = NA))
+    res <- cor.test(x, y, method = "spearman")
+    list(estimate = as.numeric(res$estimate), p.value = res$p.value)
+  }, error = function(e) list(estimate = NA, p.value = NA))
+}
+
+# ============================================================
+# ---- LOAD DATA ------------------------------------------------
+# ============================================================
+
+Expression_per_cell_directory <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/c9/CS_0.25_npcs2/"
+
+# Covariables table (must contain column X = sampleID and STMN2 or pTDP43)
+OG_Covariables <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/FTD_C9_neuropath_SOM.csv")
+OG_Covariables$X <- gsub("^X", "", OG_Covariables$X)
+
+# Set covariable to use in the scatterplot:
+covariable_to_use <- "STMN2"     # Change here if needed
+
+# Find all subfolders
+all_dirs <- list.dirs(Expression_per_cell_directory, full.names = TRUE, recursive = FALSE)
+
+# Keep only those containing a matching *_seurat.rds file
+cells <- basename(all_dirs[
+  sapply(all_dirs, function(dir) {
+    cell_name <- basename(dir)
+    file.exists(file.path(dir, paste0(cell_name, "_seurat.rds")))
+  })
+])
+
+# ============================================================
+# ---- COMPUTE CORRELATIONS: MODULE vs COVARIABLE --------------
+# ============================================================
+
+results <- data.frame(Cell = character(),
+                      Module = character(),
+                      Covariable = character(),
+                      Spearman = numeric(),
+                      p_value = numeric(),
+                      stringsAsFactors = FALSE)
+
+for (cell in cells) {
+  
+  file_path <- file.path(Expression_per_cell_directory, cell, paste0(cell, "_seurat.rds"))
+  if (!file.exists(file_path)) next
+  
+  seurat_obj <- readRDS(file_path)
+  
+  # ---- Extract module eigengenes ----
+  if (!("pseudobulk" %in% names(seurat_obj@misc))) next
+  if (!("MEs" %in% names(seurat_obj@misc$pseudobulk))) next
+  
+  data <- seurat_obj@misc$pseudobulk$MEs
+  rownames(data) <- gsub("^X", "", rownames(data))
+  
+  modules <- colnames(data)
+  
+  for (module in modules) {
+    
+    common_ids <- intersect(rownames(data), OG_Covariables$X)
+    if (length(common_ids) < 3) next
+    
+    module_values <- data[common_ids, module]
+    cov_values <- OG_Covariables[match(common_ids, OG_Covariables$X), covariable_to_use]
+    
+    result_corr <- safe_cor(module_values, cov_values)
+    
+    results <- rbind(results,
+                     data.frame(Cell = cell,
+                                Module = module,
+                                Covariable = covariable_to_use,
+                                Spearman = result_corr$estimate,
+                                p_value = result_corr$p.value))
+  }
+}
+
+results <- results %>% drop_na(Spearman)
+
+# ============================================================
+# ---- BUILD SCATTER DATA (per trace) -------------------------
+# ============================================================
+
+all_traces <- list()
+meta <- tibble(trace_id = integer(), Cell = character(), Module = character())
+trace_index <- 0
+
+for (cell in unique(results$Cell)) {
+  
+  expr_path <- file.path(Expression_per_cell_directory, cell, paste0(cell, "_seurat.rds"))
+  if (!file.exists(expr_path)) next
+  
+  seurat_obj <- readRDS(expr_path)
+  data <- seurat_obj@misc$pseudobulk$MEs
+  rownames(data) <- gsub("^X", "", rownames(data))
+  
+  cov_df <- OG_Covariables[, c("X", covariable_to_use)]
+  cov_df$X <- gsub("^(X|long)", "", cov_df$X)
+
+  
+  for (module in unique(results$Module)) {
+    if (!(module %in% colnames(data))) next
+    
+    common_ids <- intersect(rownames(data), cov_df$X)
+    if (length(common_ids) < 3) next
+    
+    df <- tibble(
+      sample = common_ids,
+      x = cov_df[match(common_ids, cov_df$X), covariable_to_use],
+      y = data[common_ids, module]
+    ) %>% drop_na()
+    
+    if (nrow(df) < 3 || sd(df$x) == 0 || sd(df$y) == 0) next
+    
+    rho  <- suppressWarnings(cor(df$x, df$y, method = "spearman"))
+    pval <- suppressWarnings(cor.test(df$x, df$y, method = "spearman")$p.value)
+    
+    lmfit <- lm(y ~ x, data = df)
+    line_df <- tibble(x = seq(min(df$x), max(df$x), length.out = 100))
+    line_df$y <- predict(lmfit, newdata = line_df)
+    
+    # Scatter
+    trace_index <- trace_index + 1
+    all_traces[[trace_index]] <- list(
+      type = "scatter",
+      mode = "markers",
+      x = df$x,
+      y = df$y,
+      name = paste(cell, module),
+      text = paste0("<b>", module, "</b> in ", cell,
+                    "<br>ρ = ", round(rho, 3),
+                    "<br>p = ", signif(pval, 3)),
+      hoverinfo = "text",
+      marker = list(size = 7, opacity = 0.8),
+      visible = FALSE
+    )
+    
+    # Regression line
+    trace_index <- trace_index + 1
+    all_traces[[trace_index]] <- list(
+      type = "scatter",
+      mode = "lines",
+      x = line_df$x, y = line_df$y,
+      line = list(width = 2),
+      hoverinfo = "none",
+      visible = FALSE
+    )
+    
+    meta <- add_row(meta, trace_id = trace_index - 1,
+                    Cell = cell, Module = module)
+  }
+}
+
+# ============================================================
+# ---- VISIBILITY HELPER -------------------------------------
+# ============================================================
+
+make_vis <- function(cell_sel, module_sel) {
+  vis <- rep(FALSE, length(all_traces))
+  combo <- which(meta$Cell == cell_sel & meta$Module == module_sel)
+  if (length(combo) == 1) {
+    idx <- (combo - 1) * 2 + 1
+    vis[idx:(idx + 1)] <- TRUE
+  }
+  vis
+}
+
+# ============================================================
+# ---- DROPDOWNS: CELL + MODULE ------------------------------
+# ============================================================
+
+cells_list   <- unique(meta$Cell)
+modules_list <- unique(meta$Module)
+
+buttons_cell <- lapply(cells_list, function(c) {
+  list(method = "update",
+       args = list(list(visible = make_vis(c, modules_list[1])),
+                   list(title = paste("Cell:", c))),
+       label = c)
+})
+
+buttons_module <- lapply(modules_list, function(m) {
+  list(method = "update",
+       args = list(list(visible = make_vis(cells_list[1], m)),
+                   list(title = paste("Module:", m))),
+       label = m)
+})
+
+# ============================================================
+# ---- INITIAL VISIBILITY -------------------------------------
+# ============================================================
+
+vis_init <- make_vis(cells_list[1], modules_list[1])
+for (k in seq_along(all_traces)) all_traces[[k]]$visible <- vis_init[k]
+
+# ============================================================
+# ---- BUILD FIGURE ------------------------------------------
+# ============================================================
+
+fig <- plot_ly()
+for (tr in all_traces) {
+  fig <- fig %>% add_trace(
+    type      = tr$type,
+    mode      = tr$mode,
+    x         = tr$x,
+    y         = tr$y,
+    name      = tr$name,
+    text      = tr$text,
+    hoverinfo = tr$hoverinfo,
+    marker    = tr$marker,
+    line      = tr$line,
+    visible   = tr$visible
+  )
+}
+
+fig <- fig %>%
+  layout(
+    title = list(text = paste("Correlation:", covariable_to_use, "vs Module Eigengene"), x = 0.05),
+    xaxis = list(title = covariable_to_use),
+    yaxis = list(title = "Module Eigengene"),
+    showlegend = FALSE,
+    updatemenus = list(
+      list(y = 1.15, x = 0.00, buttons = buttons_cell,
+           direction = "down", showactive = TRUE,
+           xanchor = "left", yanchor = "top",
+           title = list(text = "Cell State")),
+      list(y = 1.15, x = 0.33, buttons = buttons_module,
+           direction = "down", showactive = TRUE,
+           xanchor = "left", yanchor = "top",
+           title = list(text = "Module"))
+    )
+  )
+
+fig
+
+
+```
+
+### pTDP43
+
+```{r}
+# ============================================================
+# INTERACTIVE SCATTERPLOTS – MODULE EIGENGENES vs COVARIABLE
+# ============================================================
+
+library(dplyr)
+library(tidyverse)
+library(Seurat)
+library(plotly)
+
+# ---- Safe Spearman correlation ----
+safe_cor <- function(x, y){
+  tryCatch({
+    if(all(is.na(x)) | all(is.na(y))) return(list(estimate = NA, p.value = NA))
+    res <- cor.test(x, y, method = "spearman")
+    list(estimate = as.numeric(res$estimate), p.value = res$p.value)
+  }, error = function(e) list(estimate = NA, p.value = NA))
+}
+
+# ============================================================
+# ---- LOAD DATA ------------------------------------------------
+# ============================================================
+
+Expression_per_cell_directory <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/hdWGCNA/FTLD/TDP/CS_0.25_bo/"
+
+# Covariables table (must contain column X = sampleID and STMN2 or pTDP43)
+OG_Covariables <- read.csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/CORRELATION/COVARIABLES/FTD_TDP_neuropath_SOM.csv")
+OG_Covariables$X <- gsub("^X", "", OG_Covariables$X)
+
+# Set covariable to use in the scatterplot:
+covariable_to_use <- "TDP43b"     # Change here if needed
+
+# Find all subfolders
+all_dirs <- list.dirs(Expression_per_cell_directory, full.names = TRUE, recursive = FALSE)
+
+# Keep only those containing a matching *_seurat.rds file
+cells <- basename(all_dirs[
+  sapply(all_dirs, function(dir) {
+    cell_name <- basename(dir)
+    file.exists(file.path(dir, paste0(cell_name, "_seurat.rds")))
+  })
+])
+
+# ============================================================
+# ---- COMPUTE CORRELATIONS: MODULE vs COVARIABLE --------------
+# ============================================================
+
+results <- data.frame(Cell = character(),
+                      Module = character(),
+                      Covariable = character(),
+                      Spearman = numeric(),
+                      p_value = numeric(),
+                      stringsAsFactors = FALSE)
+
+for (cell in cells) {
+  
+  file_path <- file.path(Expression_per_cell_directory, cell, paste0(cell, "_seurat.rds"))
+  if (!file.exists(file_path)) next
+  
+  seurat_obj <- readRDS(file_path)
+  
+  # ---- Extract module eigengenes ----
+  if (!("pseudobulk" %in% names(seurat_obj@misc))) next
+  if (!("MEs" %in% names(seurat_obj@misc$pseudobulk))) next
+  
+  data <- seurat_obj@misc$pseudobulk$MEs
+  rownames(data) <- gsub("^X", "", rownames(data))
+  
+  modules <- colnames(data)
+  
+  for (module in modules) {
+    
+    common_ids <- intersect(rownames(data), OG_Covariables$X)
+    if (length(common_ids) < 3) next
+    
+    module_values <- data[common_ids, module]
+    cov_values <- OG_Covariables[match(common_ids, OG_Covariables$X), covariable_to_use]
+    
+    result_corr <- safe_cor(module_values, cov_values)
+    
+    results <- rbind(results,
+                     data.frame(Cell = cell,
+                                Module = module,
+                                Covariable = covariable_to_use,
+                                Spearman = result_corr$estimate,
+                                p_value = result_corr$p.value))
+  }
+}
+
+results <- results %>% drop_na(Spearman)
+
+# ============================================================
+# ---- BUILD SCATTER DATA (per trace) -------------------------
+# ============================================================
+
+all_traces <- list()
+meta <- tibble(trace_id = integer(), Cell = character(), Module = character())
+trace_index <- 0
+
+for (cell in unique(results$Cell)) {
+  
+  expr_path <- file.path(Expression_per_cell_directory, cell, paste0(cell, "_seurat.rds"))
+  if (!file.exists(expr_path)) next
+  
+  seurat_obj <- readRDS(expr_path)
+  data <- seurat_obj@misc$pseudobulk$MEs
+  rownames(data) <- gsub("^X", "", rownames(data))
+  
+  cov_df <- OG_Covariables[, c("X", covariable_to_use)]
+  cov_df$X <- gsub("^(X|long)", "", cov_df$X)
+
+  
+  for (module in unique(results$Module)) {
+    if (!(module %in% colnames(data))) next
+    
+    common_ids <- intersect(rownames(data), cov_df$X)
+    if (length(common_ids) < 3) next
+    
+    df <- tibble(
+      sample = common_ids,
+      x = cov_df[match(common_ids, cov_df$X), covariable_to_use],
+      y = data[common_ids, module]
+    ) %>% drop_na()
+    
+    if (nrow(df) < 3 || sd(df$x) == 0 || sd(df$y) == 0) next
+    
+    rho  <- suppressWarnings(cor(df$x, df$y, method = "spearman"))
+    pval <- suppressWarnings(cor.test(df$x, df$y, method = "spearman")$p.value)
+    
+    lmfit <- lm(y ~ x, data = df)
+    line_df <- tibble(x = seq(min(df$x), max(df$x), length.out = 100))
+    line_df$y <- predict(lmfit, newdata = line_df)
+    
+    # Scatter
+    trace_index <- trace_index + 1
+    all_traces[[trace_index]] <- list(
+      type = "scatter",
+      mode = "markers",
+      x = df$x,
+      y = df$y,
+      name = paste(cell, module),
+      text = paste0("<b>", module, "</b> in ", cell,
+                    "<br>ρ = ", round(rho, 3),
+                    "<br>p = ", signif(pval, 3)),
+      hoverinfo = "text",
+      marker = list(size = 7, opacity = 0.8),
+      visible = FALSE
+    )
+    
+    # Regression line
+    trace_index <- trace_index + 1
+    all_traces[[trace_index]] <- list(
+      type = "scatter",
+      mode = "lines",
+      x = line_df$x, y = line_df$y,
+      line = list(width = 2),
+      hoverinfo = "none",
+      visible = FALSE
+    )
+    
+    meta <- add_row(meta, trace_id = trace_index - 1,
+                    Cell = cell, Module = module)
+  }
+}
+
+# ============================================================
+# ---- VISIBILITY HELPER -------------------------------------
+# ============================================================
+
+make_vis <- function(cell_sel, module_sel) {
+  vis <- rep(FALSE, length(all_traces))
+  combo <- which(meta$Cell == cell_sel & meta$Module == module_sel)
+  if (length(combo) == 1) {
+    idx <- (combo - 1) * 2 + 1
+    vis[idx:(idx + 1)] <- TRUE
+  }
+  vis
+}
+
+# ============================================================
+# ---- DROPDOWNS: CELL + MODULE ------------------------------
+# ============================================================
+
+cells_list   <- unique(meta$Cell)
+modules_list <- unique(meta$Module)
+
+buttons_cell <- lapply(cells_list, function(c) {
+  list(method = "update",
+       args = list(list(visible = make_vis(c, modules_list[1])),
+                   list(title = paste("Cell:", c))),
+       label = c)
+})
+
+buttons_module <- lapply(modules_list, function(m) {
+  list(method = "update",
+       args = list(list(visible = make_vis(cells_list[1], m)),
+                   list(title = paste("Module:", m))),
+       label = m)
+})
+
+# ============================================================
+# ---- INITIAL VISIBILITY -------------------------------------
+# ============================================================
+
+vis_init <- make_vis(cells_list[1], modules_list[1])
+for (k in seq_along(all_traces)) all_traces[[k]]$visible <- vis_init[k]
+
+# ============================================================
+# ---- BUILD FIGURE ------------------------------------------
+# ============================================================
+
+fig <- plot_ly()
+for (tr in all_traces) {
+  fig <- fig %>% add_trace(
+    type      = tr$type,
+    mode      = tr$mode,
+    x         = tr$x,
+    y         = tr$y,
+    name      = tr$name,
+    text      = tr$text,
+    hoverinfo = tr$hoverinfo,
+    marker    = tr$marker,
+    line      = tr$line,
+    visible   = tr$visible
+  )
+}
+
+fig <- fig %>%
+  layout(
+    title = list(text = paste("Correlation:", covariable_to_use, "vs Module Eigengene"), x = 0.05),
+    xaxis = list(title = covariable_to_use),
+    yaxis = list(title = "Module Eigengene"),
+    showlegend = FALSE,
+    updatemenus = list(
+      list(y = 1.15, x = 0.00, buttons = buttons_cell,
+           direction = "down", showactive = TRUE,
+           xanchor = "left", yanchor = "top",
+           title = list(text = "Cell State")),
+      list(y = 1.15, x = 0.33, buttons = buttons_module,
+           direction = "down", showactive = TRUE,
+           xanchor = "left", yanchor = "top",
+           title = list(text = "Module"))
+    )
+  )
+
+fig
+
+
+```
