@@ -23,33 +23,9 @@ library(DT)
 # LOAD DATA
 # ============================================================
 
-file_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/6. GENES OF INTERST CORRELATION/ALL_genes_correlation.xlsx"
+file_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/6. GENES OF INTERST CORRELATION/C9_genes_correlation_allCovs.csv"
 
-data <- readxl::read_excel(file_path, sheet = 2)
-
-# ============================================================
-# FILTER TO ONLY COVARIABLE = STMN2
-# ============================================================
-
-selected_covariable <- "STMN2"
-
-filtered <- data %>%
-  filter(Covariable == selected_covariable)
-
-# ============================================================
-# KEEP ONLY Arcsin–Arcsin TRANSFORMATIONS
-# ============================================================
-
-filtered <- filtered %>%
-  filter(Gene_transformation == "Arcsin",
-         Cov_transformation  == "Arcsin")
-
-# ============================================================
-# REMOVE TRANSFORMATION COLUMNS
-# ============================================================
-
-filtered <- filtered %>%
-  select(-Gene_transformation, -Cov_transformation)
+filtered <- read.csv(file_path)
 
 # ============================================================
 # CLEAN COLUMN NAMES IF NEEDED
@@ -2291,31 +2267,7 @@ library(DT)
 
 file_path <- "/media/jaumatell/datos/URI/BAYESPRISM_12_3/RESULTS_ORDERED/6. GENES OF INTERST CORRELATION/ALL_genes_correlation.xlsx"
 
-data <- readxl::read_excel(file_path, sheet = 1)
-
-# ============================================================
-# FILTER TO ONLY COVARIABLE = STMN2
-# ============================================================
-
-selected_covariable <- "STMN2"
-
-filtered <- data %>%
-  filter(Covariable == selected_covariable)
-
-# ============================================================
-# KEEP ONLY Arcsin–Arcsin TRANSFORMATIONS
-# ============================================================
-
-filtered <- filtered %>%
-  filter(Gene_transformation == "Arcsin",
-         Cov_transformation  == "Arcsin")
-
-# ============================================================
-# REMOVE TRANSFORMATION COLUMNS
-# ============================================================
-
-filtered <- filtered %>%
-  select(-Gene_transformation, -Cov_transformation)
+filtered <- readxl::read_excel(file_path, sheet = 1)
 
 # ============================================================
 # CLEAN COLUMN NAMES IF NEEDED

@@ -27,10 +27,12 @@ website:
             text: Bulk DEA
           - file: Methods/Bayesprism.qmd
             text: Bayesian Deconvolution
+          - file: Methods/Cell_prop.qmd
+            text: Cell proportions analysis
           - file: Methods/Sc_dea.qmd
-            text: Single-Cell DEA
+            text: Single-Cell Analysis
           - file: Methods/Hdwgcna.qmd
-            text: Co-expression Networks
+            text: Co-expression Networks analysis
 
       - text: Results
         menu:
@@ -44,6 +46,8 @@ website:
             text: Single-Cell Differential Expression (C9)
           - file: Results/Sc_dea_results_TDP.qmd
             text: Single-Cell Differential Expression (TDP)
+          - file: Results/Genes_FTLD_summary.qmd
+            text: Single-Cell FTLD-related genes DE
           - file: Results/Sc_gene_correlation.qmd
             text: Single-Cell Gene Correlation
           - file: Results/Hdwgcna_differences.qmd

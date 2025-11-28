@@ -1,0 +1,61 @@
+---
+title: "Genes_FTLD_summary"
+format: html
+---
+
+
+
+## C9
+
+
+```{r}
+library(DT)
+library(readr)
+library(dplyr)
+
+c9 <- read_csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/C9_Pval_gens_URI.csv")
+
+datatable(
+c9,
+filter = "top",
+options = list(
+pageLength = 25,
+autoWidth = TRUE,
+scrollX = TRUE
+)
+)
+
+```
+
+
+## TDP
+
+```{r}
+tdp <- read_csv("/media/jaumatell/datos/URI/BAYESPRISM_12_3/EDGER/TDP_Pval_gens_URI.csv")
+
+datatable(
+tdp,
+filter = "top",
+options = list(
+pageLength = 25,
+autoWidth = TRUE,
+scrollX = TRUE
+)
+)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

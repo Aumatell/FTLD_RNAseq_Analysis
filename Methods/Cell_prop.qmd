@@ -1,0 +1,1040 @@
+---
+title: "Cell propotion analysis"
+format: html
+---
+
+## Differences
+
+
+Compare inferred cell-type proportions across diagnosis groups using multiple statistical tests and data transformations.
+
+To assess alterations in inferred cell state proportions among FTLD cases and cognitively healthy controls, we performed non-parametric statistical comparisons using the Kruskal–Wallis test. Deconvolved cell state proportions were obtained from Bayesian modeling of bulk RNA-seq data, and all samples were included in the analysis.
+
+For each cell state, we compared estimated proportions between disease groups (FTLD-C9 or FTLD-TDP) and healthy controls. Prior to statistical testing, all zero values were replaced with a small constant (1e−10) to avoid division-by-zero errors in downstream calculations. Group comparisons were limited to conditions with at least two observations per group to ensure statistical robustness.
+
+Cell-wise comparisons were conducted using the Kruskal–Wallis rank-sum test, implemented in R. Tests were performed independently for each cell state, with disease groups compared separately against controls. In parallel, fold change and log2 fold change values were computed based on group-wise means, providing complementary effect size measures alongside statistical significance.
+
+```{r eval=FALSE}
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+# FILE PATHS
+frequency_file <- ".../BAYESPRISM_12_3/BAYESPRISM/FTLD/TDP/theta.state_original.csv"
+metadata_file <- ".../BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+output_path <- ".../BAYESPRISM_12_3/CELL_PROP/FTLD/TDP/"
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.xlsx(metadata_file)
+
+freq_cell_types <- read.csv(frequency_file)
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("long", "", x))
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("X", "", x))
+
+merged_data <- merge(data, freq_cell_types, by.x = "sample.ID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+# Generate needed objects
+
+m_conditions <- unique(merged_data$group.ID)
+m_conditions_nh <- m_conditions[m_conditions != "Healthy"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$group.ID %in% c("Healthy", m_cond), 
+                             c("group.ID", column)]
+  
+  # Ensure group.ID is treated as a factor
+  subset_data$group.ID <- factor(subset_data$group.ID, levels = c("Healthy", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$group.ID == "Healthy"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$group.ID == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$group.ID)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+
+### FTLD TDP
+#### ArcSin
+
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+# FILE PATHS
+frequency_file <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMATED_PROPORTIONS/ArcSin/FTLD/TDP/Arcsin_Cell_state_proportions.csv"
+metadata_file <- ".../BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+output_path <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMED_RESULTS/FTLD/TDP/ArcSin/"
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.xlsx(metadata_file)
+
+freq_cell_types <- read.csv(frequency_file)
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("long", "", x))
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("X", "", x))
+
+merged_data <- merge(data, freq_cell_types, by.x = "sample.ID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+# Generate needed objects
+
+m_conditions <- unique(merged_data$group.ID)
+m_conditions_nh <- m_conditions[m_conditions != "Healthy"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$group.ID %in% c("Healthy", m_cond), 
+                             c("group.ID", column)]
+  
+  # Ensure group.ID is treated as a factor
+  subset_data$group.ID <- factor(subset_data$group.ID, levels = c("Healthy", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$group.ID == "Healthy"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$group.ID == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$group.ID)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+
+
+```
+
+
+```{r eval=FALSE}
+### FTLD C9
+
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+# FILE PATHS
+frequency_file <- ".../BAYESPRISM_12_3/BAYESPRISM/FTLD/C9/theta.state_cellstate.csv"
+metadata_file <- ".../BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+output_path <- ".../BAYESPRISM_12_3/CELL_PROP/FTLD/c9/"
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.xlsx(metadata_file)
+
+freq_cell_types <- read.csv(frequency_file)
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("long", "", x))
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("X", "", x))
+
+merged_data <- merge(data, freq_cell_types, by.x = "sample.ID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+# Generate needed objects
+
+m_conditions <- unique(merged_data$group.ID)
+m_conditions_nh <- m_conditions[m_conditions != "Healthy"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$group.ID %in% c("Healthy", m_cond), 
+                             c("group.ID", column)]
+  
+  # Ensure group.ID is treated as a factor
+  subset_data$group.ID <- factor(subset_data$group.ID, levels = c("Healthy", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$group.ID == "Healthy"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$group.ID == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$group.ID)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+#### ArcSin
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+# FILE PATHS
+frequency_file <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMATED_PROPORTIONS/ArcSin/FTLD/C9/Arcsin_Cell_state_proportions.csv"
+metadata_file <- ".../BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx"
+output_path <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMED_RESULTS/FTLD/C9/ArcSin/"
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.xlsx(metadata_file)
+
+freq_cell_types <- read.csv(frequency_file)
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("long", "", x))
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("X", "", x))
+
+merged_data <- merge(data, freq_cell_types, by.x = "sample.ID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+# Generate needed objects
+
+m_conditions <- unique(merged_data$group.ID)
+m_conditions_nh <- m_conditions[m_conditions != "Healthy"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$group.ID %in% c("Healthy", m_cond), 
+                             c("group.ID", column)]
+  
+  # Ensure group.ID is treated as a factor
+  subset_data$group.ID <- factor(subset_data$group.ID, levels = c("Healthy", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$group.ID == "Healthy"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$group.ID == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$group.ID)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+
+
+```
+
+
+```{r eval=FALSE}
+# pottier
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+# FILE PATHS
+frequency_file <- ".../BAYESPRISM_12_3/BAYESPRISM/NEW/theta.state_cellstate.csv"
+metadata_file <- ".../BAYESPRISM_12_3/NEW_BULK/METADATA/Sample_info.txt"
+output_path <- ".../BAYESPRISM_12_3/CELL_PROP/NEW/"
+
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.delim(metadata_file)
+
+freq_cell_types <- read.csv(frequency_file)
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("\\.", "_", x))
+data$FCX_ID <- sapply(data$FCX_ID, function(x) gsub("-", "_", x))
+
+merged_data <- merge(data, freq_cell_types, by.x = "FCX_ID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+merged_data <- merged_data[merged_data$GROUP != "FTLD-TDP-C",]
+merged_data$GROUP[merged_data$GROUP != "Control"]<-"FTLD"
+
+# Generate needed objects
+
+m_conditions <- unique(merged_data$GROUP)
+m_conditions_nh <- m_conditions[m_conditions != "Control"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$GROUP %in% c("Control", m_cond), 
+                             c("GROUP", column)]
+  
+  # Ensure group.ID is treated as a factor
+  subset_data$group.ID <- factor(subset_data$GROUP, levels = c("Control", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$GROUP == "Control"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$GROUP == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$GROUP)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+
+#### ArcSin
+
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+# FILE PATHS
+frequency_file <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMATED_PROPORTIONS/ArcSin/Pottier/TDP/Log_Cell_state_proportions.csv"
+metadata_file <- ".../BAYESPRISM_12_3/NEW_BULK/METADATA/Sample_info.txt"
+output_path <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMED_RESULTS/Pottier/TDP/ArcSin/"
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.delim(metadata_file)
+data$group.ID <- data$GROUP
+data$GROUP <- NULL
+data <- data[!data$group.ID == "FTLD-TDP-C",]
+data$group.ID[data$group.ID == "Control"] <- "Healthy"
+data$group.ID[!data$group.ID == "Healthy"] <- "TDP"
+
+freq_cell_types <- read.csv(frequency_file)
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("\\.", "-", x))
+
+merged_data <- merge(data, freq_cell_types, by.x = "FCX_ID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+# Generate needed objects
+
+m_conditions <- unique(merged_data$group.ID)
+m_conditions_nh <- m_conditions[m_conditions != "Healthy"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$group.ID %in% c("Healthy", m_cond), 
+                             c("group.ID", column)]
+  
+  # Ensure group.ID is treated as a factor
+  subset_data$group.ID <- factor(subset_data$group.ID, levels = c("Healthy", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$group.ID == "Healthy"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$group.ID == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$group.ID)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+
+```
+
+
+```{r eval=FALSE}
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+# FILE PATHS
+frequency_file <- ".../BAYESPRISM_12_3/BAYESPRISM/RIMOD/theta.state_cellstate.csv"
+metadata_file <- ".../BAYESPRISM_12_3/RIMOD_BULK/DATA/rimod_ftd_dataset_table_v3.txt"
+output_path <- ".../BAYESPRISM_12_3/CELL_PROP/Rimod/"
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.delim(metadata_file)
+
+freq_cell_types <- read.csv(frequency_file)
+
+merged_data <- merge(data, freq_cell_types, by.x = "RimodID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+# Generate needed objects
+
+m_conditions <- unique(merged_data$DiseaseCode)
+m_conditions_nh <- m_conditions[m_conditions != "control"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$DiseaseCode %in% c("control", m_cond), 
+                             c("DiseaseCode", column)]
+  
+  # Ensure DiseaseCode is treated as a factor
+  subset_data$DiseaseCode <- factor(subset_data$DiseaseCode, levels = c("control", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$DiseaseCode == "control"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$DiseaseCode == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$DiseaseCode)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+
+
+#### ArcSin
+
+library("ggplot2")
+library("openxlsx")
+library("dplyr")
+library("coin")  
+
+# FILE PATHS
+frequency_file <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMATED_PROPORTIONS/ArcSin/Rimod/C9/Arcsin_Cell_state_proportions.csv"
+metadata_file <- ".../RiMod/Data/rimod_ftd_dataset_table_v3.txt"
+output_path <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMED_RESULTS/Rimod/C9/ArcSin/"
+
+if (!file.exists(output_path)) {
+  dir.create(output_path, recursive = TRUE)
+}
+if (!file.exists(file.path(output_path,"Significative"))) {
+  dir.create(file.path(output_path,"Significative"), recursive = TRUE)
+}
+
+data <- read.delim(metadata_file, row.names = 1)
+data$group.ID <- data$DiseaseCode
+data$DiseaseCode <- NULL
+data <- data[!data$group.ID == "FTD-GRN",]
+data <- data[!data$group.ID == "FTD-MAPT",]
+data$group.ID[data$group.ID == "control"] <- "Healthy"
+data$group.ID[data$group.ID == "FTD-C9"] <- "C9orf72"
+data$sample.ID <- rownames(data)
+
+freq_cell_types <- read.csv(frequency_file)
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("long", "", x))
+freq_cell_types$X <- sapply(freq_cell_types$X, function(x) gsub("X", "", x))
+
+merged_data <- merge(data, freq_cell_types, by.x = "sample.ID", by.y = "X")
+merged_data[merged_data == 0] <- 1e-10
+
+# Generate needed objects
+
+m_conditions <- unique(merged_data$group.ID)
+m_conditions_nh <- m_conditions[m_conditions != "Healthy"]
+files_to_iterate <- colnames(merged_data)[4:length(colnames(merged_data))]
+m_cond <- m_conditions_nh[1]
+counter = 0
+
+significatives <- data.frame(matrix(nrow = length(files_to_iterate), ncol = 3))
+colnames(significatives)<- c("cell", "group+sv", "group")
+
+
+for (column in colnames(freq_cell_types)[2:length(colnames(freq_cell_types))]){
+  counter <- counter + 1
+  filename <- paste0("Kruskal_", column, "_", m_cond, ".txt")
+  
+  subset_data <- merged_data[merged_data$group.ID %in% c("Healthy", m_cond), 
+                             c("group.ID", column)]
+  
+  # Ensure group.ID is treated as a factor
+  subset_data$group.ID <- factor(subset_data$group.ID, levels = c("Healthy", m_cond))
+  
+  # Calculate group means
+  mean_healthy <- mean(subset_data[[column]][subset_data$group.ID == "Healthy"], na.rm = TRUE)
+  mean_condition <- mean(subset_data[[column]][subset_data$group.ID == m_cond], na.rm = TRUE)
+  
+  # Calculate fold change
+  fold_change <- ifelse(mean_healthy == 0, NA, mean_condition / mean_healthy)  # Avoid division by zero
+  
+  # Log-transform the fold change (optional)
+  log2_fold_change <- ifelse(is.na(fold_change), NA, log2(fold_change))
+  
+  # Check if both groups (Healthy and m_cond) have at least 2 observations
+  save = TRUE
+  tryCatch({
+    if (save == TRUE){sink(paste0(output_path, filename))}
+    
+    print(filename)
+    
+    # Model A: Kruskal-Wallis Test (without covariates)
+    kruskal_A <- kruskal.test(subset_data[[column]], subset_data$group.ID)
+    print("Kruskal-Wallis Test (General model)")
+    print(kruskal_A)
+    if (save == TRUE){sink()}
+    
+  }, error = function(e) {
+    message("Error in processing column ", column, ": ", e$message)
+    next
+  })
+  
+  # Store the p-values, fold change, and means in the significatives data frame
+  significatives[counter, 1] <- column
+  significatives[counter, 3] <- kruskal_A$p.value  # Group (from Kruskal-Wallis test)
+  significatives[counter, 4] <- fold_change  # Fold change
+  significatives[counter, 5] <- log2_fold_change  # Log2 fold change
+  significatives[counter, 6] <- mean_healthy  # Mean of the Healthy group
+  significatives[counter, 7] <- mean_condition  # Mean of the specific condition group
+}
+
+# Update column names of the significatives data frame
+colnames(significatives) <- c("cell", "group+sv", "group", "fold_change", 
+                              "log2_fold_change", "mean_healthy", "mean_condition")
+
+# Save the significatives data frame as a TSV file
+tsv_output_path <- file.path(output_path, "significatives_nonparametric_with_means_cs.tsv")
+write.table(significatives, 
+            file = tsv_output_path, 
+            sep = "\t",          
+            row.names = FALSE,   
+            col.names = TRUE,    
+            quote = FALSE)
+```
+
+
+
+
+### Correlation
+
+Correlate cell-type proportions (raw and transformed) with clinical and pathological variables for FTLD cohorts.
+
+To assess the relationship between cellular composition and neuropathological severity, we performed Spearman correlation analyses between BayesPrism-inferred cell state proportions and neuropathological or molecular covariates derived from frontal cortex tissue from individuals with C9orf72 repeat expansion-associated FTLD (FTLD-C9). Specifically, cell state proportions from the BayesPrism deconvolution were correlated with quantitative pathology scores and molecular readouts of ACSL3, lncRNA, polyGA, polyGR, fociSENSE, fociANTI, pTDP43 and STMN2 across individuals using raw values and transformations to asses non linear correlations (log , log2, logit and arcsin) on both cell proportion and pathology values. Correlation coefficients and p-values were computed using the cor.test function.
+
+In a complementary analysis, for each cell state, Spearman correlations were computed independently for each gene with each of the pathology markers indicated. These results provided information about the differences in the impact of these covariables among cell groups for disease-associated shifts in expression and suggested potential pathophysiological relevance for specific gene expression changes.
+
+Finally, we evaluated the association between transcriptional co-expression modules and the described pathology markers. Module eigengenes (MEs) from each cell state-specific co-expression network were correlated with the corresponding pathology density using Spearman correlation. Modules were ranked by p-value and correlation strength to identify modules whose expression was most strongly associated with neuropathological burden. These correlations were calculated separately for each cell state, and significant modules were retained for downstream interpretation and enrichment analysis.
+
+For the TDP43 samples the same analysis was performed using only pTDP43 and STMN2 pathology markers.
+
+
+```{r eval=FALSE}
+library("Seurat")
+library("dplyr")
+library("RColorBrewer")
+library("unikn")
+library("cluster")
+library("tidyverse")
+library("readxl")  # Asegurar que readxl está cargado
+
+# Load Metadata
+metadata <- read_xlsx(".../BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx")
+colnames(metadata)[1] <- "X"
+samples <- metadata$X[metadata$group.ID == "C9orf72"]
+metadata <- metadata[metadata$group.ID == "C9orf72",]
+
+CRscores <- read.csv(".../BAYESPRISM_12_3/CORRELATION/COVARIABLES/FTD_C9_neuropath_SOM.csv")
+CRscores$X <- gsub(pattern = "X", replacement = "", x = CRscores$X)
+CRscores <- CRscores[CRscores$X %in% samples,]
+
+proportions_directory <- ".../BAYESPRISM_12_3/BAYESPRISM/FTLD/C9/theta.state_cellstate.csv"
+proportions_data <- read.csv(proportions_directory, row.names = 1)
+rownames(proportions_data) <- gsub("^X", "", rownames(proportions_data))
+
+common_samples <- intersect(rownames(proportions_data), CRscores$X)
+proportions_data <- proportions_data[common_samples, , drop = FALSE]
+covariables <- CRscores %>% filter(X %in% common_samples) %>% column_to_rownames("X")
+
+if (nrow(proportions_data) > 2 && nrow(covariables) > 2) {
+  
+  results <- expand.grid(Cell_State = colnames(proportions_data), 
+                         Covariate = colnames(covariables), 
+                         stringsAsFactors = FALSE)
+  
+  compute_spearman <- function(cell_state, covariate) {
+    test_result <- cor.test(proportions_data[, cell_state], covariables[, covariate], 
+                            method = "spearman", exact = TRUE)
+    return(c(test_result$estimate, test_result$p.value))
+  }
+  
+  cor_pvals <- mapply(compute_spearman, results$Cell_State, results$Covariate)
+  
+  results$Spearman_Correlation <- cor_pvals[1, ]
+  results$p_value <- cor_pvals[2, ]
+}
+
+write.csv(results, ".../BAYESPRISM_12_3/CORRELATION/C9_spearman_results_true.csv", row.names = FALSE)
+
+
+# ARCSIN
+
+CRscores <- read.csv(".../BAYESPRISM_12_3/CORRELATION/COVARIABLES/TRANSFORMED_COVARIABLES/ArcSin/C9/ArcSin_FTD_C9_neuropath_SOM.csv", row.names = "X")
+rownames(CRscores) <- gsub(pattern = "X", replacement = "", x = rownames(CRscores))
+CRscores <- CRscores[rownames(CRscores) %in% samples,]
+
+proportions_directory <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMATED_PROPORTIONS/ArcSin/FTLD/C9/Arcsin_Cell_state_proportions.csv"
+proportions_data <- read.csv(proportions_directory, row.names = 1)
+rownames(proportions_data) <- gsub("^X", "", rownames(proportions_data))
+
+common_samples <- intersect(rownames(proportions_data), rownames(CRscores))
+proportions_data <- proportions_data[common_samples, , drop = FALSE]
+covariables <- CRscores %>% dplyr::filter(rownames(CRscores) %in% common_samples) 
+if (nrow(proportions_data) > 2 && nrow(covariables) > 2) {
+  
+  results <- expand.grid(Cell_State = colnames(proportions_data), 
+                         Covariate = colnames(covariables), 
+                         stringsAsFactors = FALSE)
+  
+  compute_spearman <- function(cell_state, covariate) {
+    test_result <- cor.test(proportions_data[, cell_state], covariables[, covariate], 
+                            method = "spearman", exact = TRUE) 
+    return(c(test_result$estimate, test_result$p.value))
+  }
+  
+  cor_pvals <- apply(results, 1, function(row) {
+    compute_spearman(row["Cell_State"], row["Covariate"])
+  })
+  
+  results$Spearman_Correlation <- cor_pvals[1, ]
+  results$p_value <- cor_pvals[2, ]
+}
+
+write.csv(results, paste0(outdir, "ArcSin_C9_spearman_results.csv"), row.names = FALSE)
+```
+
+
+
+```{r eval=FALSE}
+library("Seurat")
+library("dplyr")
+library("RColorBrewer")
+library("unikn")
+library("cluster")
+library("tidyverse")
+library("readxl")  # Asegurar que readxl está cargado
+
+# Load Metadata
+metadata <- read_xlsx(".../BAYESPRISM_12_3/FTLD_BULK/METADATA/decoder_DeSeq2_FTD_FINAL.xlsx")
+colnames(metadata)[1] <- "X"
+samples <- metadata$X[metadata$group.ID == "TDP"]
+metadata <- metadata[metadata$group.ID == "TDP",]
+
+CRscores <- read.csv(".../BAYESPRISM_12_3/CORRELATION/COVARIABLES/FTD_TDP_neuropath_SOM.csv")
+CRscores$X <- gsub(pattern = "long", replacement = "", x = CRscores$X)
+CRscores <- CRscores[CRscores$X %in% samples,]
+
+proportions_directory <- ".../BAYESPRISM_12_3/BAYESPRISM/FTLD/TDP/theta.state_original.csv"
+proportions_data <- read.csv(proportions_directory, row.names = 1)
+rownames(proportions_data) <- gsub("^X", "", rownames(proportions_data))
+
+common_samples <- intersect(rownames(proportions_data), CRscores$X)
+common_samples <- setdiff(common_samples, "7BLACK")  # Remove outlier 
+proportions_data <- proportions_data[common_samples, , drop = FALSE]
+covariables <- CRscores %>% dplyr::filter(X %in% common_samples) %>% column_to_rownames("X")
+
+if (nrow(proportions_data) > 2 && nrow(covariables) > 2) {
+  
+  results <- expand.grid(Cell_State = colnames(proportions_data), 
+                         Covariate = colnames(covariables), 
+                         stringsAsFactors = FALSE)
+  
+  compute_spearman <- function(cell_state, covariate) {
+    test_result <- cor.test(proportions_data[, cell_state], covariables[, covariate], 
+                            method = "spearman", exact = TRUE) # TRUE 
+    return(c(test_result$estimate, test_result$p.value))
+  }
+  
+  cor_pvals <- mapply(compute_spearman, results$Cell_State, results$Covariate)
+  
+  results$Spearman_Correlation <- cor_pvals[1, ]
+  results$p_value <- cor_pvals[2, ]
+}
+
+write.csv(results, ".../BAYESPRISM_12_3/CORRELATION/TDP_spearman_results_true_no_out.csv", row.names = FALSE)
+
+
+
+CRscores <- read.csv(".../BAYESPRISM_12_3/CORRELATION/COVARIABLES/TRANSFORMED_COVARIABLES/ArcSin/TDP/ArcSin_FTD_TDP_neuropath_SOM")
+CRscores$X <- gsub(pattern = "long", replacement = "", x = CRscores$X)
+CRscores <- CRscores[CRscores$X %in% samples,]
+
+proportions_directory <- ".../BAYESPRISM_12_3/CELL_PROP/TRANSFORMATED_PROPORTIONS/ArcSin/FTLD/TDP/Arcsin_Cell_state_proportions.csv"
+proportions_data <- read.csv(proportions_directory, row.names = 1)
+rownames(proportions_data) <- gsub("^X", "", rownames(proportions_data))
+
+common_samples <- intersect(rownames(proportions_data), CRscores$X)
+proportions_data <- proportions_data[common_samples, , drop = FALSE]
+covariables <- CRscores %>% dplyr::filter(X %in% common_samples) %>% column_to_rownames("X")
+
+# ULL AMB AQUEST CANVI DE VALOR
+y <- covariables[, "STMN2"]
+y[is.infinite(y)] <- min(y[is.finite(y)]) - 1e-2
+covariables[, "STMN2"] <- y
+
+# Separate STMN2 to remove outlier
+cov_stmn2 <- covariables[rownames(covariables) != "7BLACK", "STMN2", drop = FALSE]
+proportions_data_STMN2 <- proportions_data[rownames(proportions_data) != "7BLACK", ]
+
+cov_tdp43b <- covariables[, "TDP43b", drop = FALSE]
+
+# Results dataframe 
+results <- expand.grid(Cell_State = colnames(proportions_data), 
+                       Covariate = colnames(covariables), 
+                       stringsAsFactors = FALSE)
+
+# --- Correlations with TDP43b ---
+res_tdp43b <- do.call(rbind, lapply(colnames(proportions_data), function(cs) {
+  compute_spearman(cs, "TDP43b", proportions_data, cov_tdp43b)
+}))
+
+# --- Correlations with STMN2 (without outlier) ---
+res_stmn2 <- do.call(rbind, lapply(colnames(proportions_data_STMN2), function(cs) {
+  compute_spearman(cs, "STMN2", proportions_data_STMN2, cov_stmn2)
+}))
+
+# Combine results
+results <- rbind(res_tdp43b, res_stmn2)
+
+write.csv(results, paste0(outdir, "ArcSin_TDP_spearman_results.csv"), row.names = FALSE)
+
+```
+
+
+
+
